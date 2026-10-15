@@ -94,7 +94,7 @@ src/
 | الجدول | بيخزن إيه |
 |---|---|
 | `profiles` | الحسابات: `id`, `name`, `email`, `phone`, `role` |
-| `venues` | الملاعب: السعر، العنوان، `deposit_percent`, `slot_minutes`, `amenities`... |
+| `venues` | الملاعب: السعر، العنوان، `slot_minutes`, `amenities`... |
 | `venue_images` | صور الملعب (`sort_order`) |
 | `venue_working_hours` | فترات شغل الملعب: `day_of_week`, `open_time`, `close_time` |
 | `bookings` | الحجوزات: `date`, `start_time`, `end_time`, `price`, `deposit_amount`, `status` |
