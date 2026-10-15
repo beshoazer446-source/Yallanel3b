@@ -26,7 +26,6 @@ export const venues = [
     maps_url: "https://maps.google.com",
     description: "ملعب خماسي نجيل صناعي عالي الجودة وإضاءة ليلية قوية",
     price_per_hour: 450,
-    deposit_percent: 25,
     payment_number: "01000000000",
     slot_minutes: 60,
     amenities: [
