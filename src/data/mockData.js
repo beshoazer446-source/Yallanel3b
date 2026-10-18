@@ -26,7 +26,6 @@ export const venues = [
     maps_url: "https://maps.google.com",
     description: "ملعب خماسي نجيل صناعي عالي الجودة وإضاءة ليلية قوية",
     price_per_hour: 450,
-    payment_number: "01000000000",
     slot_minutes: 60,
     amenities: [
       "إضاءة ليلية",
@@ -68,6 +67,12 @@ export const venue_working_hours = [
     open_time: "16:00",
     close_time: "24:00",
   },
+];
+
+// طرق الدفع المتاحة عند كل ملعب (الأونر هو اللي بيحددها)
+export const venue_payment_methods = [
+  { id: 1, venue_id: 1, method: "vodafone_cash", account: "01000000000" },
+  { id: 2, venue_id: 1, method: "instapay", account: "name@instapay" },
 ];
 
 export const bookings = [
