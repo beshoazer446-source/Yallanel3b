@@ -1,4 +1,7 @@
 import { Routes, Route } from "react-router-dom";
+import OwnerRegister from "./components/OwnerRegister";
+import AddVenue from "./components/AddVenue";
+import EditVenue from "./components/EditVenue";
 import Placeholder from "./components/Placeholder";
 
 export default function App() {
@@ -9,18 +12,9 @@ export default function App() {
       <Route path="/register" element={<Placeholder name="تسجيل مستخدم" />} />
 
       {/* شخص 2 */}
-      <Route
-        path="/register-owner"
-        element={<Placeholder name="تسجيل صاحب ملعب" />}
-      />
-      <Route
-        path="/owner/venues/new"
-        element={<Placeholder name="إضافة ملعب" />}
-      />
-      <Route
-        path="/owner/venues/:id/edit"
-        element={<Placeholder name="تعديل ملعب" />}
-      />
+      <Route path="/register-owner" element={<OwnerRegister />} />
+      <Route path="/owner/venues/new" element={<AddVenue />} />
+      <Route path="/owner/venues/:id/edit" element={<EditVenue />} />
 
       {/* شخص 3 */}
       <Route path="/book/:venueId" element={<Placeholder name="الحجز" />} />
