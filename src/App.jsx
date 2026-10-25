@@ -1,3 +1,5 @@
+import "./index.css"
+import "./App.css"
 import { Routes, Route, Navigate } from "react-router-dom";
 import Placeholder from "./components/Placeholder";
 import MainLayout from "./components/MainLayout";
@@ -5,6 +7,8 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import ForgotPassword from "./pages/auth/ForgotPassword";
+import BookingPage from "./pages/booking/BookingPage";
+import BookingSuccess from "./pages/booking/BookingSuccess";
 
 export default function App() {
   return (
@@ -35,7 +39,8 @@ export default function App() {
 
         {/* ===== اللاعب بس ===== */}
         <Route element={<ProtectedRoute roles={["user"]} />}>
-          <Route path="/book/:venueId" element={<Placeholder name="الحجز" />} />
+          <Route path="/book/:venueId" element={<BookingPage />} />
+          <Route path="/booking-success" element={<BookingSuccess />} />
           <Route path="/my-bookings" element={<Placeholder name="حجوزاتي" />} />
         </Route>
 

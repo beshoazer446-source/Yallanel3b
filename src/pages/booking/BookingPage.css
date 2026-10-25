@@ -1,0 +1,481 @@
+/* ===== صفحة الحجز ===== */
+
+.booking-page {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 0 16px 56px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ---------- الهيدر ---------- */
+.booking-header {
+  background: var(--green-dark);
+  color: var(--cream);
+  margin: 0 -16px;
+  padding: 36px 24px 56px;
+  border-radius: 0 0 28px 28px;
+  position: relative;
+}
+
+.booking-header::after {
+  content: "";
+  position: absolute;
+  inset-inline: 24px;
+  bottom: 0;
+  height: 4px;
+  background: var(--yellow);
+  border-radius: 4px 4px 0 0;
+}
+
+.booking-eyebrow {
+  display: inline-block;
+  margin-bottom: 10px;
+  padding: 4px 14px;
+  border-radius: 999px;
+  background: rgba(255, 200, 87, 0.14);
+  color: var(--yellow);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.booking-header h1 {
+  font-size: clamp(28px, 6vw, 38px);
+  font-weight: 800;
+  line-height: 1.3;
+}
+
+.booking-header p {
+  margin-top: 6px;
+  color: rgba(255, 247, 231, 0.75);
+  font-size: 15px;
+}
+
+/* ---------- الكروت ---------- */
+.booking-card {
+  background: var(--white);
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(7, 28, 22, 0.08);
+  padding: 22px;
+}
+
+/* الكارت الأول يطلع فوق الهيدر شوية */
+.venue-card {
+  margin-top: -44px;
+  position: relative;
+  z-index: 1;
+}
+
+.section-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--green);
+  margin-bottom: 14px;
+}
+
+/* ---------- بيانات الملعب ---------- */
+.venue-heading h2 {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--green-dark);
+}
+
+.venue-location {
+  margin-top: 2px;
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.venue-description {
+  margin: 14px 0 16px;
+  font-size: 15px;
+  line-height: 1.8;
+  color: var(--text);
+}
+
+.venue-price {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-top: 1px dashed rgba(16, 35, 29, 0.14);
+  font-size: 15px;
+}
+
+.venue-price span {
+  color: var(--text-muted);
+}
+
+.venue-price strong {
+  color: var(--green);
+  font-size: 17px;
+}
+
+.deposit-info {
+  margin-top: 8px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: var(--cream);
+  color: var(--text);
+  font-size: 14px;
+}
+
+.deposit-info strong {
+  color: var(--green-dark);
+}
+
+/* ---------- اختيار التاريخ ---------- */
+.field-label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.date-input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px solid rgba(16, 35, 29, 0.16);
+  border-radius: 12px;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 16px;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.date-input:focus-visible {
+  outline: none;
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px rgba(255, 200, 87, 0.55);
+}
+
+/* ---------- المواعيد ---------- */
+.slots-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 26px;
+}
+
+.slots-date {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-muted);
+  direction: ltr;
+}
+
+.slots-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin-bottom: 14px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.slots-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legend-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.available-dot {
+  background: var(--white);
+  border: 2px solid var(--green);
+}
+
+.selected-dot {
+  background: var(--green);
+}
+
+.booked-dot {
+  background: var(--status-cancelled);
+}
+
+.past-dot {
+  background: #D9DEDB;
+}
+
+.empty-slots {
+  padding: 28px 16px;
+  border-radius: 12px;
+  background: var(--bg);
+  border: 1.5px dashed rgba(16, 35, 29, 0.18);
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 15px;
+}
+
+.booking-slots {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 10px;
+}
+
+.slot-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 12px 8px;
+  border: 2px solid var(--green);
+  border-radius: 14px;
+  background: var(--white);
+  color: var(--green-dark);
+  transition: transform 0.15s, background-color 0.15s, color 0.15s;
+}
+
+.slot-time {
+  font-size: 16px;
+  font-weight: 800;
+  direction: ltr;
+}
+
+.slot-status {
+  font-size: 12px;
+  font-weight: 600;
+  opacity: 0.8;
+}
+
+.slot-button:hover:not(:disabled) {
+  background: var(--cream);
+  transform: translateY(-2px);
+}
+
+.slot-button:focus-visible {
+  outline: 3px solid var(--yellow);
+  outline-offset: 2px;
+}
+
+/* مختار */
+.slot-button.slot-selected {
+  background: var(--green);
+  border-color: var(--green);
+  color: var(--yellow);
+}
+
+.slot-button.slot-selected .slot-status {
+  opacity: 1;
+}
+
+/* محجوز */
+.slot-button.slot-booked {
+  border-color: rgba(216, 92, 82, 0.45);
+  background: rgba(216, 92, 82, 0.08);
+  color: var(--status-cancelled);
+}
+
+/* عدّى */
+.slot-button.slot-past {
+  border: 2px dashed #CBD2CE;
+  background: #F0F2F1;
+  color: var(--text-muted);
+}
+
+.slot-button:disabled {
+  cursor: not-allowed;
+}
+
+.slot-button.slot-booked .slot-time,
+.slot-button.slot-past .slot-time {
+  text-decoration: line-through;
+  text-decoration-thickness: 1.5px;
+}
+
+/* ---------- ملخص الحجز ---------- */
+.summary-card {
+  background: var(--green-dark);
+  color: var(--cream);
+}
+
+.summary-card .section-title {
+  color: var(--yellow);
+}
+
+.summary-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255, 247, 231, 0.12);
+  font-size: 15px;
+}
+
+.summary-row span {
+  color: rgba(255, 247, 231, 0.65);
+  flex-shrink: 0;
+}
+
+.summary-row strong {
+  text-align: end;
+  font-weight: 700;
+}
+
+.summary-row strong div {
+  direction: ltr;
+}
+
+.summary-deposit {
+  border-bottom: none;
+  margin-top: 4px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: rgba(255, 200, 87, 0.12);
+}
+
+.summary-deposit strong {
+  color: var(--yellow);
+  font-size: 19px;
+}
+
+.confirm-booking-button {
+  width: 100%;
+  margin-top: 18px;
+  padding: 15px 24px;
+  border: none;
+  border-radius: 999px;
+  background: var(--yellow);
+  color: var(--green-dark);
+  font-size: 16px;
+  font-weight: 800;
+  transition: transform 0.15s, opacity 0.15s;
+}
+
+.confirm-booking-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  opacity: 0.92;
+}
+
+.confirm-booking-button:focus-visible {
+  outline: 3px solid var(--cream);
+  outline-offset: 3px;
+}
+
+.confirm-booking-button:disabled {
+  background: rgba(255, 247, 231, 0.18);
+  color: rgba(255, 247, 231, 0.5);
+  cursor: not-allowed;
+}
+
+.booking-message {
+  margin-top: 14px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: rgba(255, 247, 231, 0.1);
+  color: var(--cream);
+  font-size: 14px;
+  line-height: 1.7;
+  text-align: center;
+}
+
+.booking-message.is-error {
+  background: rgba(216, 92, 82, 0.2);
+  color: #FFD3CF;
+}
+
+.demo-notice {
+  margin-top: 12px;
+  text-align: center;
+  font-size: 12px;
+  color: rgba(255, 247, 231, 0.5);
+}
+
+.demo-notice:empty {
+  display: none;
+}
+
+/* ---------- شاشات أكبر ---------- */
+@media (min-width: 640px) {
+  .booking-page {
+    padding-inline: 24px;
+  }
+
+  .booking-header {
+    margin-inline: 0;
+    margin-top: 24px;
+    border-radius: 28px;
+    padding: 40px 36px 60px;
+  }
+
+  .booking-card {
+    padding: 28px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slot-button,
+  .confirm-booking-button,
+  .date-input {
+    transition: none;
+  }
+
+  .slot-button:hover:not(:disabled),
+  .confirm-booking-button:hover:not(:disabled) {
+    transform: none;
+  }
+}
+
+/* ---------- إضافات: مميزات الملعب وزرار الدفع في الملعب ---------- */
+.venue-amenities {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 14px 0 16px;
+  list-style: none;
+}
+
+.amenity-chip {
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: var(--cream);
+  color: var(--green-dark);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.venue-pay-button {
+  width: 100%;
+  margin-top: 10px;
+  padding: 14px 24px;
+  border: 1.5px solid rgba(255, 247, 231, 0.45);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--cream);
+  font-size: 15px;
+  font-weight: 700;
+  transition: background-color 0.15s, border-color 0.15s;
+}
+
+.venue-pay-button:hover:not(:disabled) {
+  background: rgba(255, 247, 231, 0.1);
+  border-color: var(--cream);
+}
+
+.venue-pay-button:focus-visible {
+  outline: 3px solid var(--yellow);
+  outline-offset: 3px;
+}
+
+.venue-pay-button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.venue-pay-hint {
+  margin-top: 10px;
+  text-align: center;
+  font-size: 12px;
+  line-height: 1.7;
+  color: rgba(255, 247, 231, 0.55);
+}
