@@ -1,11 +1,11 @@
-/* ضبط خلفية الشاشة بالكامل */
+
 body {
   margin: 0;
   background-color: #f4f6f8;
   font-family: 'Cairo', sans-serif;
 }
 
-/* إجبار الـ container على أخذ الشاشة بالكامل وتوسيط المحتوى في المنتصف 100% */
+
 .container {
   display: flex !important;
   justify-content: center !important;
@@ -13,34 +13,57 @@ body {
   min-height: 100vh !important;
   width: 100% !important;
   max-width: 100% !important;
-  margin: 0 !important;
-  padding: 20px !important;
+  padding: 15px !important;
   box-sizing: border-box !important;
 }
 
-/* توسيط وتنسيق الكارد بشكل احترافي ومتناسق */
+
 .card {
-  width: 100% !important;
-  max-width: 650px !important;
+  width: 95% !important;
+  max-width: 1100px !important; 
   background: #ffffff !important;
   border-radius: 12px !important;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
-  border: none !important;
-  padding: 30px !important;
+  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.1) !important;
+  border: 1px solid #e5e7eb !important;
+  padding: 35px !important;
   box-sizing: border-box !important;
   margin: auto !important;
 }
 
-/* تنسيق الأزرار */
+
+input.form-control, textarea.form-control, select.form-control, input, textarea, select {
+  width: 100% !important;
+  padding: 12px 15px !important;
+  margin-top: 6px !important;
+  margin-bottom: 16px !important;
+  background-color: #ffffff !important;
+  border: 2px solid #cbd5e1 !important; 
+  border-radius: 8px !important;
+  font-size: 15px !important;
+  color: #1e293b !important;
+  box-sizing: border-box !important;
+  transition: all 0.3s ease;
+}
+
+
+input.form-control:focus, textarea.form-control:focus, select.form-control:focus, input:focus, textarea:focus, select:focus {
+  outline: none !important;
+  border-color: #f59e0b !important;
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.15) !important;
+}
+
+
 button.btn-primary, button[type="submit"] {
   background-color: #f59e0b !important;
   border-color: #f59e0b !important;
   color: white !important;
   font-weight: bold !important;
+  font-size: 16px !important;
   border-radius: 8px !important;
-  padding: 12px !important;
+  padding: 14px !important;
   width: 100% !important;
   cursor: pointer;
+  transition: background 0.3s;
 }
 
 button.btn-primary:hover, button[type="submit"]:hover {
@@ -48,14 +71,23 @@ button.btn-primary:hover, button[type="submit"]:hover {
   border-color: #d97706 !important;
 }
 
-/* التجاوب مع الموبايل والشاشات الصغيرة */
+
 @media (max-width: 768px) {
   .container {
     padding: 10px !important;
     align-items: flex-start !important;
   }
+  
   .card {
-    padding: 15px !important;
-    margin-top: 10px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 20px !important;
+    margin: 5px !important;
+    border-radius: 8px !important;
+  }
+
+  input.form-control, textarea.form-control, select.form-control, input, textarea, select {
+    font-size: 16px !important; 
+    padding: 10px !important;
   }
 }
