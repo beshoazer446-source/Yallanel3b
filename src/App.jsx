@@ -1,30 +1,23 @@
-
 import { Routes, Route, Navigate } from "react-router-dom";
-
 import Placeholder from "./components/Placeholder";
 import MainLayout from "./components/MainLayout";
 import ProtectedRoute from "./components/ProtectedRoute";
-
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import ForgotPassword from "./pages/auth/ForgotPassword";
 
-import OwnerDashboard from "./pages/owner/OwnerDashboard";
-import OwnerBookings from "./pages/booking/OwnerBookings";
-
 export default function App() {
   return (
     <Routes>
-      {/* صفحات الدخول بدون Navbar */}
+      {/* صفحات الدخول: من غير Navbar */}
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
 
-      {/* باقي الصفحات داخل Layout */}
+      {/* باقي الصفحات: فيها Navbar */}
       <Route element={<MainLayout />}>
+        {/* ===== صفحات مفتوحة لأي حد ===== */}
         <Route path="/" element={<Navigate to="/venues" replace />} />
-
-        {/* الصفحات العامة */}
         <Route path="/venues" element={<Placeholder name="الملاعب" />} />
         <Route
           path="/venues/:id"
@@ -35,32 +28,26 @@ export default function App() {
           element={<Placeholder name="تسجيل صاحب ملعب" />}
         />
 
-        {/* أي مستخدم مسجل دخول */}
+        {/* ===== أي حد مسجّل دخول ===== */}
         <Route element={<ProtectedRoute />}>
           <Route path="/profile" element={<Placeholder name="حسابي" />} />
         </Route>
 
-        {/* اللاعب */}
+        {/* ===== اللاعب بس ===== */}
         <Route element={<ProtectedRoute roles={["user"]} />}>
-          <Route
-            path="/book/:venueId"
-            element={<Placeholder name="الحجز" />}
-          />
-          <Route
-            path="/my-bookings"
-            element={<Placeholder name="حجوزاتي" />}
-          />
+          <Route path="/book/:venueId" element={<Placeholder name="الحجز" />} />
+          <Route path="/my-bookings" element={<Placeholder name="حجوزاتي" />} />
         </Route>
 
-        {/* صاحب الملعب */}
+        {/* ===== صاحب الملعب بس ===== */}
         <Route element={<ProtectedRoute roles={["owner"]} />}>
           <Route
             path="/owner/dashboard"
-            element={<OwnerDashboard />}
+            element={<Placeholder name="لوحة الأونر" />}
           />
           <Route
             path="/owner/bookings"
-            element={<OwnerBookings />}
+            element={<Placeholder name="إدارة الحجوزات" />}
           />
           <Route
             path="/owner/venues/new"
@@ -72,7 +59,7 @@ export default function App() {
           />
         </Route>
 
-        {/* الأدمن */}
+        {/* ===== الأدمن بس ===== */}
         <Route element={<ProtectedRoute roles={["admin"]} />}>
           <Route
             path="/admin/dashboard"
