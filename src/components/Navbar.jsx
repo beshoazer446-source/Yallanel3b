@@ -1,14 +1,21 @@
+import { useState } from 'react'
 import { Link, NavLink, useNavigate } from 'react-router-dom'
-import { useAuth } from '../context/AuthContext'
+import { useAuth } from '../context/useAuth'
 import './Navbar.css'
 
 export default function Navbar() {
   const { user, profile, loading, signOut } = useAuth()
   const navigate = useNavigate()
+  const [error, setError] = useState('')
 
   async function handleSignOut() {
-    await signOut()
-    navigate('/login')
+    setError('')
+    try {
+      await signOut()
+      navigate('/login')
+    } catch (signOutError) {
+      setError(signOutError.message || 'تعذر تسجيل الخروج.')
+    }
   }
 
   const role = profile?.role
@@ -22,6 +29,7 @@ export default function Navbar() {
         </Link>
 
         <nav className="navbar-links">
+          <NavLink to="/" end>الرئيسية</NavLink>
           <NavLink to="/venues">الملاعب</NavLink>
           {user && role === 'user' && <NavLink to="/my-bookings">حجوزاتي</NavLink>}
           {user && role === 'owner' && <NavLink to="/owner/dashboard">لوحة التحكم</NavLink>}
@@ -32,7 +40,8 @@ export default function Navbar() {
         <div className="navbar-actions">
           {loading ? null : user ? (
             <>
-              <span className="navbar-user">{profile?.name ?? user.email}</span>
+              <Link to="/profile" className="navbar-user">{profile?.name ?? user.email}</Link>
+              {role === 'owner' && <Link to="/owner/venues/new" className="btn btn-primary">إضافة ملعب</Link>}
               <button className="btn btn-outline" onClick={handleSignOut}>
                 تسجيل الخروج
               </button>
@@ -45,6 +54,7 @@ export default function Navbar() {
           )}
         </div>
       </div>
+      {error && <p role="alert" style={{ color: 'var(--status-cancelled)', textAlign: 'center', padding: '4px 12px' }}>{error}</p>}
     </header>
   )
 }

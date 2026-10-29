@@ -1,103 +1,145 @@
-// src/services/bookingsService.js
-import { bookings } from '../data/mockData';
+import { supabase } from "../lib/supabaseClient";
 
-// جلب حجوزات المستخدم (يمكن لاحقاً تمرير معرف المستخدم عند ربط Supabase)
-export async function getUserBookings() {
-  // ملاحظة: لاحقاً عند ربط Supabase، سيتم جلب الحجوزات الخاصة بالمستخدم المسجل الدخول حالياً
-  return bookings || [];
+function getProofBucket() {
+  return import.meta.env.VITE_SUPABASE_PAYMENT_PROOFS_BUCKET || "payment-proofs";
 }
-```[cite: 7]
 
----
+export async function getTakenSlots(venueId, date) {
+  const { data, error } = await supabase.rpc("get_taken_slots", {
+    p_venue_id: venueId,
+    p_date: date,
+  });
 
-### الخطوة 2: إنشاء صفحة الحجوزات (`src/pages/venues/MyBookingsPage.jsx`)
+  if (error) throw error;
+  return data ?? [];
+}
 
-1. اذهب إلى مجلد `src/pages/venues/` وأنشئ ملفاً جديداً باسم **`MyBookingsPage.jsx`**.
-2. ضع بداخله الكود التالي الذي يعرض الحجوزات ويلون حالاتها بناءً على المتغيرات الجاهزة في النظام:
-
-```jsx
-// src/pages/venues/MyBookingsPage.jsx
-import React, { useState, useEffect } from 'react';
-import { getUserBookings } from '../../services/bookingsService';
-
-export default function MyBookingsPage() {
-  const [userBookings, setUserBookings] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    async function fetchBookings() {
-      const data = await getUserBookings();
-      setUserBookings(data);
-      setLoading(false);
-    }
-    fetchBookings();
-  }, []);
-
-  // دالة لتحديد لون حالة الحجز بناءً على المتغيرات المعتمدة في المشروع
-  const getStatusStyle = (status) => {
-    switch (status) {
-      case 'confirmed':
-        return { color: 'var(--status-confirmed)', fontWeight: 'bold' };
-      case 'pending':
-        return { color: 'var(--status-pending)', fontWeight: 'bold' };
-      case 'cancelled':
-      case 'rejected':
-        return { color: 'var(--status-cancelled)', fontWeight: 'bold' };
-      default:
-        return { color: 'var(--text-muted)' };
-    }
+export async function createBooking({ venueId, date, startTime, endTime, userId, proofFile }) {
+  const extensions = {
+    "image/jpeg": "jpg",
+    "image/png": "png",
+    "image/webp": "webp",
+    "application/pdf": "pdf",
   };
-
-  if (loading) {
-    return <div className="container" style={{ padding: '20px' }}>جاري تحميل حجوزاتك...</div>;
+  const extension = extensions[proofFile?.type];
+  if (!extension) {
+    throw new Error("صيغة إثبات الدفع غير مدعومة. استخدم JPG أو PNG أو WebP أو PDF.");
+  }
+  if (proofFile.size > 5 * 1024 * 1024) {
+    throw new Error("حجم الملف يجب ألا يتجاوز 5MB.");
   }
 
-  return (
-    <div className="container" style={{ padding: '20px 0' }}>
-      <h2>حجوزاتي وحسابي</h2>
-      
-      {userBookings.length === 0 ? (
-        <p style={{ marginTop: '20px' }}>ليس لديك أي حجوزات حتى الآن.</p>
-      ) : (
-        <div style={{ display: 'grid', gap: '16px', marginTop: '20px' }}>
-          {userBookings.map((booking) => (
-            <div key={booking.id} className="card">
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <h3>حجز رقم: #{booking.id}</h3>
-                <span style={getStatusStyle(booking.status)}>
-                  الحالة: {booking.status}
-                </span>
-              </div>
-              
-              <div style={{ margin: '12px 0', color: 'var(--text-muted)' }}>
-                <p><strong>التاريخ:</strong> {booking.date}</p>
-                <p><strong>الوقت:</strong> من {booking.start_time} إلى {booking.end_time}</p>
-                <p><strong>السعر الإجمالي:</strong> {booking.price} ج.م</p>
-                <p><strong>العربون المطلوب (25%):</strong> {booking.deposit_amount} ج.م</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
-  );
+  const bucket = getProofBucket();
+  const proofPath = `${userId}/${venueId}/${crypto.randomUUID()}.${extension}`;
+  const { error: uploadError } = await supabase.storage
+    .from(bucket)
+    .upload(proofPath, proofFile, { contentType: proofFile.type, upsert: false });
+
+  if (uploadError) {
+    if (uploadError.message.toLowerCase().includes("bucket not found")) {
+      throw new Error(
+        `مخزن إثباتات الدفع "${bucket}" غير موجود. أنشئه من Supabase Dashboard > Storage > New bucket، واجعله Private، ثم أعد المحاولة.`,
+      );
+    }
+    throw uploadError;
+  }
+
+  const { data, error } = await supabase
+    .from("bookings")
+    .insert({
+      venue_id: venueId,
+      date,
+      start_time: startTime,
+      end_time: endTime,
+      user_id: userId,
+      status: "pending",
+      payment_proof_url: proofPath,
+    })
+    .select("*")
+    .single();
+
+  if (error) {
+    const { error: cleanupError } = await supabase.storage.from(bucket).remove([proofPath]);
+    if (cleanupError) {
+      throw new Error(`${error.message} كما تعذر حذف ملف الإثبات المرفوع: ${cleanupError.message}`);
+    }
+    throw error;
+  }
+  return data;
 }
-```[cite: 7]
 
----
+export async function getPaymentProofUrl(proofPath) {
+  if (!proofPath) return null;
+  const { data, error } = await supabase
+    .storage
+    .from(getProofBucket())
+    .createSignedUrl(proofPath, 60 * 10);
+  if (error) throw error;
+  return data.signedUrl;
+}
 
-### الخطوة 3: إضافة المسار في `App.jsx`
-لا تنسَ إضافة المسار الخاص بصفحة الحجوزات في ملف `App.jsx` في السطر المخصص لك فقط لتجنب أي تضارب (Conflicts) مع زملائك[cite: 7]:
-```jsx
-<Route path="/my-bookings" element={<MyBookingsPage />} />
-``[cite: 7]
+export async function getUserBookings(userId) {
+  const { data, error } = await supabase
+    .from("bookings")
+    .select("*")
+    .eq("user_id", userId)
+    .order("date", { ascending: false })
+    .order("start_time", { ascending: false });
 
-<ElicitationsGroup>
-  <Elicitation context="Concluding the core task implementation">
-    <Question>بهذا نكون أنجزت كامل مهامك (عرض الملاعب، البحث، التفاصيل، وحسابي وحجوزاتي). هل تحتاج إلى مساعدة في مراجعة الكود أو ربطه بالـ Git والـ Pull Request؟</Question>
-    <Options>
-      <Option label="نعم، اشرح لي كيف أرفع الكود على الـ Git وأفتح Pull Request" value="git_guide"/>
-      <Option label="لا، كل شيء واضح وجاهز للرفع" value="all_done"/>
-    </Options>
-  </ElicitationsGroup>
-</ElicitationsGroup>
+  if (error) throw error;
+  const bookings = data ?? [];
+  const venueIds = [...new Set(bookings.map((booking) => booking.venue_id))];
+  if (!venueIds.length) return bookings;
+
+  const { data: venues, error: venuesError } = await supabase
+    .from("venues")
+    .select("id, name, address")
+    .in("id", venueIds);
+
+  if (venuesError) throw venuesError;
+  const venueById = new Map((venues ?? []).map((venue) => [String(venue.id), venue]));
+  return bookings.map((booking) => ({
+    ...booking,
+    venue: venueById.get(String(booking.venue_id)),
+  }));
+}
+
+export async function getOwnerBookings(ownerId) {
+  const { data: venues, error: venuesError } = await supabase
+    .from("venues")
+    .select("id, name")
+    .eq("owner_id", ownerId);
+
+  if (venuesError) throw venuesError;
+  if (!venues?.length) return [];
+
+  const venueById = new Map(venues.map((venue) => [String(venue.id), venue]));
+  const { data, error } = await supabase
+    .from("bookings")
+    .select("*")
+    .in("venue_id", venues.map((venue) => venue.id))
+    .order("date", { ascending: false })
+    .order("start_time", { ascending: false });
+
+  if (error) throw error;
+  return (data ?? []).map((booking) => ({
+    ...booking,
+    venue: venueById.get(String(booking.venue_id)),
+  }));
+}
+
+export async function updateBookingStatus(bookingId, status) {
+  const { data, error } = await supabase
+    .from("bookings")
+    .update({ status })
+    .eq("id", bookingId)
+    .eq("status", "pending")
+    .select("*")
+    .maybeSingle();
+
+  if (error) throw error;
+  if (!data) {
+    throw new Error("تعذر تحديث الحجز. ربما تم تحديثه بالفعل.");
+  }
+  return data;
+}

@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../context/useAuth";
+import { supabase } from "../../lib/supabaseClient";
 import "./Auth.css";
 
-export default function Register() {
+export default function Register({ role = "user" }) {
   const { signUp } = useAuth();
   const navigate = useNavigate();
 
@@ -15,6 +16,7 @@ export default function Register() {
     agree: false,
   });
   const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
   function handleChange(e) {
@@ -41,22 +43,54 @@ export default function Register() {
       return;
     }
     setError("");
+    setMessage("");
     setLoading(true);
 
-    const { error: err } = await signUp({
-      name: form.name.trim(),
-      email: form.email.trim(),
-      password: form.password,
-      phone: form.phone,
-      role: "user",
-    });
+    try {
+      const { data, error: err } = await signUp({
+        name: form.name.trim(),
+        email: form.email.trim(),
+        password: form.password,
+        phone: form.phone,
+        role,
+      });
 
-    setLoading(false);
-    if (err) {
-      setError(err.message);
-      return;
+      if (err) {
+        setError(err.message);
+        return;
+      }
+
+      if (data.session) {
+        if (role === "owner") {
+          const { data: profile, error: profileError } = await supabase
+            .from("profiles")
+            .select("role")
+            .eq("id", data.user.id)
+            .single();
+          if (profileError) {
+            setError(`الحساب اتعمل لكن تعذر التحقق من صلاحيته: ${profileError.message}`);
+            return;
+          }
+          if (profile.role !== "owner") {
+            setError("حسابك اتعمل لكن قاعدة البيانات لم تسجله كصاحب ملعب. يلزم تفعيل دور owner في إعداد إنشاء profiles داخل Supabase.");
+            return;
+          }
+          navigate("/owner/dashboard", { replace: true });
+        } else {
+          navigate("/venues");
+        }
+      } else {
+        setMessage(
+          role === "owner"
+            ? "تم إنشاء حساب صاحب الملعب. أكّد بريدك الإلكتروني، ثم سجّل الدخول لفتح لوحة الأونر."
+            : "تم إنشاء الحساب. راجع بريدك الإلكتروني لتأكيده قبل تسجيل الدخول.",
+        );
+      }
+    } catch (signupError) {
+      setError(signupError.message || "تعذر إنشاء الحساب.");
+    } finally {
+      setLoading(false);
     }
-    navigate("/venues");
   }
 
   return (
@@ -68,12 +102,17 @@ export default function Register() {
             يلا نلعب
           </div>
 
-          <h1 className="auth-title">أنشئ حسابك وابدأ اللعب</h1>
+          <h1 className="auth-title">
+            {role === "owner" ? "أنشئ حساب صاحب ملعب" : "أنشئ حسابك وابدأ اللعب"}
+          </h1>
           <p className="auth-subtitle">
-            احجز أفضل الملاعب وتابع مبارياتك بسهولة.
+            {role === "owner"
+              ? "أضف ملعبك وحدد الأسعار والمواعيد وتابع حجوزاتك."
+              : "احجز أفضل الملاعب وتابع مبارياتك بسهولة."}
           </p>
 
           {error && <div className="auth-error">{error}</div>}
+          {message && <div className="auth-info" role="status">{message}</div>}
 
           <form onSubmit={handleSubmit} noValidate>
             <div className="auth-field">
@@ -156,6 +195,13 @@ export default function Register() {
 
           <p className="auth-switch">
             لديك حساب بالفعل؟ <Link to="/login">تسجيل الدخول</Link>
+          </p>
+          <p className="auth-switch">
+            {role === "owner" ? (
+              <>تريد الحجز كلاعب؟ <Link to="/register">إنشاء حساب لاعب</Link></>
+            ) : (
+              <>لديك ملعب؟ <Link to="/register-owner">إنشاء حساب أونر</Link></>
+            )}
           </p>
         </div>
       </div>

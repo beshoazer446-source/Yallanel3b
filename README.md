@@ -32,9 +32,10 @@ npm install
 ```
 VITE_SUPABASE_URL=
 VITE_SUPABASE_PUBLISHABLE_KEY=
+VITE_SUPABASE_PAYMENT_PROOFS_BUCKET=payment-proofs
 ```
 
-اطلب القيم من قائد الفريق في الخاص. **ملف `.env` ممنوع يترفع على GitHub** (متحمي في `.gitignore`)، ومفيش مفاتيح تتكتب هنا في الـ README.
+اطلب القيم من قائد الفريق. من لوحة مشروع Supabase افتح **Storage → Buckets → New bucket**، واكتب الاسم `payment-proofs` وأوقف خيار **Public bucket** ليظل خاصًا. إذا كان عندكم bucket آخر، ضع اسمه في `VITE_SUPABASE_PAYMENT_PROOFS_BUCKET`. يلزم أيضًا إعداد سياسات Storage للسماح بالرفع والعرض المصرح به؛ إنشاء bucket وحده لا يفتح الصلاحيات. **ملف `.env` ممنوع يترفع على GitHub** (متحمي في `.gitignore`)، ومفيش مفاتيح تتكتب هنا في الـ README.
 
 وبعدين شغّل الموقع:
 
@@ -98,7 +99,7 @@ src/
 | `venue_images` | صور الملعب (`sort_order`) |
 | `venue_working_hours` | فترات شغل الملعب: `day_of_week`, `open_time`, `close_time` |
 | `venue_payment_methods` | طرق الدفع المتاحة عند الملعب (`method`, `account`)، والأونر هو اللي بيحددها |
-| `bookings` | الحجوزات: `date`, `start_time`, `end_time`, `price`, `deposit_amount`, `status` |
+| `bookings` | الحجوزات: `date`, `start_time`, `end_time`, `price`, `deposit_amount`, `status`, `payment_proof_url` |
 
 ### حاجات لازم تعرفها
 
@@ -125,23 +126,25 @@ const { data: taken } = await supabase.rpc('get_taken_slots', {
 
 - عند إنشاء حجز **ما تبعتش `price` ولا `deposit_amount`**، بيتحسبوا في الداتابيز.
 - ممنوع تعدّل في الجداول أو الصلاحيات من Supabase مباشرة، اطلب أي تعديل من قائد الفريق.
+- حجز اللاعب يرفع إثبات التحويل (JPG/PNG/WebP/PDF، حتى 5MB) إلى الـ bucket المحدد في `VITE_SUPABASE_PAYMENT_PROOFS_BUCKET` (الافتراضي `payment-proofs`)، ويحفظ مساره في `payment_proof_url`. يلزم أن تكون سياسات Storage تسمح للمستخدم المسجل برفع ملفه وأن تسمح لصاحب الملعب بإنشاء رابط مؤقت لعرض الإثبات.
+- كل جداول التطبيق وStorage لازم تكون مجهزة بصلاحيات RLS المناسبة للأدوار؛ واجهة React لا تعتبر بديلًا عن صلاحيات قاعدة البيانات.
+- التسجيل العام ينشئ حساب لاعب، وصفحة `/register-owner` تنشئ حساب أونر. يجب أن ينسخ trigger إنشاء `profiles` قيمة `role` إلى الدور `user` أو `owner`، مع عدم قبول `admin` من بيانات التسجيل أبدًا. إذا ظل الحساب بدور لاعب بعد التسجيل، فإعداد trigger في Supabase يحتاج مراجعة.
+- عمولة المنصة المحسوبة 10% من إجمالي الحجوزات المؤكدة، وتظهر كمستحق يدوي من الأونر؛ التحويل البنكي المباشر لا يقتطعها تلقائيًا. التحصيل/التقسيم التلقائي يتطلب بوابة دفع وخلفية موثوقة تدعم split payments.
 
-## إزاي نجلب الداتا (الدوال)
+## جلب وحفظ الداتا
 
-الصفحة **ما تقراش `mockData.js` مباشرة**. اكتب دالة في `src/services` والصفحة تنادي الدالة:
+الصفحات لا تقرأ `mockData.js` مباشرة. خدمات `src/services` تتصل بـ Supabase، والصفحات تناديها بدل تنفيذ الاستعلامات بنفسها. بيانات `mockData.js` محفوظة كمرجع للتطوير فقط.
 
 ```js
 // src/services/venuesService.js
-import { venues } from '../data/mockData'
-
-export async function getVenues() {
-  return venues.filter((v) => v.is_active)
-}
-// لما نربط بـ Supabase بنبدّل جوه الدالة بس:
-// const { data } = await supabase.from('venues').select('*')
+const { data, error } = await supabase
+  .from('venues')
+  .select('*')
+  .eq('is_active', true)
+if (error) throw error
 ```
 
-كده الصفحة مش بتتغير لما نربط.
+تدفق التطبيق الحالي: تسجيل/دخول اللاعب أو صاحب الملعب، عرض وبحث الملاعب، التفاصيل ومواعيد العمل وطرق الدفع، إنشاء الحجز وإثبات التحويل، حجوزات اللاعب، إدارة ملاعب وحجوزات الأونر، ولوحة الأدمن.
 
 ## قواعد الشغل
 

@@ -27,7 +27,7 @@ export default function VenuesPage() {
         }
       } catch (err) {
         if (isMounted) {
-          setError("حدث خطأ أثناء تحميل الملاعب.");
+          setError(err.message || "حدث خطأ أثناء تحميل الملاعب.");
         }
       } finally {
         if (isMounted) {
