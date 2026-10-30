@@ -33,9 +33,12 @@ npm install
 VITE_SUPABASE_URL=
 VITE_SUPABASE_PUBLISHABLE_KEY=
 VITE_SUPABASE_PAYMENT_PROOFS_BUCKET=payment-proofs
+VITE_SUPABASE_VENUE_IMAGES_BUCKET=venue-images
 ```
 
 اطلب القيم من قائد الفريق. من لوحة مشروع Supabase افتح **Storage → Buckets → New bucket**، واكتب الاسم `payment-proofs` وأوقف خيار **Public bucket** ليظل خاصًا. إذا كان عندكم bucket آخر، ضع اسمه في `VITE_SUPABASE_PAYMENT_PROOFS_BUCKET`. يلزم أيضًا إعداد سياسات Storage للسماح بالرفع والعرض المصرح به؛ إنشاء bucket وحده لا يفتح الصلاحيات. **ملف `.env` ممنوع يترفع على GitHub** (متحمي في `.gitignore`)، ومفيش مفاتيح تتكتب هنا في الـ README.
+
+لصور الملاعب، أنشئ bucket باسم `venue-images` واجعله **Public** حتى تظهر الصور للاعبين، وأضف سياسات Storage تسمح لصاحب الملعب المسجل بالرفع، وسياسة قراءة مناسبة لجدول `venue_images`. غيّر `VITE_SUPABASE_VENUE_IMAGES_BUCKET` إذا استخدمت اسمًا مختلفًا. الصور المدعومة JPG وPNG وWebP بحد أقصى 5MB للصورة.
 
 وبعدين شغّل الموقع:
 

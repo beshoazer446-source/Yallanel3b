@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { PAYMENT_METHODS } from "../../lib/constants";
 import { getVenueBookingInfo, getVenueById } from "../../services/venuesService";
+import "./VenueDetailsPage.css";
 
 const dayNames = ["الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"];
 
@@ -56,11 +57,22 @@ export default function VenueDetailsPage() {
   }
 
   return (
-    <section className="container" dir="rtl" style={{ paddingTop: 24, paddingBottom: 48 }}>
+    <section className="container venue-details-page" dir="rtl" style={{ paddingTop: 24, paddingBottom: 48 }}>
       <Link to="/venues" className="btn btn-outline" style={{ marginBottom: 20, color: "var(--green)", borderColor: "var(--green)" }}>
         العودة لقائمة الملاعب
       </Link>
-      <article className="card" style={{ padding: 24 }}>
+      <article className="card venue-details-card" style={{ padding: 24 }}>
+        {venue.images?.length > 0 && (
+          <div className="venue-details-gallery">
+            {venue.images.map((image, index) => (
+              <img
+                key={image.id}
+                src={image.image_url}
+                alt={`صورة ${venue.name} ${index + 1}`}
+              />
+            ))}
+          </div>
+        )}
         <h1 style={{ color: "var(--green)" }}>{venue.name}</h1>
         <p style={{ color: "var(--text-muted)", marginTop: 8 }}>
           {[venue.city, venue.area, venue.address].filter(Boolean).join("، ") || "العنوان غير متوفر"}

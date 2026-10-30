@@ -1,287 +1,517 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { useAuth } from "../../context/useAuth";
-import { createBooking, getTakenSlots } from "../../services/bookingsService";
-import { getVenueBookingInfo, getVenueById } from "../../services/venuesService";
-import { DEPOSIT_PERCENT, PAYMENT_METHODS } from "../../lib/constants";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { supabase } from "../../lib/supabaseClient";
+import "./BookingPage.css";
 
-function toMinutes(value) {
-  const [hours, minutes] = value.slice(0, 5).split(":").map(Number);
-  return hours * 60 + minutes;
+  import { DEPOSIT_PERCENT } from "../../lib/constants";
+
+// ⚠️ للتجربة فقط: true = مايحوّلش على /login لو اليوزر مش مسجّل دخول.
+// لازم تبقى false قبل العرض أو قبل ما الموقع يتنشر.
+ const DEV_SKIP_LOGIN = false;
+// الأوقات من الداتابيز بتيجي "08:00:00" فبناخد أول 5 حروف بس
+function timeToMinutes(time) {
+    const [hours, minutes] = time.slice(0, 5).split(":").map(Number);
+    return hours * 60 + minutes;
 }
 
-function toTime(value) {
-  return `${String(Math.floor(value / 60)).padStart(2, "0")}:${String(value % 60).padStart(2, "0")}`;
+// وقت النهاية "00:00" معناه نهاية اليوم
+function endToMinutes(time) {
+    const minutes = timeToMinutes(time);
+    return minutes === 0 ? 24 * 60 : minutes;
 }
 
-function today() {
-  const date = new Date();
-  date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
-  return date.toISOString().slice(0, 10);
+function minutesToTime(minutes) {
+    const hours = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+
+    return `${String(hours).padStart(2, "0")}:${String(mins).padStart(2, "0")}`;
+}
+
+function getToday() {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const day = String(now.getDate()).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
 }
 
 export default function BookingPage() {
-  const { venueId } = useParams();
-  const { user } = useAuth();
-  const navigate = useNavigate();
-  const [venue, setVenue] = useState(null);
-  const [workingHours, setWorkingHours] = useState([]);
-  const [paymentMethods, setPaymentMethods] = useState([]);
-  const [date, setDate] = useState(today());
-  const [takenSlots, setTakenSlots] = useState([]);
-  const [selectedSlot, setSelectedSlot] = useState("");
-  const [proofFile, setProofFile] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [slotsLoading, setSlotsLoading] = useState(false);
-  const [saving, setSaving] = useState(false);
-  const [error, setError] = useState("");
+    const { venueId } = useParams();
+    const navigate = useNavigate();
+    const location = useLocation();
 
-  useEffect(() => {
-    let active = true;
+    const [venue, setVenue] = useState(null);
+    const [allHours, setAllHours] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-    async function loadVenue() {
-      try {
-        setLoading(true);
-        const [venueData, bookingInfo] = await Promise.all([
-          getVenueById(venueId),
-          getVenueBookingInfo(venueId),
-        ]);
-        if (active) {
-          setVenue(venueData);
-          setWorkingHours(bookingInfo.workingHours);
-          setPaymentMethods(bookingInfo.paymentMethods);
-        }
-      } catch (loadError) {
-        if (active) setError(loadError.message || "تعذر تحميل بيانات الملعب.");
-      } finally {
-        if (active) setLoading(false);
-      }
+    const [date, setDate] = useState(getToday());
+    const [bookedSlots, setBookedSlots] = useState([]);
+    const [reloadKey, setReloadKey] = useState(0);
+
+    const [selectedSlots, setSelectedSlots] = useState([]);
+    const [message, setMessage] = useState("");
+    const [isError, setIsError] = useState(false);
+    const [isPaying, setIsPaying] = useState(false);
+
+    function showMessage(text, error = false) {
+        setMessage(text);
+        setIsError(error);
     }
 
-    loadVenue();
-    return () => {
-      active = false;
-    };
-  }, [venueId]);
+    // ---------- الملعب وساعات الشغل ----------
+    useEffect(() => {
+        let cancelled = false;
 
-  useEffect(() => {
-    if (!date || !venue) return undefined;
-    let active = true;
+        async function loadVenue() {
+            setLoading(true);
 
-    async function loadSlots() {
-      try {
-        setSlotsLoading(true);
-        setError("");
-        const result = await getTakenSlots(venue.id, date);
-        if (active) setTakenSlots(result);
-      } catch (loadError) {
-        if (active) {
-          setTakenSlots([]);
-          setError(loadError.message || "تعذر تحميل المواعيد المتاحة.");
-        }
-      } finally {
-        if (active) setSlotsLoading(false);
-      }
-    }
-    loadSlots();
-    return () => {
-      active = false;
-    };
-  }, [date, venue]);
+            const { data: venueData, error: venueError } = await supabase
+                .from("venues")
+                .select(
+                    "id, name, city, area, address, price_per_hour, slot_minutes, amenities"
+                )
+                .eq("id", venueId)
+                .eq("is_active", true)
+                .maybeSingle();
 
-  const availableSlots = useMemo(() => {
-    if (!date || !venue?.slot_minutes) return [];
-    const weekday = new Date(`${date}T12:00:00`).getDay();
-    const intervals = workingHours.filter((hours) => hours.day_of_week === weekday);
-    const slots = [];
+            if (cancelled) return;
 
-    for (const interval of intervals) {
-      const open = toMinutes(interval.open_time);
-      const close = toMinutes(interval.close_time);
-      for (let start = open; start + venue.slot_minutes <= close; start += venue.slot_minutes) {
-        const end = start + venue.slot_minutes;
-        const overlaps = takenSlots.some(
-          (taken) =>
-            start < toMinutes(taken.end_time) &&
-            end > toMinutes(taken.start_time),
-        );
-        if (!overlaps) slots.push({ start: toTime(start), end: toTime(end) });
-      }
-    }
+            if (venueError) console.error("Venue fetch error:", venueError);
 
-    return slots;
-  }, [date, takenSlots, venue, workingHours]);
-
-  async function handleSubmit(event) {
-    event.preventDefault();
-    if (!selectedSlot) {
-      setError("اختار موعدًا متاحًا أولًا.");
-      return;
-    }
-    if (!proofFile) {
-      setError("ارفع صورة أو ملف إثبات تحويل العربون.");
-      return;
-    }
-    if (!paymentMethods.length) {
-      setError("الملعب لم يضف طرق دفع بعد. تواصل مع صاحب الملعب قبل إرسال طلب الحجز.");
-      return;
-    }
-
-    setError("");
-    setSaving(true);
-    try {
-      const [startTime, endTime] = selectedSlot.split("|");
-      await createBooking({
-        venueId: venue.id,
-        date,
-        startTime,
-        endTime,
-        userId: user.id,
-        proofFile,
-      });
-      navigate("/my-bookings", { state: { bookingCreated: true } });
-    } catch (saveError) {
-      setError(
-        saveError.code === "23P01"
-          ? "الموعد لم يعد متاحًا. حدّث المواعيد واختر موعدًا آخر."
-          : saveError.message || "تعذر إنشاء الحجز.",
-      );
-    } finally {
-      setSaving(false);
-    }
-  }
-
-  if (loading) return <div className="container" style={{ padding: 24 }}>جاري تحميل بيانات الحجز...</div>;
-  if (!venue) {
-    return (
-      <div className="container" style={{ padding: 24 }}>
-        <p>{error || "الملعب غير متاح للحجز."}</p>
-        <Link to="/venues">العودة للملاعب</Link>
-      </div>
-    );
-  }
-
-  const selected = availableSlots.find((slot) => `${slot.start}|${slot.end}` === selectedSlot);
-  const selectedDuration = selected
-    ? toMinutes(selected.end) - toMinutes(selected.start)
-    : 0;
-  const bookingTotal = selected
-    ? (venue.price_per_hour * selectedDuration) / 60
-    : 0;
-  const depositAmount = (bookingTotal * DEPOSIT_PERCENT) / 100;
-
-  return (
-    <section className="container" dir="rtl" style={{ paddingTop: 32, paddingBottom: 48, maxWidth: 760 }}>
-      <Link to={`/venues/${venue.id}`} className="btn btn-outline" style={{ color: "var(--green)", borderColor: "var(--green)" }}>
-        العودة لتفاصيل الملعب
-      </Link>
-      <div className="card" style={{ padding: 24, marginTop: 20 }}>
-        <h1 style={{ color: "var(--green)" }}>احجز في {venue.name}</h1>
-        <p style={{ color: "var(--text-muted)", marginTop: 8 }}>
-          حوّل العربون الموضح أدناه إلى حساب الملعب، ثم ارفع إثبات التحويل. يظل الطلب قيد المراجعة حتى يوافق صاحب الملعب.
-        </p>
-
-        {paymentMethods.length > 0 && (
-          <div style={{ marginTop: 18, padding: 14, borderRadius: 10, background: "var(--bg)" }}>
-            <strong>طرق تحويل العربون</strong>
-            {paymentMethods.map((method) => (
-              <p key={`${method.method}-${method.account}`} style={{ marginTop: 6 }}>
-                {PAYMENT_METHODS[method.method] || method.method}: {method.account}
-              </p>
-            ))}
-          </div>
-        )}
-        {paymentMethods.length === 0 && (
-          <p role="alert" style={{ color: "var(--status-cancelled)", marginTop: 16 }}>
-            صاحب الملعب لم يضف طرق دفع بعد، لذلك لا يمكن إرسال طلب الحجز الآن.
-          </p>
-        )}
-
-        {error && <p role="alert" style={{ color: "var(--status-cancelled)", marginTop: 16 }}>{error}</p>}
-
-        <form onSubmit={handleSubmit}>
-          <label htmlFor="booking-date" style={{ display: "block", marginTop: 24, fontWeight: 700 }}>
-            تاريخ الحجز
-          </label>
-          <input
-            id="booking-date"
-            type="date"
-            min={today()}
-            value={date}
-            onChange={(event) => {
-              setDate(event.target.value);
-              setSelectedSlot("");
-            }}
-            required
-            style={{ display: "block", width: "100%", padding: 12, marginTop: 8, border: "1px solid var(--border)", borderRadius: 10 }}
-          />
-
-          <h2 style={{ marginTop: 24, fontSize: 18 }}>المواعيد المتاحة</h2>
-          {slotsLoading ? (
-            <p style={{ padding: "16px 0" }}>جاري تحميل المواعيد...</p>
-          ) : availableSlots.length ? (
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginTop: 12 }}>
-              {availableSlots.map((slot) => {
-                const value = `${slot.start}|${slot.end}`;
-                return (
-                  <button
-                    key={value}
-                    type="button"
-                    className={selectedSlot === value ? "btn btn-primary" : "btn btn-outline"}
-                    style={selectedSlot !== value ? { color: "var(--green)", borderColor: "var(--green)" } : undefined}
-                    aria-pressed={selectedSlot === value}
-                    onClick={() => setSelectedSlot(value)}
-                  >
-                    {slot.start} - {slot.end}
-                  </button>
-                );
-              })}
-            </div>
-          ) : (
-            <p style={{ color: "var(--text-muted)", marginTop: 12 }}>
-              لا توجد مواعيد متاحة في هذا اليوم.
-            </p>
-          )}
-
-          {selected && venue.price_per_hour && (
-            <div style={{ marginTop: 18, padding: 16, borderRadius: 10, background: "var(--cream)" }}>
-              <p>مدة الحجز: {selectedDuration} دقيقة</p>
-              <p style={{ marginTop: 6 }}>إجمالي الحجز: {bookingTotal.toFixed(2)} جنيه</p>
-              <p style={{ marginTop: 6, color: "var(--green)", fontWeight: 800 }}>
-                العربون المطلوب ({DEPOSIT_PERCENT}%): {depositAmount.toFixed(2)} جنيه
-              </p>
-            </div>
-          )}
-
-          <label htmlFor="payment-proof" style={{ display: "block", marginTop: 20, fontWeight: 700 }}>
-            {selected
-              ? `ارفع إثبات تحويل ${depositAmount.toFixed(2)} جنيه`
-              : "ارفع إثبات تحويل العربون بعد اختيار موعد"}
-            {" "}(JPG أو PNG أو WebP أو PDF، حتى 5MB)
-          </label>
-          <input
-            id="payment-proof"
-            type="file"
-            accept="image/jpeg,image/png,image/webp,application/pdf"
-            onChange={(event) => {
-              const file = event.target.files?.[0] ?? null;
-              if (file && file.size > 5 * 1024 * 1024) {
-                setProofFile(null);
-                setError("حجم الملف يجب ألا يتجاوز 5MB.");
-                event.target.value = "";
+            if (!venueData) {
+                setVenue(null);
+                setLoading(false);
                 return;
-              }
-              setProofFile(file);
-              setError("");
-            }}
-            style={{ display: "block", marginTop: 8 }}
-          />
+            }
 
-          <button type="submit" className="btn btn-primary" disabled={saving || slotsLoading || !selectedSlot || !proofFile || !paymentMethods.length} style={{ marginTop: 24 }}>
-            {saving ? "جاري رفع الإثبات وإرسال الحجز..." : "تأكيد الحجز وإرسال الطلب"}
-          </button>
-        </form>
-      </div>
-    </section>
-  );
+            const { data: hoursData, error: hoursError } = await supabase
+                .from("venue_working_hours")
+                .select("day_of_week, open_time, close_time")
+                .eq("venue_id", venueData.id);
+
+            if (cancelled) return;
+
+            if (hoursError) console.error("Working hours fetch error:", hoursError);
+
+            setVenue(venueData);
+            setAllHours(hoursData || []);
+            setLoading(false);
+        }
+
+        loadVenue();
+
+        return () => {
+            cancelled = true;
+        };
+    }, [venueId]);
+
+    // ---------- المواعيد المحجوزة في اليوم المختار ----------
+    useEffect(() => {
+        if (!venue) return;
+
+        let cancelled = false;
+
+        async function loadBookedSlots() {
+            const { data, error } = await supabase.rpc("get_booked_slots", {
+                p_venue_id: venue.id,
+                p_date: date,
+            });
+
+            if (cancelled) return;
+
+            if (error) console.error("Booked slots error:", error);
+
+            const booked = data || [];
+            setBookedSlots(booked);
+
+            // لو واحد من المواعيد اللي اخترتها اتحجز في الأثناء، نشيله من الاختيار
+            setSelectedSlots((current) =>
+                current.filter((slot) => {
+                    const start = timeToMinutes(slot.start);
+                    const end = slot.end === "24:00" ? 24 * 60 : timeToMinutes(slot.end);
+
+                    return !booked.some(
+                        (b) => start < endToMinutes(b.end_time) && end > timeToMinutes(b.start_time)
+                    );
+                })
+            );
+        }
+
+        loadBookedSlots();
+
+        return () => {
+            cancelled = true;
+        };
+    }, [venue, date, reloadKey]);
+
+    function toggleSlot(slot) {
+        setSelectedSlots((currentSlots) => {
+            const alreadySelected = currentSlots.some(
+                (item) => item.start === slot.start && item.end === slot.end
+            );
+
+            if (alreadySelected) {
+                return currentSlots.filter(
+                    (item) => item.start !== slot.start || item.end !== slot.end
+                );
+            }
+
+            // نرتب المواعيد عشان تظهر في الملخص بالترتيب
+            return [...currentSlots, slot].sort((a, b) =>
+                a.start.localeCompare(b.start)
+            );
+        });
+    }
+
+    const workingHours = useMemo(() => {
+        if (!date) return [];
+
+        const dayOfWeek = new Date(`${date}T12:00:00`).getDay();
+
+        return allHours.filter((item) => item.day_of_week === dayOfWeek);
+    }, [allHours, date]);
+
+    const slots = useMemo(() => {
+        if (!venue || !date) return [];
+
+        const duration = venue.slot_minutes || 60;
+        const availableSlots = [];
+
+        const now = new Date();
+        const currentMinutes = now.getHours() * 60 + now.getMinutes();
+
+        workingHours.forEach((period) => {
+            const openMinutes = timeToMinutes(period.open_time);
+            const closeMinutes = endToMinutes(period.close_time);
+
+            for (
+                let start = openMinutes;
+                start + duration <= closeMinutes;
+                start += duration
+            ) {
+                const end = start + duration;
+
+                const isBooked = bookedSlots.some(
+                    (booked) =>
+                        start < endToMinutes(booked.end_time) &&
+                        end > timeToMinutes(booked.start_time)
+                );
+
+                const isPast = date === getToday() && start <= currentMinutes;
+
+                availableSlots.push({
+                    start: minutesToTime(start),
+                    end: minutesToTime(end),
+                    isBooked,
+                    isPast,
+                });
+            }
+        });
+
+        // لو في أكتر من فترة (صباحية ومسائية) نضمن الترتيب
+        return availableSlots.sort((a, b) => a.start.localeCompare(b.start));
+    }, [venue, date, workingHours, bookedSlots]);
+
+    if (loading) {
+        return (
+            <main className="booking-page" dir="rtl">
+                <div className="booking-card">
+                    <p>جاري تحميل بيانات الملعب...</p>
+                </div>
+            </main>
+        );
+    }
+
+    if (!venue) {
+        return (
+            <main className="booking-page" dir="rtl">
+                <div className="booking-card">
+                    <h2>الملعب غير موجود</h2>
+                    <p>تأكد من رابط الصفحة ورقم الملعب.</p>
+                </div>
+            </main>
+        );
+    }
+
+    const hasSelection = selectedSlots.length > 0;
+    const price = venue.price_per_hour * selectedSlots.length;
+    const deposit = (price * DEPOSIT_PERCENT) / 100;
+
+    function handleDateChange(event) {
+        setDate(event.target.value);
+        setSelectedSlots([]);
+        showMessage("");
+    }
+
+    async function handleBooking(paymentType) {
+        if (!hasSelection) {
+            showMessage("اختار موعدًا أولًا.", true);
+            return;
+        }
+
+        if (isPaying) return;
+
+        setIsPaying(true);
+        showMessage(
+            paymentType === "venue" ? "جاري تسجيل الحجز..." : "جاري تجهيز الدفع..."
+        );
+
+        // لازم اليوزر يكون مسجّل دخول
+        const { data: sessionData } = await supabase.auth.getSession();
+
+        if (!DEV_SKIP_LOGIN && !sessionData?.session) {
+            setIsPaying(false);
+            navigate("/login", { state: { from: location.pathname } });
+            return;
+        }
+
+        const { data, error } = await supabase.functions.invoke("paymob-payment", {
+            body: {
+                venue_id: venue.id,
+                date,
+                slots: selectedSlots.map(({ start, end }) => ({ start, end })),
+                payment_type: paymentType,
+            },
+        });
+
+        if (error || data?.error) {
+            console.error("paymob-payment error:", error, data);
+
+            showMessage(
+                data?.error || error?.message || "حصلت مشكلة، جرّب تاني.",
+                true
+            );
+            setIsPaying(false);
+            // نحدّث المواعيد المحجوزة (ممكن حد سبقك على ميعاد)
+            setReloadKey((key) => key + 1);
+
+            return;
+        }
+
+        if (paymentType === "venue" && data?.redirect_path) {
+            navigate(data.redirect_path);
+            return;
+        }
+
+        if (data?.checkout_url) {
+            window.location.href = data.checkout_url;
+            return;
+        }
+
+        showMessage("الطلب وصل، لكن رابط الدفع مش موجود.", true);
+        setIsPaying(false);
+    }
+
+    return (
+        <main className="booking-page" dir="rtl">
+            <header className="booking-header">
+                <span className="booking-eyebrow">
+                    احجز ملعبك بسهولة
+                </span>
+                <h1>حجز ملعب</h1>
+                <p>اختار اليوم والموعد المناسب ليك.</p>
+            </header>
+
+            <section className="booking-card venue-card">
+                <div className="venue-heading">
+                    <div>
+                        <h2>{venue.name}</h2>
+                        <p className="venue-location">
+                            {venue.city} - {venue.area}
+                        </p>
+                        {venue.address && (
+                            <p className="venue-location">{venue.address}</p>
+                        )}
+                    </div>
+                </div>
+
+                {venue.amenities?.length > 0 && (
+                    <ul className="venue-amenities">
+                        {venue.amenities.map((item) => (
+                            <li key={item} className="amenity-chip">
+                                {item}
+                            </li>
+                        ))}
+                    </ul>
+                )}
+
+                <div className="venue-price">
+                    <span>سعر الساعة</span>
+                    <strong>{venue.price_per_hour} جنيه</strong>
+                </div>
+
+                <div className="deposit-info">
+                    العربون المطلوب: {DEPOSIT_PERCENT}% من إجمالي الحجز
+                </div>
+            </section>
+
+            <section className="booking-card">
+                <h2 className="section-title">اختار تاريخ الحجز</h2>
+
+                <label className="field-label" htmlFor="booking-date">
+                    تاريخ الحجز
+                </label>
+
+                <input
+                    id="booking-date"
+                    className="date-input"
+                    type="date"
+                    min={getToday()}
+                    value={date}
+                    onChange={handleDateChange}
+                />
+
+                <div className="slots-heading">
+                    <h2 className="section-title">المواعيد المتاحة</h2>
+                    <span className="slots-date">{date}</span>
+                </div>
+
+                <div className="slots-legend">
+                    <span>
+                        <i className="legend-dot available-dot" />
+                        متاح
+                    </span>
+                    <span>
+                        <i className="legend-dot selected-dot" />
+                        اخترته
+                    </span>
+                    <span>
+                        <i className="legend-dot booked-dot" />
+                        محجوز
+                    </span>
+                    <span>
+                        <i className="legend-dot past-dot" />
+                        غير متاح
+                    </span>
+                </div>
+
+                {workingHours.length === 0 ? (
+                    <div className="empty-slots">
+                        الملعب مش متاح اليوم دا جرب يوم تاني
+                    </div>
+                ) : slots.length === 0 ? (
+                    <div className="empty-slots">
+                        مفيش مواعيد كاملة متاحة في اليوم ده.
+                    </div>
+                ) : (
+                    <div className="booking-slots">
+                        {slots.map((slot) => {
+                            const disabled = slot.isBooked || slot.isPast;
+                            const selected = selectedSlots.some(
+                                (item) => item.start === slot.start && item.end === slot.end
+                            );
+
+                            let statusText = "متاح";
+                            if (slot.isBooked) statusText = "محجوز";
+                            else if (slot.isPast) statusText = "غير متاح";
+                            else if (selected) statusText = "تم الاختيار";
+
+                            return (
+                                <button
+                                    key={`${slot.start}-${slot.end}`}
+                                    type="button"
+                                    disabled={disabled}
+                                    aria-pressed={selected}
+                                    className={[
+                                        "slot-button",
+                                        slot.isBooked ? "slot-booked" : "",
+                                        slot.isPast ? "slot-past" : "",
+                                        selected ? "slot-selected" : "",
+                                    ].filter(Boolean).join(" ")}
+                                    onClick={() => {
+                                        toggleSlot(slot);
+                                        showMessage("");
+                                    }}
+                                >
+                                    <span className="slot-time">
+                                        {slot.start} - {slot.end}
+                                    </span>
+                                    <span className="slot-status">
+                                        {statusText}
+                                    </span>
+                                </button>
+                            );
+                        })}
+                    </div>
+                )}
+            </section>
+
+            <section className="booking-card summary-card">
+                <h2 className="section-title">ملخص الحجز</h2>
+
+                <div className="summary-row">
+                    <span>الملعب</span>
+                    <strong>{venue.name}</strong>
+                </div>
+
+                <div className="summary-row">
+                    <span>التاريخ</span>
+                    <strong>{date}</strong>
+                </div>
+
+                <div className="summary-row">
+                    <span>الموعد</span>
+                    <strong>
+                        {!hasSelection ? (
+                            "لم يتم اختيار أي ميعاد بعد"
+                        ) : (
+                            selectedSlots.map((slot) => (
+                                <div key={`${slot.start}-${slot.end}`}>
+                                    {slot.start} - {slot.end}
+                                </div>
+                            ))
+                        )}
+                    </strong>
+                </div>
+
+                <div className="summary-row">
+                    <span>السعر الإجمالي</span>
+                    <strong>{hasSelection ? `${price} جنيه` : "—"}</strong>
+                </div>
+
+                <div className="summary-row summary-deposit">
+                    <span>العربون المطلوب ({DEPOSIT_PERCENT}%)</span>
+                    <strong>
+                        {hasSelection ? `${deposit.toFixed(2)} جنيه` : "—"}
+                    </strong>
+                </div>
+
+                <button
+                    type="button"
+                    className="confirm-booking-button"
+                    onClick={() => handleBooking("online")}
+                    disabled={!hasSelection || isPaying}
+                >
+                    {isPaying ? "جاري التحويل..." : "ادفع العربون أونلاين"}
+                </button>
+
+                <button
+                    type="button"
+                    className="venue-pay-button"
+                    onClick={() => handleBooking("venue")}
+                    disabled={!hasSelection || isPaying}
+                >
+                    ادفع في الملعب
+                </button>
+
+                <p className="venue-pay-hint">
+                    لو اخترت الدفع في الملعب، الميعاد بيتحفظ 24 ساعة في انتظار تأكيد صاحب الملعب.
+                </p>
+
+                {message && (
+                    <p
+                        className={`booking-message${isError ? " is-error" : ""}`}
+                        role="status"
+                    >
+                        {message}
+                    </p>
+                )}
+
+                <p className="demo-notice">
+                    الدفع في وضع تجريبي ومفيش أي فلوس هتتسحب.
+                </p>
+            </section>
+        </main>
+    );
 }
