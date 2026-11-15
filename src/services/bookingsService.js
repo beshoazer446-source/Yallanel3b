@@ -93,7 +93,7 @@ export async function getUserBookings(userId) {
 
   const { data: venues, error: venuesError } = await supabase
     .from("venues")
-    .select("id, name, address")
+    .select("id, name, address, maps_url")
     .in("id", venueIds);
 
   if (venuesError) throw venuesError;
@@ -122,9 +122,29 @@ export async function getOwnerBookings(ownerId) {
     .order("start_time", { ascending: false });
 
   if (error) throw error;
-  return (data ?? []).map((booking) => ({
+  const bookings = data ?? [];
+
+  // جلب بيانات اللاعبين (الاسم والتليفون) لربطها بالحجوزات
+  const userIds = [...new Set(bookings.map((booking) => booking.user_id).filter(Boolean))];
+  let profileById = new Map();
+  if (userIds.length > 0) {
+    try {
+      const { data: profiles } = await supabase
+        .from("profiles")
+        .select("id, name")
+        .in("id", userIds);
+      if (profiles) {
+        profileById = new Map(profiles.map((p) => [String(p.id), p]));
+      }
+    } catch {
+      // إذا حدث أي خطأ في جدول profiles لا نعطل الحجوزات
+    }
+  }
+
+  return bookings.map((booking) => ({
     ...booking,
     venue: venueById.get(String(booking.venue_id)),
+    player: profileById.get(String(booking.user_id)) || null,
   }));
 }
 
@@ -140,6 +160,24 @@ export async function updateBookingStatus(bookingId, status) {
   if (error) throw error;
   if (!data) {
     throw new Error("تعذر تحديث الحجز. ربما تم تحديثه بالفعل.");
+  }
+  return data;
+}
+
+
+export async function cancelBooking(bookingId, userId) {
+  const { data, error } = await supabase
+    .from("bookings")
+    .update({ status: "cancelled" })
+    .eq("id", bookingId)
+    .eq("user_id", userId)
+    .eq("status", "pending")
+    .select("*")
+    .maybeSingle();
+
+  if (error) throw error;
+  if (!data) {
+    throw new Error("تعذر إلغاء الحجز. ربما تم تأكيده أو إلغاؤه بالفعل.");
   }
   return data;
 }

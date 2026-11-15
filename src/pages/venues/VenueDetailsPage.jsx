@@ -110,14 +110,27 @@ export default function VenueDetailsPage() {
 
         {bookingInfo.paymentMethods.length > 0 && (
           <section style={{ marginTop: 24 }}>
-            <h2 style={{ fontSize: 18 }}>طرق الدفع</h2>
-            <ul style={{ paddingRight: 20, marginTop: 8 }}>
+            <h2 style={{ fontSize: 18 }}>طرق الدفع المدعومة</h2>
+            <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 10 }}>
               {bookingInfo.paymentMethods.map((method) => (
-                <li key={`${method.method}-${method.account}`} style={{ marginBottom: 6 }}>
-                  {PAYMENT_METHODS[method.method] || method.method}: {method.account}
-                </li>
+                <span
+                  key={method.method}
+                  style={{
+                    padding: "6px 14px",
+                    borderRadius: 999,
+                    background: "var(--cream)",
+                    color: "var(--green-dark)",
+                    fontSize: 13,
+                    fontWeight: 700,
+                  }}
+                >
+                  ✓ {PAYMENT_METHODS[method.method] || method.method}
+                </span>
               ))}
-            </ul>
+            </div>
+            <p style={{ fontSize: 12, color: "var(--text-muted)", marginTop: 8 }}>
+              يتم سداد العربون وتأكيد الحجز إلكترونيًا عبر المنصة لضمان حقك وحق صاحب الملعب.
+            </p>
           </section>
         )}
 

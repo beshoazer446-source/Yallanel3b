@@ -1,20 +1,17 @@
 import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { supabase } from "../../lib/supabaseClient";
+import { DEPOSIT_PERCENT } from "../../lib/constants";
 import "./BookingPage.css";
 
-  import { DEPOSIT_PERCENT } from "../../lib/constants";
-
 // ⚠️ للتجربة فقط: true = مايحوّلش على /login لو اليوزر مش مسجّل دخول.
-// لازم تبقى false قبل العرض أو قبل ما الموقع يتنشر.
- const DEV_SKIP_LOGIN = false;
-// الأوقات من الداتابيز بتيجي "08:00:00" فبناخد أول 5 حروف بس
+const DEV_SKIP_LOGIN = false;
+
 function timeToMinutes(time) {
     const [hours, minutes] = time.slice(0, 5).split(":").map(Number);
     return hours * 60 + minutes;
 }
 
-// وقت النهاية "00:00" معناه نهاية اليوم
 function endToMinutes(time) {
     const minutes = timeToMinutes(time);
     return minutes === 0 ? 24 * 60 : minutes;
@@ -23,8 +20,18 @@ function endToMinutes(time) {
 function minutesToTime(minutes) {
     const hours = Math.floor(minutes / 60);
     const mins = minutes % 60;
-
     return `${String(hours).padStart(2, "0")}:${String(mins).padStart(2, "0")}`;
+}
+
+function formatTime12(timeStr) {
+    if (!timeStr) return "";
+    const parts = timeStr.slice(0, 5).split(":");
+    let hour = parseInt(parts[0], 10);
+    const minutes = parts[1] || "00";
+    const period = hour >= 12 ? "م" : "ص";
+    if (hour === 0) hour = 12;
+    else if (hour > 12) hour -= 12;
+    return `${hour}:${minutes} ${period}`;
 }
 
 function getToday() {
@@ -32,8 +39,18 @@ function getToday() {
     const year = now.getFullYear();
     const month = String(now.getMonth() + 1).padStart(2, "0");
     const day = String(now.getDate()).padStart(2, "0");
-
     return `${year}-${month}-${day}`;
+}
+
+function formatDateArabic(dateStr) {
+    if (!dateStr) return "";
+    try {
+        const d = new Date(`${dateStr}T12:00:00`);
+        const dayNames = ["الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"];
+        return `${dayNames[d.getDay()]} ${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`;
+    } catch {
+        return dateStr;
+    }
 }
 
 export default function BookingPage() {
@@ -42,6 +59,7 @@ export default function BookingPage() {
     const location = useLocation();
 
     const [venue, setVenue] = useState(null);
+    const [venueImage, setVenueImage] = useState(null);
     const [allHours, setAllHours] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -59,7 +77,7 @@ export default function BookingPage() {
         setIsError(error);
     }
 
-    // ---------- الملعب وساعات الشغل ----------
+    // ---------- الملعب وساعات الشغل والصور ----------
     useEffect(() => {
         let cancelled = false;
 
@@ -69,7 +87,7 @@ export default function BookingPage() {
             const { data: venueData, error: venueError } = await supabase
                 .from("venues")
                 .select(
-                    "id, name, city, area, address, price_per_hour, slot_minutes, amenities"
+                    "id, name, city, area, address, maps_url, description, price_per_hour, slot_minutes, amenities, cancellation_hours"
                 )
                 .eq("id", venueId)
                 .eq("is_active", true)
@@ -91,8 +109,23 @@ export default function BookingPage() {
                 .eq("venue_id", venueData.id);
 
             if (cancelled) return;
-
             if (hoursError) console.error("Working hours fetch error:", hoursError);
+
+            // جلب أول صورة للملعب (الصورة الرئيسية)
+            try {
+                const { data: imgData } = await supabase
+                    .from("venue_images")
+                    .select("image_url")
+                    .eq("venue_id", venueData.id)
+                    .order("sort_order")
+                    .limit(1);
+
+                if (!cancelled && imgData?.length > 0) {
+                    setVenueImage(imgData[0].image_url);
+                }
+            } catch {
+                // تجاهل خطأ الصورة
+            }
 
             setVenue(venueData);
             setAllHours(hoursData || []);
@@ -125,12 +158,10 @@ export default function BookingPage() {
             const booked = data || [];
             setBookedSlots(booked);
 
-            // لو واحد من المواعيد اللي اخترتها اتحجز في الأثناء، نشيله من الاختيار
             setSelectedSlots((current) =>
                 current.filter((slot) => {
                     const start = timeToMinutes(slot.start);
                     const end = slot.end === "24:00" ? 24 * 60 : timeToMinutes(slot.end);
-
                     return !booked.some(
                         (b) => start < endToMinutes(b.end_time) && end > timeToMinutes(b.start_time)
                     );
@@ -157,7 +188,6 @@ export default function BookingPage() {
                 );
             }
 
-            // نرتب المواعيد عشان تظهر في الملخص بالترتيب
             return [...currentSlots, slot].sort((a, b) =>
                 a.start.localeCompare(b.start)
             );
@@ -166,9 +196,7 @@ export default function BookingPage() {
 
     const workingHours = useMemo(() => {
         if (!date) return [];
-
         const dayOfWeek = new Date(`${date}T12:00:00`).getDay();
-
         return allHours.filter((item) => item.day_of_week === dayOfWeek);
     }, [allHours, date]);
 
@@ -209,7 +237,6 @@ export default function BookingPage() {
             }
         });
 
-        // لو في أكتر من فترة (صباحية ومسائية) نضمن الترتيب
         return availableSlots.sort((a, b) => a.start.localeCompare(b.start));
     }, [venue, date, workingHours, bookedSlots]);
 
@@ -235,8 +262,28 @@ export default function BookingPage() {
     }
 
     const hasSelection = selectedSlots.length > 0;
+    const slotDurationMinutes = venue.slot_minutes || 60;
+    const totalDurationMinutes = slotDurationMinutes * selectedSlots.length;
+    const totalDurationText = totalDurationMinutes >= 60
+        ? `${Math.floor(totalDurationMinutes / 60)} ساعة${totalDurationMinutes % 60 > 0 ? ` و ${totalDurationMinutes % 60} دقيقة` : ""}`
+        : `${totalDurationMinutes} دقيقة`;
+
     const price = venue.price_per_hour * selectedSlots.length;
     const deposit = (price * DEPOSIT_PERCENT) / 100;
+    const remainingAtVenue = price - deposit;
+
+    // استنتاج نوع الملعب من المميزات
+    const pitchBadge = (() => {
+        const am = (venue.amenities || []).join(" ");
+        if (am.includes("11×11") || am.includes("قانوني")) return "ملعب قانوني 11×11";
+        if (am.includes("8×8") || am.includes("ثماني")) return "ملعب ثماني 8×8";
+        if (am.includes("7×7") || am.includes("سباعي")) return "ملعب سباعي 7×7";
+        if (am.includes("5×5") || am.includes("خماسي")) return "ملعب خماسي 5×5";
+        return null;
+    })();
+
+    // سياسة الإلغاء
+    const cancellationHours = venue.cancellation_hours || 12;
 
     function handleDateChange(event) {
         setDate(event.target.value);
@@ -257,7 +304,6 @@ export default function BookingPage() {
             paymentType === "venue" ? "جاري تسجيل الحجز..." : "جاري تجهيز الدفع..."
         );
 
-        // لازم اليوزر يكون مسجّل دخول
         const { data: sessionData } = await supabase.auth.getSession();
 
         if (!DEV_SKIP_LOGIN && !sessionData?.session) {
@@ -277,15 +323,12 @@ export default function BookingPage() {
 
         if (error || data?.error) {
             console.error("paymob-payment error:", error, data);
-
             showMessage(
                 data?.error || error?.message || "حصلت مشكلة، جرّب تاني.",
                 true
             );
             setIsPaying(false);
-            // نحدّث المواعيد المحجوزة (ممكن حد سبقك على ميعاد)
             setReloadKey((key) => key + 1);
-
             return;
         }
 
@@ -313,18 +356,49 @@ export default function BookingPage() {
                 <p>اختار اليوم والموعد المناسب ليك.</p>
             </header>
 
+            {/* كارت بيانات الملعب */}
             <section className="booking-card venue-card">
+                {/* صورة الملعب الرئيسية */}
+                {venueImage && (
+                    <div className="venue-hero-img-wrap">
+                        <img
+                            src={venueImage}
+                            alt={`صورة ${venue.name}`}
+                            className="venue-hero-img"
+                        />
+                    </div>
+                )}
+
                 <div className="venue-heading">
                     <div>
                         <h2>{venue.name}</h2>
                         <p className="venue-location">
-                            {venue.city} - {venue.area}
+                            📍 {[venue.city, venue.area, venue.address].filter(Boolean).join(" — ")}
                         </p>
-                        {venue.address && (
-                            <p className="venue-location">{venue.address}</p>
-                        )}
                     </div>
                 </div>
+
+                {/* شارات: نوع الملعب والموقع */}
+                <div className="venue-badges-row">
+                    {pitchBadge && (
+                        <span className="venue-badge pitch-badge">⚽ {pitchBadge}</span>
+                    )}
+                    {venue.maps_url && (
+                        <a
+                            href={venue.maps_url}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="venue-badge map-badge"
+                        >
+                            🗺️ الاتجاهات على الخريطة
+                        </a>
+                    )}
+                </div>
+
+                {/* الوصف */}
+                {venue.description && (
+                    <p className="venue-description">{venue.description}</p>
+                )}
 
                 {venue.amenities?.length > 0 && (
                     <ul className="venue-amenities">
@@ -342,10 +416,16 @@ export default function BookingPage() {
                 </div>
 
                 <div className="deposit-info">
-                    العربون المطلوب: {DEPOSIT_PERCENT}% من إجمالي الحجز
+                    <strong>العربون المطلوب:</strong> {DEPOSIT_PERCENT}% من إجمالي الحجز (يُخصم من السعر الكلي)
+                </div>
+
+                {/* سياسة الإلغاء */}
+                <div className="cancellation-policy">
+                    <strong>📋 سياسة الإلغاء:</strong> يمكنك إلغاء الحجز المعلّق مجانًا قبل الميعاد بـ {cancellationHours} ساعة على الأقل من خلال صفحة "حجوزاتي". بعد تأكيد الحجز أو مرور المدة، لا يمكن الإلغاء.
                 </div>
             </section>
 
+            {/* كارت اختيار التاريخ والمواعيد */}
             <section className="booking-card">
                 <h2 className="section-title">اختار تاريخ الحجز</h2>
 
@@ -361,6 +441,12 @@ export default function BookingPage() {
                     value={date}
                     onChange={handleDateChange}
                 />
+
+                {date && (
+                    <p style={{ marginTop: 6, fontSize: 13, color: "var(--text-muted)" }}>
+                        {formatDateArabic(date)}
+                    </p>
+                )}
 
                 <div className="slots-heading">
                     <h2 className="section-title">المواعيد المتاحة</h2>
@@ -425,7 +511,7 @@ export default function BookingPage() {
                                     }}
                                 >
                                     <span className="slot-time">
-                                        {slot.start} - {slot.end}
+                                        {formatTime12(slot.start)} - {formatTime12(slot.end)}
                                     </span>
                                     <span className="slot-status">
                                         {statusText}
@@ -437,6 +523,7 @@ export default function BookingPage() {
                 )}
             </section>
 
+            {/* ملخص الحجز الكامل */}
             <section className="booking-card summary-card">
                 <h2 className="section-title">ملخص الحجز</h2>
 
@@ -445,9 +532,16 @@ export default function BookingPage() {
                     <strong>{venue.name}</strong>
                 </div>
 
+                {pitchBadge && (
+                    <div className="summary-row">
+                        <span>النوع</span>
+                        <strong>{pitchBadge}</strong>
+                    </div>
+                )}
+
                 <div className="summary-row">
                     <span>التاريخ</span>
-                    <strong>{date}</strong>
+                    <strong>{formatDateArabic(date)}</strong>
                 </div>
 
                 <div className="summary-row">
@@ -458,12 +552,19 @@ export default function BookingPage() {
                         ) : (
                             selectedSlots.map((slot) => (
                                 <div key={`${slot.start}-${slot.end}`}>
-                                    {slot.start} - {slot.end}
+                                    {formatTime12(slot.start)} - {formatTime12(slot.end)}
                                 </div>
                             ))
                         )}
                     </strong>
                 </div>
+
+                {hasSelection && (
+                    <div className="summary-row">
+                        <span>إجمالي المدة</span>
+                        <strong>{totalDurationText}</strong>
+                    </div>
+                )}
 
                 <div className="summary-row">
                     <span>السعر الإجمالي</span>
@@ -476,6 +577,12 @@ export default function BookingPage() {
                         {hasSelection ? `${deposit.toFixed(2)} جنيه` : "—"}
                     </strong>
                 </div>
+
+                {hasSelection && (
+                    <div className="summary-remaining">
+                        💵 المتبقي للدفع في الملعب: <strong>{remainingAtVenue.toFixed(2)} جنيه</strong>
+                    </div>
+                )}
 
                 <button
                     type="button"
@@ -496,7 +603,9 @@ export default function BookingPage() {
                 </button>
 
                 <p className="venue-pay-hint">
-                    لو اخترت الدفع في الملعب، الميعاد بيتحفظ 24 ساعة في انتظار تأكيد صاحب الملعب.
+                    {date === getToday()
+                        ? "لو اخترت الدفع في الملعب، لازم توصل وتدفع قبل بداية الميعاد عشان الحجز يتأكد."
+                        : "لو اخترت الدفع في الملعب، الميعاد هيتحفظلك مؤقتاً لحد ما تدفع عند الوصول ويتأكد الحجز."}
                 </p>
 
                 {message && (
@@ -510,6 +619,11 @@ export default function BookingPage() {
 
                 <p className="demo-notice">
                     الدفع في وضع تجريبي ومفيش أي فلوس هتتسحب.
+                </p>
+
+                {/* ملاحظة: التواصل عبر المنصة فقط */}
+                <p className="platform-only-notice">
+                    🔒 كل التواصل والحجز والإلغاء يتم من خلال المنصة فقط. لا يتم مشاركة أي بيانات تواصل شخصية بين اللاعبين وأصحاب الملاعب.
                 </p>
             </section>
         </main>

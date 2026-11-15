@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/useAuth";
-import { getUserBookings } from "../../services/bookingsService";
+import { cancelBooking, getUserBookings } from "../../services/bookingsService";
 
 const statusLabels = {
-  pending: "بانتظار موافقة صاحب الملعب",
-  confirmed: "تمت الموافقة",
+  pending: "بانتظار التأكيد",
+  confirmed: "مؤكد",
   rejected: "مرفوض",
   cancelled: "ملغي",
 };
@@ -16,12 +16,26 @@ function statusColor(status) {
   return "var(--status-cancelled)";
 }
 
+function formatTime12(timeStr) {
+  if (!timeStr) return "";
+  const parts = timeStr.slice(0, 5).split(":");
+  let hour = parseInt(parts[0], 10);
+  const minutes = parts[1] || "00";
+  const period = hour >= 12 ? "م" : "ص";
+  if (hour === 0) hour = 12;
+  else if (hour > 12) hour -= 12;
+  return `${hour}:${minutes} ${period}`;
+}
+
 export default function MyBookingsPage() {
   const { user } = useAuth();
   const location = useLocation();
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [cancellingId, setCancellingId] = useState(null);
+  const [actionSuccess, setActionSuccess] = useState("");
+  const [filterTab, setFilterTab] = useState("all"); // "all" | "confirmed" | "pending" | "cancelled"
 
   const loadBookings = useCallback(async () => {
     try {
@@ -49,55 +63,355 @@ export default function MyBookingsPage() {
     };
   }, [loadBookings]);
 
+  async function handleCancel(bookingId) {
+    const confirmed = window.confirm(
+      "هل أنت متأكد من رغبتك في إلغاء هذا الحجز؟ سيتم تحديث حالة الحجز للملعب فورًا."
+    );
+    if (!confirmed) return;
+
+    setCancellingId(bookingId);
+    setError("");
+    setActionSuccess("");
+
+    try {
+      await cancelBooking(bookingId, user.id);
+      setActionSuccess("تم إلغاء الحجز بنجاح عبر المنصة.");
+      await loadBookings();
+    } catch (cancelError) {
+      setError(cancelError.message || "تعذر إلغاء الحجز.");
+    } finally {
+      setCancellingId(null);
+    }
+  }
+
+  function getShareWhatsAppUrl(booking) {
+    const venueName = booking.venue?.name || "الملعب";
+    const timeFormatted = `${formatTime12(booking.start_time)} إلى ${formatTime12(booking.end_time)}`;
+    const remaining =
+      booking.price != null && booking.deposit_amount != null
+        ? `${booking.price - booking.deposit_amount} جنيه`
+        : "";
+
+    const text = [
+      "⚽ ماتشنا القادم يا شباب!",
+      `🏟️ الملعب: ${venueName}`,
+      `📅 التاريخ: ${booking.date}`,
+      `⏰ التوقيت: ${timeFormatted}`,
+      remaining ? `💵 المتبقي للدفع في الملعب: ${remaining}` : "",
+      booking.venue?.maps_url ? `📍 اللوكيشن: ${booking.venue.maps_url}` : "",
+      "الحجز مؤكد وجاهز، متتأخروش! 🔥",
+    ]
+      .filter(Boolean)
+      .join("\n");
+
+    return `https://wa.me/?text=${encodeURIComponent(text)}`;
+  }
+
+  const filteredBookings = bookings.filter((booking) => {
+    if (filterTab === "all") return true;
+    if (filterTab === "confirmed") return booking.status === "confirmed";
+    if (filterTab === "pending") return booking.status === "pending";
+    if (filterTab === "cancelled")
+      return booking.status === "cancelled" || booking.status === "rejected";
+    return true;
+  });
+
   return (
-    <section className="container" dir="rtl" style={{ paddingTop: 32, paddingBottom: 48 }}>
+    <section className="container" dir="rtl" style={{ paddingTop: 32, paddingBottom: 60, maxWidth: 860 }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
-        <h1 style={{ color: "var(--green)" }}>حجوزاتي</h1>
-        <button type="button" className="btn btn-outline" style={{ color: "var(--green)", borderColor: "var(--green)" }} onClick={() => loadBookings()}>
-          تحديث الحالة
+        <div>
+          <h1 style={{ color: "var(--green)", fontSize: 26, fontWeight: 800 }}>حجوزاتي</h1>
+          <p style={{ color: "var(--text-muted)", fontSize: 14, marginTop: 4 }}>
+            متابعة وإدارة مواعيد مبارياتك وإيصالات الحجز
+          </p>
+        </div>
+        <button
+          type="button"
+          className="btn btn-outline"
+          style={{ color: "var(--green)", borderColor: "var(--green)", fontSize: 13, padding: "8px 16px" }}
+          onClick={() => loadBookings()}
+        >
+          🔄 تحديث الحالة
         </button>
       </div>
+
+      {/* تنبيه الخصوصية: كل الإجراءات عبر المنصة */}
+      <div
+        style={{
+          marginTop: 16,
+          padding: "10px 16px",
+          borderRadius: 10,
+          background: "var(--cream)",
+          border: "1px solid var(--yellow)",
+          fontSize: 12,
+          color: "var(--green-dark)",
+          display: "flex",
+          alignItems: "center",
+          gap: 8,
+        }}
+      >
+        <span>🔒</span>
+        <span>
+          <strong>حماية وخصوصية:</strong> جميع عمليات تأكيد الحجز، التعديل، والإلغاء تتم وتُدار آلياً عبر المنصة مباشرة لضمان أمان الطرفين.
+        </span>
+      </div>
+
       {location.state?.bookingCreated && (
-        <p role="status" style={{ marginTop: 12, color: "var(--status-confirmed)" }}>
-          تم إرسال طلب الحجز بنجاح.
+        <p role="status" style={{ marginTop: 12, color: "var(--status-confirmed)", fontWeight: 700 }}>
+          ✓ تم إرسال طلب الحجز بنجاح ومتاح للمتابعة أدناه.
         </p>
       )}
+
+      {actionSuccess && (
+        <p role="status" style={{ marginTop: 12, color: "var(--status-confirmed)", fontWeight: 700 }}>
+          ✓ {actionSuccess}
+        </p>
+      )}
+
+      {error && (
+        <p role="alert" style={{ marginTop: 12, color: "var(--status-cancelled)", fontWeight: 700 }}>
+          {error}
+        </p>
+      )}
+
+      {/* تبويبات الفلترة */}
+      {!loading && bookings.length > 0 && (
+        <div style={{ display: "flex", gap: 8, marginTop: 20, flexWrap: "wrap" }}>
+          {[
+            { id: "all", label: `الكل (${bookings.length})` },
+            { id: "confirmed", label: `المؤكدة (${bookings.filter((b) => b.status === "confirmed").length})` },
+            { id: "pending", label: `قيد التأكيد (${bookings.filter((b) => b.status === "pending").length})` },
+            { id: "cancelled", label: `الملغية (${bookings.filter((b) => b.status === "cancelled" || b.status === "rejected").length})` },
+          ].map((tab) => (
+            <button
+              key={tab.id}
+              type="button"
+              onClick={() => setFilterTab(tab.id)}
+              style={{
+                border: "none",
+                background: filterTab === tab.id ? "var(--green)" : "var(--bg)",
+                color: filterTab === tab.id ? "var(--white)" : "var(--text)",
+                padding: "8px 16px",
+                borderRadius: 999,
+                fontSize: 13,
+                fontWeight: 700,
+                cursor: "pointer",
+                transition: "all 0.15s",
+              }}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+      )}
+
       {loading ? (
-        <p style={{ padding: 24 }}>جاري تحميل حجوزاتك...</p>
-      ) : error ? (
-        <p role="alert" style={{ padding: 24, color: "var(--status-cancelled)" }}>{error}</p>
+        <p style={{ padding: 32, textAlign: "center", color: "var(--text-muted)" }}>
+          جاري تحميل حجوزاتك...
+        </p>
       ) : bookings.length === 0 ? (
-        <div className="card" style={{ padding: 24, marginTop: 20 }}>
-          <p>ليس لديك حجوزات حتى الآن.</p>
-          <Link to="/venues" className="btn btn-primary" style={{ marginTop: 16 }}>اكتشف الملاعب</Link>
+        <div className="card" style={{ padding: 36, marginTop: 20, textAlign: "center", borderRadius: 16 }}>
+          <span style={{ fontSize: 40 }}>⚽</span>
+          <h2 style={{ fontSize: 18, marginTop: 12, color: "var(--green)" }}>ليس لديك أي حجوزات حتى الآن</h2>
+          <p style={{ color: "var(--text-muted)", fontSize: 14, marginTop: 6 }}>
+            احجز ملعبك المفضل والعب مع أصحابك في الوقت المناسب لك.
+          </p>
+          <Link to="/venues" className="btn btn-primary" style={{ marginTop: 18, display: "inline-block" }}>
+            اكتشف الملاعب المتاحة
+          </Link>
+        </div>
+      ) : filteredBookings.length === 0 ? (
+        <div className="card" style={{ padding: 28, marginTop: 20, textAlign: "center", borderRadius: 16 }}>
+          <p style={{ color: "var(--text-muted)" }}>لا توجد حجوزات في هذا التبويب.</p>
         </div>
       ) : (
-        <div style={{ display: "grid", gap: 16, marginTop: 20 }}>
-          {bookings.map((booking) => (
-            <article key={booking.id} className="card" style={{ padding: 20 }}>
-              <div style={{ display: "flex", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}>
-                <h2 style={{ fontSize: 18 }}>
-                  {booking.venue?.name || `حجز الملعب رقم ${booking.venue_id}`}
-                </h2>
-                <strong style={{ color: statusColor(booking.status) }}>
-                  {statusLabels[booking.status] || booking.status}
-                </strong>
-              </div>
-              <p style={{ marginTop: 12 }}>
-                {booking.date} · {booking.start_time?.slice(0, 5)} - {booking.end_time?.slice(0, 5)}
-              </p>
-              {booking.price != null && <p style={{ marginTop: 6 }}>الإجمالي: {booking.price} جنيه</p>}
-              {booking.deposit_amount != null && <p style={{ marginTop: 6 }}>العربون: {booking.deposit_amount} جنيه</p>}
-              {booking.venue?.address && (
-                <p style={{ color: "var(--text-muted)", marginTop: 6 }}>{booking.venue.address}</p>
-              )}
-              {booking.venue && (
-                <Link to={`/venues/${booking.venue_id}`} style={{ display: "inline-block", marginTop: 12, color: "var(--green)", fontWeight: 700 }}>
-                  تفاصيل الملعب
-                </Link>
-              )}
-            </article>
-          ))}
+        <div style={{ display: "grid", gap: 16, marginTop: 18 }}>
+          {filteredBookings.map((booking) => {
+            const bookingRef = `#BK-${String(booking.id).slice(0, 8).toUpperCase()}`;
+            const remainingAmount =
+              booking.price != null && booking.deposit_amount != null
+                ? booking.price - booking.deposit_amount
+                : null;
+
+            return (
+              <article
+                key={booking.id}
+                className="card"
+                style={{
+                  padding: 24,
+                  borderRadius: 16,
+                  border: "1px solid var(--border)",
+                  boxShadow: "0 4px 18px rgba(7, 28, 22, 0.04)",
+                  background: "var(--white)",
+                }}
+              >
+                {/* الرأس: اسم الملعب، كود الحجز، والحالة */}
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 14, flexWrap: "wrap" }}>
+                  <div>
+                    <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+                      <h2 style={{ fontSize: 18, color: "var(--green)", fontWeight: 800 }}>
+                        {booking.venue?.name || `الملعب #${booking.venue_id}`}
+                      </h2>
+                      <span
+                        style={{
+                          fontSize: 12,
+                          fontWeight: 700,
+                          padding: "3px 8px",
+                          borderRadius: 6,
+                          background: "var(--bg)",
+                          color: "var(--green-dark)",
+                          fontFamily: "monospace",
+                          direction: "ltr",
+                        }}
+                      >
+                        {bookingRef}
+                      </span>
+                    </div>
+                    {booking.venue?.address && (
+                      <p style={{ color: "var(--text-muted)", fontSize: 13, marginTop: 4 }}>
+                        📍 {booking.venue.address}
+                      </p>
+                    )}
+                  </div>
+
+                  <strong
+                    style={{
+                      color: statusColor(booking.status),
+                      background:
+                        booking.status === "confirmed"
+                          ? "#e4f5eb"
+                          : booking.status === "pending"
+                          ? "var(--cream)"
+                          : "var(--error-bg)",
+                      padding: "6px 14px",
+                      borderRadius: 999,
+                      fontSize: 13,
+                    }}
+                  >
+                    {statusLabels[booking.status] || booking.status}
+                  </strong>
+                </div>
+
+                {/* تفاصيل الميعاد والأسعار */}
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+                    gap: 12,
+                    marginTop: 16,
+                    padding: 14,
+                    borderRadius: 12,
+                    background: "var(--bg)",
+                  }}
+                >
+                  <div>
+                    <span style={{ fontSize: 12, color: "var(--text-muted)", display: "block" }}>تاريخ الماتش</span>
+                    <strong style={{ fontSize: 14 }}>{booking.date}</strong>
+                  </div>
+                  <div>
+                    <span style={{ fontSize: 12, color: "var(--text-muted)", display: "block" }}>توقيت المباراة</span>
+                    <strong style={{ fontSize: 14 }}>
+                      {formatTime12(booking.start_time)} - {formatTime12(booking.end_time)}
+                    </strong>
+                  </div>
+                  {booking.price != null && (
+                    <div>
+                      <span style={{ fontSize: 12, color: "var(--text-muted)", display: "block" }}>السعر الإجمالي</span>
+                      <strong style={{ fontSize: 14 }}>{booking.price} جنيه</strong>
+                    </div>
+                  )}
+                  {remainingAmount != null && (
+                    <div>
+                      <span style={{ fontSize: 12, color: "var(--text-muted)", display: "block" }}>
+                        المتبقي للدفع في الملعب
+                      </span>
+                      <strong style={{ fontSize: 14, color: "var(--green)" }}>
+                        {remainingAmount} جنيه
+                      </strong>
+                    </div>
+                  )}
+                </div>
+
+                {/* الإجراءات وروابط المشاركة والخريطة */}
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    flexWrap: "wrap",
+                    gap: 10,
+                    marginTop: 18,
+                    paddingTop: 14,
+                    borderTop: "1px solid var(--border)",
+                  }}
+                >
+                  <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+                    {/* شير مع أصحابك على واتساب */}
+                    <a
+                      href={getShareWhatsAppUrl(booking)}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="btn btn-outline"
+                      style={{
+                        fontSize: 13,
+                        padding: "6px 14px",
+                        borderColor: "#25D366",
+                        color: "#128C7E",
+                        fontWeight: 700,
+                        gap: 6,
+                      }}
+                      title="مشاركة تفاصيل الماتش واللوكيشن مع أصحابك على الواتساب"
+                    >
+                      📲 شير تفاصيل الماتش
+                    </a>
+
+                    {/* رابط الخريطة المباشر إن وجد */}
+                    {booking.venue?.maps_url && (
+                      <a
+                        href={booking.venue.maps_url}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="btn btn-outline"
+                        style={{ fontSize: 13, padding: "6px 14px", color: "var(--green)" }}
+                      >
+                        🗺️ الاتجاهات
+                      </a>
+                    )}
+
+                    <Link
+                      to={`/venues/${booking.venue_id}`}
+                      style={{
+                        fontSize: 13,
+                        color: "var(--text-muted)",
+                        alignSelf: "center",
+                        padding: "6px 8px",
+                      }}
+                    >
+                      تفاصيل الملعب
+                    </Link>
+                  </div>
+
+                  {/* زر إلغاء الحجز عبر المنصة للحجوزات المعلقة */}
+                  {booking.status === "pending" && (
+                    <button
+                      type="button"
+                      onClick={() => handleCancel(booking.id)}
+                      disabled={cancellingId === booking.id}
+                      className="btn btn-outline"
+                      style={{
+                        fontSize: 12,
+                        padding: "6px 14px",
+                        color: "var(--status-cancelled)",
+                        borderColor: "var(--status-cancelled)",
+                      }}
+                    >
+                      {cancellingId === booking.id ? "جاري الإلغاء..." : "✕ إلغاء الحجز"}
+                    </button>
+                  )}
+                </div>
+              </article>
+            );
+          })}
         </div>
       )}
     </section>
