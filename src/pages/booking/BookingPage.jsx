@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { Map, MapPinned, FileText, UserLock } from "lucide-react";
 import { supabase } from "../../lib/supabaseClient";
 import { DEPOSIT_PERCENT } from "../../lib/constants";
 import "./BookingPage.css";
@@ -373,7 +374,7 @@ export default function BookingPage() {
                     <div>
                         <h2>{venue.name}</h2>
                         <p className="venue-location">
-                            📍 {[venue.city, venue.area, venue.address].filter(Boolean).join(" — ")}
+                            <MapPinned size={18} /> {[venue.city, venue.area, venue.address].filter(Boolean).join(" — ")}
                         </p>
                     </div>
                 </div>
@@ -390,7 +391,7 @@ export default function BookingPage() {
                             rel="noreferrer"
                             className="venue-badge map-badge"
                         >
-                            🗺️ الاتجاهات على الخريطة
+                            <Map size={20} /> الاتجاهات على الخريطة
                         </a>
                     )}
                 </div>
@@ -421,7 +422,7 @@ export default function BookingPage() {
 
                 {/* سياسة الإلغاء */}
                 <div className="cancellation-policy">
-                    <strong>📋 سياسة الإلغاء:</strong> يمكنك إلغاء الحجز المعلّق مجانًا قبل الميعاد بـ {cancellationHours} ساعة على الأقل من خلال صفحة "حجوزاتي". بعد تأكيد الحجز أو مرور المدة، لا يمكن الإلغاء.
+                    <strong><FileText size={18} /> سياسة الإلغاء:</strong> يمكنك إلغاء الحجز المعلّق مجانًا قبل الميعاد بـ {cancellationHours} ساعة على الأقل من خلال صفحة "حجوزاتي". بعد تأكيد الحجز أو مرور المدة، لا يمكن الإلغاء.
                 </div>
             </section>
 
@@ -580,7 +581,7 @@ export default function BookingPage() {
 
                 {hasSelection && (
                     <div className="summary-remaining">
-                        💵 المتبقي للدفع في الملعب: <strong>{remainingAtVenue.toFixed(2)} جنيه</strong>
+                        المتبقي للدفع في الملعب: <strong>{remainingAtVenue.toFixed(2)} جنيه</strong>
                     </div>
                 )}
 
@@ -623,7 +624,7 @@ export default function BookingPage() {
 
                 {/* ملاحظة: التواصل عبر المنصة فقط */}
                 <p className="platform-only-notice">
-                    🔒 كل التواصل والحجز والإلغاء يتم من خلال المنصة فقط. لا يتم مشاركة أي بيانات تواصل شخصية بين اللاعبين وأصحاب الملاعب.
+                    <UserLock size={20} /> كل التواصل والحجز والإلغاء يتم من خلال المنصة فقط. لا يتم مشاركة أي بيانات تواصل شخصية بين اللاعبين وأصحاب الملاعب.
                 </p>
             </section>
         </main>

@@ -82,6 +82,9 @@
 }
 
 .venue-location {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   margin-top: 2px;
   font-size: 14px;
   color: var(--text-muted);
@@ -545,6 +548,9 @@
 }
 
 .cancellation-policy strong {
+  display: inline-flex;
+  align-items: start;
+  gap: 4px;
   color: var(--green);
 }
 
@@ -568,6 +574,9 @@
 }
 
 .platform-only-notice {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   margin-top: 14px;
   padding: 10px 14px;
   border-radius: 10px;

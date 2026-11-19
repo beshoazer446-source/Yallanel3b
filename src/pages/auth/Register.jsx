@@ -200,7 +200,7 @@ export default function Register({ role = "user" }) {
             {role === "owner" ? (
               <>تريد الحجز كلاعب؟ <Link to="/register">إنشاء حساب لاعب</Link></>
             ) : (
-              <>لديك ملعب؟ <Link to="/register-owner">إنشاء حساب أونر</Link></>
+              <>لديك ملعب؟ <Link to="/register-owner">إنشاء حساب صاحب ملعب</Link></>
             )}
           </p>
         </div>
@@ -208,7 +208,7 @@ export default function Register({ role = "user" }) {
 
       <div className="auth-hero">
         <div className="auth-hero-quote">
-          "كل مباراة عظيمة تبدأ بملعب جاهز."
+          "كل مباراة عظيمة تبدأ بملعب جاهز"
         </div>
         <div className="auth-hero-stats">120+ ملعب · 18,000+ حجز ناجح</div>
       </div>
