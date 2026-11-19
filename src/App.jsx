@@ -16,6 +16,9 @@ const VenueDetailsPage = lazy(
 );
 const MyBookingsPage = lazy(() => import("./pages/venues/MyBookingsPage"));
 const BookingPage = lazy(() => import("./pages/booking/BookingPage"));
+const BookingSuccessPage = lazy(
+  () => import("./pages/booking/BookingSuccessPage"),
+);
 const ProfilePage = lazy(() => import("./pages/ProfilePage"));
 const OwnerDashboardPage = lazy(
   () => import("./pages/owner/OwnerDashboardPage"),
@@ -38,6 +41,7 @@ export default function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/register-owner" element={<OwnerRegistrationPage />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/booking-success" element={<BookingSuccessPage />} />
 
         <Route element={<MainLayout />}>
           <Route path="/" element={<HomePage />} />
