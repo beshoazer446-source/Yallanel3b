@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { supabase } from "../../lib/supabaseClient";
-import "./BookingSuccess.css";
+import "./BookingSuccessPage.css";
 
 /*
   الصفحة دي بتتفتح بعد ما اليوزر يرجع من Paymob (أو بعد "ادفع في الملعب").
@@ -67,7 +67,7 @@ function resolveState(rows, params) {
     return "pending";
 }
 
-export default function BookingSuccess() {
+export default function BookingSuccessPage() {
     const [params] = useSearchParams();
     const ref = params.get("ref");
     const paidInUrl = params.get("success") === "true";
