@@ -1,11 +1,14 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { Moon, Sun } from "lucide-react";
 import { useAuth } from "../../context/useAuth";
+import { useTheme } from "../../context/useTheme";
 import { supabase } from "../../lib/supabaseClient";
 import "./Auth.css";
 
 export default function Register({ role = "user" }) {
   const { signUp } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
 
   const [form, setForm] = useState({
@@ -96,6 +99,14 @@ export default function Register({ role = "user" }) {
   return (
     <div className="auth-page">
       <div className="auth-panel">
+        <button
+          type="button"
+          className="auth-theme-toggle"
+          onClick={toggleTheme}
+          aria-label={theme === "dark" ? "التبديل إلى الوضع الفاتح" : "التبديل إلى الوضع الداكن"}
+        >
+          {theme === "dark" ? <Sun size={19} /> : <Moon size={19} />}
+        </button>
         <div className="auth-box">
           <div className="auth-logo">
             <span className="auth-logo-mark" />

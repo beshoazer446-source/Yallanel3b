@@ -40,7 +40,7 @@ export default function OwnerBookings() {
           </div>
 
           <Link className="owner-btn secondary" to="/owner/dashboard">
-            → لوحة التحكم
+            لوحة التحكم
           </Link>
         </header>
 

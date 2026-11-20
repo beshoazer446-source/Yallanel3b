@@ -41,9 +41,25 @@
   font-weight: 800;
 }
 
+.owner-heading-mark svg,
+.owner-stat-icon svg,
+.owner-insight-icon svg {
+  display: block;
+}
+
+.owner-stat-icon svg {
+  width: 19px;
+  height: 19px;
+}
+
+.owner-insight-icon svg {
+  width: 22px;
+  height: 22px;
+}
+
 .owner-header h1 {
   margin-bottom: 6px;
-  color: var(--green);
+  color: var(--text-strong);
   font-size: 27px;
   font-weight: 800;
 }
@@ -86,12 +102,12 @@
 
 .owner-btn.secondary {
   border: 1px solid var(--border);
-  background: var(--white);
-  color: var(--green);
+  background: var(--surface);
+  color: var(--text-strong);
 }
 
 .owner-btn.danger {
-  border: 1px solid #f3d0cc;
+  border: 1px solid color-mix(in srgb, var(--status-cancelled) 30%, transparent);
   background: var(--error-bg);
   color: var(--status-cancelled);
 }
@@ -104,7 +120,7 @@
 .owner-notice {
   margin-bottom: 24px;
   padding: 14px 18px;
-  border: 1px solid #f0dfb4;
+  border: 1px solid color-mix(in srgb, var(--status-pending) 35%, transparent);
   border-radius: 12px;
   background: var(--cream);
   color: var(--status-pending);
@@ -123,8 +139,8 @@
 .owner-panel {
   border: 1px solid var(--border);
   border-radius: 16px;
-  background: var(--white);
-  box-shadow: 0 4px 20px rgba(7, 28, 22, 0.05);
+  background: var(--surface);
+  box-shadow: var(--card-shadow);
 }
 
 .owner-stat {
@@ -151,7 +167,7 @@
   margin-bottom: 18px;
   border-radius: 12px;
   background: var(--cream);
-  color: var(--green);
+  color: var(--text-strong);
   font-size: 18px;
   font-weight: 800;
 }
@@ -163,7 +179,7 @@
 }
 
 .owner-stat h2 {
-  color: var(--green);
+  color: var(--text-strong);
   font-size: 27px;
   font-weight: 800;
 }
@@ -190,7 +206,7 @@
 }
 
 .owner-panel h2 {
-  color: var(--green);
+  color: var(--text-strong);
   font-size: 19px;
   font-weight: 800;
 }
@@ -232,7 +248,7 @@
 }
 
 .owner-table tbody tr:hover {
-  background: #fbfcf9;
+  background: var(--surface-raised);
 }
 
 .owner-status {
@@ -250,7 +266,7 @@
 }
 
 .owner-status.confirmed {
-  background: #e4f5eb;
+  background: color-mix(in srgb, var(--status-confirmed) 15%, var(--surface));
   color: var(--status-confirmed);
 }
 
@@ -362,12 +378,12 @@
 }
 
 .owner-btn.danger {
-  background: #fdecea;
-  color: #b53f36;
+  background: var(--error-bg);
+  color: var(--status-cancelled);
 }
 
 .owner-btn.danger:hover {
-  background: #fbd8d4;
+  background: color-mix(in srgb, var(--status-cancelled) 18%, var(--surface));
 }
 
 .owner-row-actions .owner-btn {
@@ -408,7 +424,7 @@
   border-radius: 14px;
   background: var(--cream);
   border: 1px solid var(--yellow);
-  color: var(--green-dark);
+  color: var(--text-strong);
   font-size: 14px;
   font-weight: 600;
   animation: slideDown 0.3s ease-out;
@@ -417,7 +433,7 @@
 
 .owner-realtime-alert.cancelled {
   background: var(--error-bg);
-  border-color: #f3c2bc;
+  border-color: color-mix(in srgb, var(--status-cancelled) 35%, transparent);
   color: var(--status-cancelled);
   box-shadow: 0 4px 14px rgba(216, 92, 82, 0.15);
 }
@@ -560,14 +576,14 @@
 }
 
 .owner-insight-card {
-  background: var(--white);
+  background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 16px;
   padding: 20px;
   display: flex;
   align-items: center;
   gap: 16px;
-  box-shadow: 0 4px 18px rgba(7, 28, 22, 0.04);
+  box-shadow: var(--card-shadow);
   transition: transform 0.15s ease;
 }
 
@@ -580,7 +596,7 @@
   height: 50px;
   border-radius: 14px;
   background: var(--cream);
-  color: var(--green);
+  color: var(--text-strong);
   display: grid;
   place-items: center;
   font-size: 24px;
@@ -597,7 +613,7 @@
 .owner-insight-info p {
   font-size: 18px;
   font-weight: 800;
-  color: var(--green);
+  color: var(--text-strong);
   margin-bottom: 2px;
 }
 
@@ -629,12 +645,12 @@
 
 /* الرسم البياني (Chart Section) */
 .owner-chart-card {
-  background: var(--white);
+  background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 20px;
   padding: 24px;
   margin-bottom: 28px;
-  box-shadow: 0 4px 20px rgba(7, 28, 22, 0.05);
+  box-shadow: var(--card-shadow);
 }
 
 .owner-chart-header {
@@ -655,7 +671,7 @@
 .owner-chart-title h3 {
   font-size: 18px;
   font-weight: 800;
-  color: var(--green);
+  color: var(--text-strong);
 }
 
 .owner-chart-toggle {
@@ -679,8 +695,8 @@
 }
 
 .owner-chart-toggle-btn.active {
-  background: var(--white);
-  color: var(--green);
+  background: var(--surface-raised);
+  color: var(--text-strong);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
@@ -728,7 +744,7 @@
 }
 
 .owner-chart-bar.revenue {
-  background: linear-gradient(180deg, var(--green) 0%, var(--green-dark) 100%);
+  background: linear-gradient(180deg, var(--status-confirmed) 0%, var(--green) 100%);
 }
 
 .owner-chart-bar.bookings {
@@ -748,7 +764,7 @@
 }
 
 .owner-chart-col.is-today .owner-chart-label {
-  color: var(--green);
+  color: var(--text-strong);
   font-weight: 800;
 }
 
@@ -777,7 +793,7 @@
 }
 
 .owner-legend-color.rev {
-  background: var(--green);
+  background: var(--status-confirmed);
 }
 
 .owner-legend-color.bk {
@@ -786,12 +802,12 @@
 
 /* قسم الحجوزات السريعة (Today & Upcoming Quick Feed) */
 .owner-quick-section {
-  background: var(--white);
+  background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 20px;
   padding: 24px;
   margin-bottom: 28px;
-  box-shadow: 0 4px 20px rgba(7, 28, 22, 0.05);
+  box-shadow: var(--card-shadow);
 }
 
 .owner-quick-header {
@@ -827,8 +843,8 @@
 }
 
 .owner-tab-nav-btn.active {
-  background: var(--white);
-  color: var(--green);
+  background: var(--surface-raised);
+  color: var(--text-strong);
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
 }
 
@@ -869,7 +885,7 @@
 }
 
 .owner-booking-quick-card:hover {
-  background: #f8faf6;
+  background: var(--surface-raised);
   transform: translateX(-3px);
 }
 
@@ -891,10 +907,15 @@
   display: inline-block;
 }
 
+.owner-time-pill.upcoming {
+  background: color-mix(in srgb, var(--status-confirmed) 16%, var(--surface));
+  color: var(--status-confirmed);
+}
+
 .owner-booking-quick-title {
   font-size: 15px;
   font-weight: 800;
-  color: var(--green);
+  color: var(--text-strong);
   margin-bottom: 4px;
 }
 
@@ -907,7 +928,7 @@
 }
 
 .owner-player-phone {
-  color: var(--green);
+  color: var(--text-strong);
   font-weight: 700;
   text-decoration: underline;
   text-decoration-style: dotted;
@@ -922,6 +943,6 @@
 .owner-booking-price-tag {
   font-size: 15px;
   font-weight: 800;
-  color: var(--green-dark);
+  color: var(--text-strong);
 }
 

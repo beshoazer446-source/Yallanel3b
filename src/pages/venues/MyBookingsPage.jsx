@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { CircleCheckBig, Map, MapPinned, RefreshCw, Share2, ShieldLock } from "lucide-react";
+import { CircleCheckBig, Map, MapPin, MapPinned, RefreshCw, Share2, ShieldLock } from "lucide-react";
 import { useAuth } from "../../context/useAuth";
 import { cancelBooking, getUserBookings } from "../../services/bookingsService";
 
@@ -94,13 +94,13 @@ export default function MyBookingsPage() {
         : "";
 
     return [
-      "⚽ ماتشنا القادم يا شباب!",
-      `🏟️ الملعب: ${venueName}`,
-      `📅 التاريخ: ${booking.date}`,
-      `⏰ التوقيت: ${timeFormatted}`,
-      remaining ? `💵 المتبقي للدفع في الملعب: ${remaining}` : "",
-      booking.venue?.maps_url ? `📍 اللوكيشن: ${booking.venue.maps_url}` : "",
-      "الحجز مؤكد وجاهز، متتأخروش! 🔥",
+      "مباراتك القادمة!",
+      `الملعب: ${venueName}`,
+      `التاريخ: ${booking.date}`,
+      `التوقيت: ${timeFormatted}`,
+      remaining ? `المتبقي للدفع في الملعب: ${remaining}` : "",
+      booking.venue?.maps_url ? `الموقع: ${booking.venue.maps_url}` : "",
+      "الحجز مؤكد وجاهز.",
     ]
       .filter(Boolean)
       .join("\n");
@@ -150,7 +150,7 @@ export default function MyBookingsPage() {
     <section className="container" dir="rtl" style={{ paddingTop: 32, paddingBottom: 60, maxWidth: 860 }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
         <div>
-          <h1 style={{ color: "var(--green)", fontSize: 26, fontWeight: 800 }}>حجوزاتي</h1>
+          <h1 style={{ color: "var(--text-strong)", fontSize: 26, fontWeight: 800 }}>حجوزاتي</h1>
           <p style={{ color: "var(--text-muted)", fontSize: 14, marginTop: 4 }}>
             متابعة وإدارة مواعيد مبارياتك وإيصالات الحجز
           </p>
@@ -158,7 +158,7 @@ export default function MyBookingsPage() {
         <button
           type="button"
           className="btn btn-outline"
-          style={{ color: "var(--green)", borderColor: "var(--green)", fontSize: 13, padding: "8px 16px" }}
+          style={{ color: "var(--text-strong)", borderColor: "var(--border)", fontSize: 13, padding: "8px 16px" }}
           onClick={() => loadBookings()}
         >
           <RefreshCw size={20} /> تحديث الحالة
@@ -174,7 +174,7 @@ export default function MyBookingsPage() {
           background: "var(--cream)",
           border: "1px solid var(--yellow)",
           fontSize: 12,
-          color: "var(--green-dark)",
+          color: "var(--text-strong)",
           display: "flex",
           alignItems: "center",
           gap: 8,
@@ -219,8 +219,8 @@ export default function MyBookingsPage() {
               onClick={() => setFilterTab(tab.id)}
               style={{
                 border: "none",
-                background: filterTab === tab.id ? "var(--green)" : "var(--bg)",
-                color: filterTab === tab.id ? "var(--white)" : "var(--text)",
+                background: filterTab === tab.id ? "var(--status-confirmed)" : "var(--bg)",
+                color: filterTab === tab.id ? "var(--green-dark)" : "var(--text)",
                 padding: "8px 16px",
                 borderRadius: 999,
                 fontSize: 13,
@@ -241,8 +241,8 @@ export default function MyBookingsPage() {
         </p>
       ) : bookings.length === 0 ? (
         <div className="card" style={{ padding: 36, marginTop: 20, textAlign: "center", borderRadius: 16 }}>
-          <span style={{ fontSize: 40 }}>⚽</span>
-          <h2 style={{ fontSize: 18, marginTop: 12, color: "var(--green)" }}>ليس لديك أي حجوزات حتى الآن</h2>
+          <MapPin size={36} color="var(--status-confirmed)" aria-hidden="true" />
+          <h2 style={{ fontSize: 18, marginTop: 12, color: "var(--text-strong)" }}>ليس لديك أي حجوزات حتى الآن</h2>
           <p style={{ color: "var(--text-muted)", fontSize: 14, marginTop: 6 }}>
             احجز ملعبك المفضل والعب مع أصحابك في الوقت المناسب لك.
           </p>
@@ -271,15 +271,15 @@ export default function MyBookingsPage() {
                   padding: 24,
                   borderRadius: 16,
                   border: "1px solid var(--border)",
-                  boxShadow: "0 4px 18px rgba(7, 28, 22, 0.04)",
-                  background: "var(--white)",
+                  boxShadow: "var(--card-shadow)",
+                  background: "var(--surface)",
                 }}
               >
                 {/* الرأس: اسم الملعب، كود الحجز، والحالة */}
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 14, flexWrap: "wrap" }}>
                   <div>
                     <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-                      <h2 style={{ fontSize: 18, color: "var(--green)", fontWeight: 800 }}>
+                      <h2 style={{ fontSize: 18, color: "var(--text-strong)", fontWeight: 800 }}>
                         {booking.venue?.name || `الملعب #${booking.venue_id}`}
                       </h2>
                       <span
@@ -288,8 +288,8 @@ export default function MyBookingsPage() {
                           fontWeight: 700,
                           padding: "3px 8px",
                           borderRadius: 6,
-                          background: "var(--bg)",
-                          color: "var(--green-dark)",
+                          background: "var(--surface-raised)",
+                          color: "var(--text-strong)",
                           fontFamily: "monospace",
                           direction: "ltr",
                         }}
@@ -309,7 +309,7 @@ export default function MyBookingsPage() {
                       color: statusColor(booking.status),
                       background:
                         booking.status === "confirmed"
-                          ? "#e4f5eb"
+                          ? "color-mix(in srgb, var(--status-confirmed) 15%, var(--surface))"
                           : booking.status === "pending"
                             ? "var(--cream)"
                             : "var(--error-bg)",
@@ -331,7 +331,7 @@ export default function MyBookingsPage() {
                     marginTop: 16,
                     padding: 14,
                     borderRadius: 12,
-                    background: "var(--bg)",
+                    background: "var(--surface-raised)",
                   }}
                 >
                   <div>
@@ -355,7 +355,7 @@ export default function MyBookingsPage() {
                       <span style={{ fontSize: 12, color: "var(--text-muted)", display: "block" }}>
                         المتبقي للدفع في الملعب
                       </span>
-                      <strong style={{ fontSize: 14, color: "var(--green)" }}>
+                      <strong style={{ fontSize: 14, color: "var(--text-strong)" }}>
                         {remainingAmount} جنيه
                       </strong>
                     </div>
@@ -400,7 +400,7 @@ export default function MyBookingsPage() {
                         target="_blank"
                         rel="noreferrer"
                         className="btn btn-outline"
-                        style={{ fontSize: 13, padding: "6px 14px", color: "var(--green)" }}
+                        style={{ fontSize: 13, padding: "6px 14px", color: "var(--text-strong)" }}
                       >
                         <Map size={20} /> الاتجاهات
                       </a>
@@ -415,7 +415,7 @@ export default function MyBookingsPage() {
                         padding: "6px 8px",
                       }}
                     >
-                      تفاصيل الملعب
+                      <MapPin size={15} aria-hidden="true" /> تفاصيل الملعب
                     </Link>
                   </div>
 
@@ -433,7 +433,7 @@ export default function MyBookingsPage() {
                         borderColor: "var(--status-cancelled)",
                       }}
                     >
-                      {cancellingId === booking.id ? "جاري الإلغاء..." : "✕ إلغاء الحجز"}
+                      {cancellingId === booking.id ? "جاري الإلغاء..." : "إلغاء الحجز"}
                     </button>
                   )}
                 </div>

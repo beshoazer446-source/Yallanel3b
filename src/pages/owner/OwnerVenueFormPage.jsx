@@ -5,6 +5,7 @@ import { useAuth } from "../../context/useAuth";
 import { PAYMENT_METHODS } from "../../lib/constants";
 import { EGYPT_LOCATIONS, GOVERNORATES } from "../../data/egyptLocations";
 import MapPickerModal from "../../components/MapPickerModal";
+import { X } from "lucide-react";
 import {
   getVenueBookingInfo,
   getOwnerVenueById,
@@ -202,7 +203,7 @@ export default function OwnerVenueFormPage() {
       if (data.workingHours) setWorkingHours(data.workingHours);
       if (data.paymentMethods) setPaymentMethods(data.paymentMethods);
       setHasSavedDraft(false);
-      setDraftNotice("✓ تم استعادة المسودة بنجاح!");
+      setDraftNotice("تم استعادة المسودة بنجاح!");
       setTimeout(() => setDraftNotice(""), 4000);
     } catch {
       setError("تعذر قراءة المسودة المحفوظة.");
@@ -232,7 +233,7 @@ export default function OwnerVenueFormPage() {
         savedAt: new Date().toISOString(),
       };
       localStorage.setItem(draftKey, JSON.stringify(draftPayload));
-      setDraftNotice("✓ تم حفظ المسودة في متصفحك! يمكنك العودة وإكمالها في أي وقت.");
+      setDraftNotice("تم حفظ المسودة في متصفحك! يمكنك العودة وإكمالها في أي وقت.");
       setTimeout(() => setDraftNotice(""), 5000);
     } catch {
       setError("تعذر حفظ المسودة في الذاكرة المحلية.");
@@ -265,7 +266,7 @@ export default function OwnerVenueFormPage() {
       return newHours;
     });
 
-    setDraftNotice(`✓ تم نسخ مواعيد يوم ${days[sourceDayIndex]} لجميع أيام الأسبوع!`);
+    setDraftNotice(`تم نسخ مواعيد يوم ${days[sourceDayIndex]} لجميع أيام الأسبوع!`);
     setTimeout(() => setDraftNotice(""), 4000);
   }
 
@@ -468,14 +469,14 @@ export default function OwnerVenueFormPage() {
   return (
     <section className="container venue-form-page" dir="rtl" style={{ maxWidth: 840, paddingTop: 32, paddingBottom: 60 }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
-        <Link to="/owner/dashboard" style={{ color: "var(--green)", fontWeight: 700 }}>
-          ← العودة للوحة التحكم
+        <Link to="/owner/dashboard" style={{ color: "var(--text-strong)", fontWeight: 700 }}>
+          العودة للوحة التحكم
         </Link>
         <button
           type="button"
           onClick={handleSaveDraftManual}
           className="btn btn-outline"
-          style={{ fontSize: 13, borderColor: "var(--yellow)", color: "var(--green-dark)" }}
+          style={{ fontSize: 13, borderColor: "var(--yellow)", color: "var(--text-strong)" }}
         >
           <SavePlus /> حفظ كمسودة
         </button>
@@ -511,14 +512,14 @@ export default function OwnerVenueFormPage() {
 
       {/* إشعار رسائل المسودة */}
       {draftNotice && (
-        <div className="owner-notice" style={{ marginTop: 14, color: "var(--status-confirmed)", borderColor: "#bce8ce" }}>
+        <div className="owner-notice" style={{ marginTop: 14, color: "var(--status-confirmed)", borderColor: "color-mix(in srgb, var(--status-confirmed) 35%, transparent)" }}>
           {draftNotice}
         </div>
       )}
 
       <div className="card" style={{ padding: 28, marginTop: 16 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 10 }}>
-          <h1 style={{ color: "var(--green)", fontSize: 24, fontWeight: 800 }}>
+          <h1 style={{ color: "var(--text-strong)", fontSize: 24, fontWeight: 800 }}>
             {isEditing ? "تعديل الملعب" : "إضافة ملعب جديد"}
           </h1>
           <span style={{ fontSize: 13, color: "var(--text-muted)" }}>
@@ -643,7 +644,7 @@ export default function OwnerVenueFormPage() {
                     href={venue.maps_url}
                     target="_blank"
                     rel="noreferrer"
-                    style={{ fontSize: 12, color: "var(--green)", fontWeight: 700 }}
+                    style={{ fontSize: 12, color: "var(--text-strong)", fontWeight: 700 }}
                   >
                     معاينة الموقع ↗
                   </a>
@@ -718,7 +719,7 @@ export default function OwnerVenueFormPage() {
                         setImagePreviews((current) => current.filter((_, fileIndex) => fileIndex !== index));
                       }}
                     >
-                      ×
+                      <X size={16} />
                     </button>
                   </div>
                 ))}
@@ -729,7 +730,7 @@ export default function OwnerVenueFormPage() {
           {/* مواعيد العمل مع ميزة نسخ لكل الأيام */}
           <div style={{ marginTop: 28 }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 10 }}>
-              <h2 style={{ fontSize: 18, color: "var(--green)", fontWeight: 800 }}>مواعيد العمل</h2>
+              <h2 style={{ fontSize: 18, color: "var(--text-strong)", fontWeight: 800 }}>مواعيد العمل</h2>
               <div className="copy-hours-toolbar">
                 <span style={{ fontSize: 12, color: "var(--text-muted)" }}>إجراءات سريعة:</span>
                 <button
@@ -822,7 +823,7 @@ export default function OwnerVenueFormPage() {
                     }
                     style={{
                       marginTop: 10,
-                      color: "var(--green)",
+                      color: "var(--text-strong)",
                       background: "transparent",
                       border: 0,
                       fontWeight: 700,
@@ -838,7 +839,7 @@ export default function OwnerVenueFormPage() {
           </div>
 
           {/* طرق دفع العربون */}
-          <h2 style={{ fontSize: 18, marginTop: 28, color: "var(--green)", fontWeight: 800 }}>
+          <h2 style={{ fontSize: 18, marginTop: 28, color: "var(--text-strong)", fontWeight: 800 }}>
             طرق دفع العربون
           </h2>
           <div style={{ display: "grid", gap: 10, marginTop: 10 }}>
@@ -893,7 +894,7 @@ export default function OwnerVenueFormPage() {
               onClick={() => setPaymentMethods((current) => [...current, { method: "", account: "" }])}
               style={{
                 justifySelf: "start",
-                color: "var(--green)",
+                color: "var(--text-strong)",
                 background: "transparent",
                 border: 0,
                 fontWeight: 700,
@@ -923,7 +924,7 @@ export default function OwnerVenueFormPage() {
               type="button"
               onClick={handleSaveDraftManual}
               className="btn btn-outline"
-              style={{color: "var(--green-dark)", borderColor: "var(--green-dark)", minWidth: 160}}
+              style={{ color: "var(--text-strong)", borderColor: "var(--border)", minWidth: 160 }}
             >
               <SavePlus /> حفظ كمسودة
             </button>
@@ -962,7 +963,7 @@ const inputStyle = {
   padding: 11,
   border: "1px solid var(--border)",
   borderRadius: 10,
-  background: "var(--white)",
-  color: "var(--text)",
+  background: "var(--input-bg)",
+  color: "var(--input-text)",
   fontFamily: "inherit",
 };

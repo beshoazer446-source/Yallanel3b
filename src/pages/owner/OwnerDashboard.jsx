@@ -21,7 +21,7 @@ const statsList = [
     key: "confirmed",
     title: "حجوزات مؤكدة",
     note: "حجز",
-    icon: "✓",
+    icon: "مؤكد",
   },
   {
     key: "pending",

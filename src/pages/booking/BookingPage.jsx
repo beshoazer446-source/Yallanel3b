@@ -5,7 +5,7 @@ import { supabase } from "../../lib/supabaseClient";
 import { DEPOSIT_PERCENT } from "../../lib/constants";
 import "./BookingPage.css";
 
-// ⚠️ للتجربة فقط: true = مايحوّلش على /login لو اليوزر مش مسجّل دخول.
+// للتجربة فقط: true = مايحوّلش على /login لو اليوزر مش مسجّل دخول.
 const DEV_SKIP_LOGIN = false;
 
 function timeToMinutes(time) {
@@ -358,7 +358,7 @@ export default function BookingPage() {
             </header>
 
             {/* كارت بيانات الملعب */}
-            <section className="booking-card venue-card">
+            <section className="booking-card booking-venue-card">
                 {/* صورة الملعب الرئيسية */}
                 {venueImage && (
                     <div className="venue-hero-img-wrap">
@@ -382,7 +382,7 @@ export default function BookingPage() {
                 {/* شارات: نوع الملعب والموقع */}
                 <div className="venue-badges-row">
                     {pitchBadge && (
-                        <span className="venue-badge pitch-badge">⚽ {pitchBadge}</span>
+                        <span className="venue-badge pitch-badge">{pitchBadge}</span>
                     )}
                     {venue.maps_url && (
                         <a

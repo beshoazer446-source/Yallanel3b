@@ -21,7 +21,7 @@ export default function AdminDashboardPage() {
 
   return (
     <section className="container" dir="rtl" style={{ paddingTop: 32, paddingBottom: 48 }}>
-      <h1 style={{ color: "var(--green)" }}>لوحة الأدمن</h1>
+      <h1 style={{ color: "var(--text-strong)" }}>لوحة الأدمن</h1>
       {error ? (
         <p role="alert" style={{ marginTop: 20, color: "var(--status-cancelled)" }}>{error}</p>
       ) : !overview ? (
@@ -42,7 +42,7 @@ function Metric({ label, value }) {
   return (
     <article className="card" style={{ padding: 20 }}>
       <p style={{ color: "var(--text-muted)" }}>{label}</p>
-      <strong style={{ display: "block", marginTop: 8, color: "var(--green)", fontSize: 30 }}>{value}</strong>
+      <strong style={{ display: "block", marginTop: 8, color: "var(--text-strong)", fontSize: 30 }}>{value}</strong>
     </article>
   );
 }

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import L from "leaflet";
+import { X } from "lucide-react";
 import "leaflet/dist/leaflet.css";
 
 // إصلاح مشكلة مسارات أيقونات Leaflet الافتراضية مع Vite
@@ -152,7 +153,7 @@ export default function MapPickerModal({ isOpen, onClose, onSelectLocation, init
         if (mapInstanceRef.current && markerRef.current) {
           mapInstanceRef.current.setView(newCoords, 16);
           markerRef.current.setLatLng(newCoords);
-          markerRef.current.bindPopup("📍 موقعك الحالي تم تحديده!").openPopup();
+          markerRef.current.bindPopup("موقعك الحالي تم تحديده!").openPopup();
         }
         setGpsLoading(false);
       },
@@ -202,7 +203,8 @@ export default function MapPickerModal({ isOpen, onClose, onSelectLocation, init
         style={{
           width: "100%",
           maxWidth: 720,
-          background: "var(--white)",
+          background: "var(--surface)",
+          color: "var(--text)",
           borderRadius: 20,
           padding: 24,
           boxShadow: "0 10px 40px rgba(0,0,0,0.25)",
@@ -215,8 +217,8 @@ export default function MapPickerModal({ isOpen, onClose, onSelectLocation, init
       >
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <div>
-            <h2 style={{ fontSize: 20, color: "var(--green)", fontWeight: 800 }}>
-              📍 حدد موقع الملعب على الخريطة
+            <h2 style={{ fontSize: 20, color: "var(--text-strong)", fontWeight: 800 }}>
+              حدد موقع الملعب على الخريطة
             </h2>
             <p style={{ color: "var(--text-muted)", fontSize: 13, marginTop: 4 }}>
               اضغط على أي مكان بالخريطة أو اسحب العلامة لوضعها على الملعب بدقة
@@ -235,7 +237,7 @@ export default function MapPickerModal({ isOpen, onClose, onSelectLocation, init
             }}
             aria-label="إغلاق"
           >
-            ✕
+            <X size={20} />
           </button>
         </div>
 
@@ -247,14 +249,14 @@ export default function MapPickerModal({ isOpen, onClose, onSelectLocation, init
             disabled={gpsLoading}
             className="btn btn-outline"
             style={{
-              borderColor: "var(--green)",
-              color: "var(--green)",
+              borderColor: "var(--border)",
+              color: "var(--text-strong)",
               fontWeight: 700,
               fontSize: 13,
               padding: "8px 16px",
             }}
           >
-            {gpsLoading ? "جاري جلب موقعك..." : "🎯 موقعي الحالي (GPS)"}
+            {gpsLoading ? "جاري جلب موقعك..." : "موقعي الحالي (GPS)"}
           </button>
           {gpsError && (
             <span style={{ color: "var(--status-cancelled)", fontSize: 12 }}>
@@ -291,7 +293,7 @@ export default function MapPickerModal({ isOpen, onClose, onSelectLocation, init
         >
           <div style={{ fontSize: 13, color: "var(--text)" }}>
             <strong>الإحداثيات المختارة: </strong>
-            <span style={{ direction: "ltr", display: "inline-block", fontFamily: "monospace", color: "var(--green)" }}>
+            <span style={{ direction: "ltr", display: "inline-block", fontFamily: "monospace", color: "var(--text-strong)" }}>
               {selectedCoords[0].toFixed(5)}, {selectedCoords[1].toFixed(5)}
             </span>
           </div>
@@ -311,7 +313,7 @@ export default function MapPickerModal({ isOpen, onClose, onSelectLocation, init
               className="btn btn-primary"
               style={{ fontSize: 14, fontWeight: 700 }}
             >
-              ✓ تأكيد واستخدام هذا الموقع
+              تأكيد واستخدام هذا الموقع
             </button>
           </div>
         </div>

@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { CalendarDays, ChartNoAxesCombined, Volleyball, CircleCheckBig, ClipboardClock, HandCoins, Trophy, Flame, ChartColumn, MapPin } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/useAuth";
 import { getOwnerBookings } from "../../services/bookingsService";
@@ -7,6 +6,18 @@ import { getOwnerVenues } from "../../services/venuesService";
 import Pitch from "../../components/StadiumIcon";
 import { PLATFORM_COMMISSION_PERCENT } from "../../lib/constants";
 import { supabase } from "../../lib/supabaseClient";
+import {
+  ArrowLeft,
+  Banknote,
+  BarChart3,
+  CalendarDays,
+  Check,
+  Clock3,
+  Flame,
+  MapPin,
+  Trophy,
+  X,
+} from "lucide-react";
 import "./OwnerPages.css";
 
 const statusLabels = {
@@ -320,7 +331,7 @@ export default function OwnerDashboardPage() {
         {/* إشعار عند حفظ ملعب بنجاح من صفحة أخرى */}
         {location.state?.venueSaved && (
           <div className="owner-notice" style={{ color: "var(--status-confirmed)", borderColor: "#bce8ce" }}>
-            ✓ تم حفظ ملعب {location.state.venueSaved} بنجاح.
+            تم حفظ ملعب {location.state.venueSaved} بنجاح.
           </div>
         )}
 
@@ -341,14 +352,14 @@ export default function OwnerDashboardPage() {
               onClick={() => setRealtimeAlert(null)}
               aria-label="إغلاق التنبيه"
             >
-              ✕
+              <X size={18} />
             </button>
           </aside>
         )}
 
         {loading ? (
           <div className="owner-panel" style={{ textAlign: "center", padding: "60px 20px" }}>
-            <p style={{ color: "var(--green)", fontWeight: 700, fontSize: 18 }}>
+            <p style={{ color: "var(--text-strong)", fontWeight: 700, fontSize: 18 }}>
               جاري تحميل إحصائياتك وتحليل الحجوزات...
             </p>
           </div>
@@ -381,7 +392,7 @@ export default function OwnerDashboardPage() {
 
               {/* إيرادات الشهر الحالي */}
               <article className="owner-stat">
-                <div className="owner-stat-icon"><CalendarDays /></div>
+                <div className="owner-stat-icon" aria-hidden="true"><CalendarDays size={19} /></div>
                 <p>إيرادات هذا الشهر</p>
                 <h2>{formatCurrency(analytics.thisMonthGross)} <small style={{ fontSize: 14 }}>ج.م</small></h2>
                 <small>صافي هذا الشهر: {formatCurrency(analytics.thisMonthNet)} ج.م</small>
@@ -389,7 +400,7 @@ export default function OwnerDashboardPage() {
 
               {/* نسبة الإشغال */}
               <article className="owner-stat">
-                <div className="owner-stat-icon"><ChartNoAxesCombined color="#0b3b2c" /></div>
+                <div className="owner-stat-icon" aria-hidden="true"><BarChart3 size={19} /></div>
                 <p>نسبة الإشغال المقدرة</p>
                 <h2>{analytics.occupancyRate}%</h2>
                 <div className="owner-occupancy-wrap">
@@ -409,30 +420,30 @@ export default function OwnerDashboardPage() {
             {/* بطاقات الإحصائيات السريعة الإضافية */}
             <section className="owner-stats">
               <article className="owner-stat">
-                <div className="owner-stat-icon"><Volleyball /></div>
+                <div className="owner-stat-icon" aria-hidden="true"><MapPin size={19} /></div>
                 <p>إجمالي الملاعب</p>
                 <h2>{venues.length}</h2>
                 <small>ملاعب نشطة ومسجلة</small>
               </article>
 
               <article className="owner-stat">
-                <div className="owner-stat-icon"><CircleCheckBig /></div>
+                <div className="owner-stat-icon" aria-hidden="true"><Check size={19} /></div>
                 <p>الحجوزات المؤكدة</p>
                 <h2>{analytics.confirmedCount}</h2>
                 <small>حجز مدفوع ومكتمل</small>
               </article>
 
               <article className="owner-stat">
-                <div className="owner-stat-icon"><ClipboardClock /></div>
+                <div className="owner-stat-icon" aria-hidden="true"><Clock3 size={19} /></div>
                 <p>حجوزات معلقة</p>
-                <h2 style={{ color: analytics.pendingCount > 0 ? "var(--status-pending)" : "var(--green)" }}>
+                <h2 style={{ color: analytics.pendingCount > 0 ? "var(--status-pending)" : "var(--text-strong)" }}>
                   {analytics.pendingCount}
                 </h2>
                 <small>{analytics.pendingCount > 0 ? "تحتاج مراجعتك فوراً" : "لا توجد طلبات معلقة"}</small>
               </article>
 
               <article className="owner-stat">
-                <div className="owner-stat-icon"><HandCoins /></div>
+                <div className="owner-stat-icon" aria-hidden="true"><Banknote size={19} /></div>
                 <p>إيرادات اليوم</p>
                 <h2>{formatCurrency(analytics.todayGross)} <small style={{ fontSize: 13 }}>ج.م</small></h2>
                 <small>من حجوزات اليوم المؤكدة</small>
@@ -442,7 +453,7 @@ export default function OwnerDashboardPage() {
             {/* بطاقات التحليل الذكي: الملعب الأكثر طلباً وساعات الذروة */}
             <section className="owner-insights-grid">
               <div className="owner-insight-card">
-                <div className="owner-insight-icon"><Trophy /></div>
+                <div className="owner-insight-icon" aria-hidden="true"><Trophy size={22} /></div>
                 <div className="owner-insight-info">
                   <h4>أكثر ملعب مطلوب</h4>
                   <p>{analytics.topVenue?.name || "لا توجد حجوزات كافية بعد"}</p>
@@ -455,7 +466,7 @@ export default function OwnerDashboardPage() {
               </div>
 
               <div className="owner-insight-card">
-                <div className="owner-insight-icon"><Flame /></div>
+                <div className="owner-insight-icon" aria-hidden="true"><Flame size={22} /></div>
                 <div className="owner-insight-info">
                   <h4>ساعات الذروة (الأكثر ازدحامًا)</h4>
                   <p>{analytics.peakHoursText}</p>
@@ -468,7 +479,7 @@ export default function OwnerDashboardPage() {
             <section className="owner-chart-card">
               <div className="owner-chart-header">
                 <div className="owner-chart-title">
-                  <span style={{ fontSize: 22 }}><ChartColumn /></span>
+                  <BarChart3 size={22} aria-hidden="true" />
                   <h3>رسم بياني للإيرادات والحجوزات</h3>
                 </div>
                 <div className="owner-chart-toggle">
@@ -565,7 +576,7 @@ export default function OwnerDashboardPage() {
                   </button>
                 </div>
                 <Link to="/owner/bookings" className="owner-btn secondary" style={{ fontSize: 13 }}>
-                  عرض كل الحجوزات الكاملة ←
+                  عرض كل الحجوزات الكاملة <ArrowLeft size={16} />
                 </Link>
               </div>
 
@@ -611,7 +622,7 @@ export default function OwnerDashboardPage() {
                   {analytics.upcomingList.map((booking) => (
                     <article key={booking.id} className="owner-booking-quick-card">
                       <div className="owner-booking-quick-meta">
-                        <span className="owner-time-pill" style={{ background: "var(--cream)", color: "var(--green-dark)" }}>
+                        <span className="owner-time-pill upcoming">
                           {booking.date} · {formatTime12(booking.start_time)}
                         </span>
                         <div>
@@ -667,7 +678,7 @@ export default function OwnerDashboardPage() {
                       }}
                     >
                       <div>
-                        <h3 style={{ fontSize: 17, color: "var(--green)", fontWeight: 800 }}>
+                        <h3 style={{ fontSize: 17, color: "var(--text-strong)", fontWeight: 800 }}>
                           {venue.name}
                         </h3>
                         <p style={{ color: "var(--text-muted)", fontSize: 13, marginTop: 4 }}>

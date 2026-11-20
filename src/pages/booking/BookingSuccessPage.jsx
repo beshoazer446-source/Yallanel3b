@@ -13,7 +13,7 @@ import "./BookingSuccessPage.css";
 
 const STATES = {
     success: {
-        icon: "✓",
+        icon: "تم",
         title: "تم تأكيد حجزك",
         text: "تم استلام العربون وحجزنا لك الميعاد. نشوفك في الملعب!",
     },

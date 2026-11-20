@@ -1,7 +1,8 @@
+
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { Search, X, MapPinned, CircleArrowLeft } from "lucide-react";
+import { Search, X } from "lucide-react";
 import { getVenues, searchVenues } from "../../services/venuesService";
+import VenueCard from "../../components/VenueCard";
 import "./VenuesPage.css";
 
 export default function VenuesPage() {
@@ -52,9 +53,9 @@ export default function VenuesPage() {
           <p>اكتشف ملاعب قريبة منك، قارن الأسعار، واحجز وقتك بسهولة.</p>
 
           <div className="venues-search">
-            <span aria-hidden="true"><Search /></span>
+            <Search size={20} aria-hidden="true" />
             <input
-              type="text"
+              type="search"
               value={searchTerm}
               onChange={(event) => setSearchTerm(event.target.value)}
               placeholder="ابحث باسم الملعب أو المنطقة..."
@@ -62,7 +63,7 @@ export default function VenuesPage() {
             />
             {searchTerm && (
               <button type="button" onClick={() => setSearchTerm("")} aria-label="مسح البحث">
-                <X />
+                <X size={18} />
               </button>
             )}
           </div>
@@ -89,56 +90,7 @@ export default function VenuesPage() {
         ) : (
           <div className="venues-grid">
             {venues.map((venue) => (
-              <article className="venue-card" key={venue.id}>
-                <div className="venue-card-image">
-                  {venue.images?.[0]?.image_url ? (
-                    <img src={venue.images[0].image_url} alt={`ملعب ${venue.name}`} />
-                  ) : (
-                    <div className="venue-image-placeholder" aria-hidden="true">
-                      <span>⚽</span>
-                      <span>ملعبك في انتظارك</span>
-                    </div>
-                  )}
-                  <span className="venue-city">
-                    {venue.city || "الموقع غير محدد"}
-                  </span>
-                </div>
-
-                <div className="venue-card-content">
-                  <h3>{venue.name}</h3>
-
-                  <p className="venue-location">
-                    <span aria-hidden="true"><MapPinned /></span>{" "}
-                    {venue.area || venue.address || "العنوان غير متوفر"}
-                  </p>
-
-                  {venue.description && (
-                    <p className="venue-description">{venue.description}</p>
-                  )}
-
-                  {venue.amenities?.length > 0 && (
-                    <div className="venue-amenities">
-                      {venue.amenities.slice(0, 3).map((amenity) => (
-                        <span key={amenity}>{amenity}</span>
-                      ))}
-                    </div>
-                  )}
-
-                  <div className="venue-card-footer">
-                    <div className="venue-price">
-                      <strong>{venue.price_per_hour} <span>ج.م</span></strong>
-                      <span> / ساعة</span>
-                    </div>
-                    <Link
-                      className="venue-details-link"
-                      to={`/venues/${venue.id}`}
-                      aria-label={`عرض تفاصيل ${venue.name}`}
-                    >
-                      التفاصيل <span aria-hidden="true"><CircleArrowLeft size={20} /></span>
-                    </Link>
-                  </div>
-                </div>
-              </article>
+              <VenueCard venue={venue} key={venue.id} />
             ))}
           </div>
         )}

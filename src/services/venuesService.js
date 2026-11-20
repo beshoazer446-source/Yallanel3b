@@ -61,6 +61,23 @@ export async function getVenues() {
   }));
 }
 
+export async function getFeaturedVenues(limit = 4) {
+  const { data, error } = await supabase
+    .from("venues")
+    .select("*")
+    .eq("is_active", true)
+    .order("name")
+    .limit(limit);
+
+  if (error) throw error;
+  const venues = data ?? [];
+  const imagesByVenueId = await getVenueImagesByVenueIds(venues.map((venue) => venue.id));
+  return venues.map((venue) => ({
+    ...venue,
+    images: imagesByVenueId.get(String(venue.id)) ?? [],
+  }));
+}
+
 export async function searchVenues(searchTerm) {
   const venues = await getVenues();
   const term = searchTerm.trim().toLocaleLowerCase();

@@ -44,9 +44,19 @@
 }
 
 @media (max-width: 650px) {
+  .site-footer {
+    padding-bottom: calc(104px + env(safe-area-inset-bottom));
+  }
+
   .site-footer-content,
   .site-footer-bottom {
     align-items: flex-start;
     flex-direction: column;
+  }
+}
+
+@media (min-width: 651px) and (max-width: 760px) {
+  .site-footer {
+    padding-bottom: calc(104px + env(safe-area-inset-bottom));
   }
 }
