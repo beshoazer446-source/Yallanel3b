@@ -88,3 +88,175 @@ button {
   border-radius: 16px;
   box-shadow: 0 4px 20px rgba(7, 28, 22, 0.08);
 }
+
+
+
+
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --white: #f3f4f6;
+  --bg: #0b140f;  
+  --text: #e5e7eb;        
+  --card: #15231b;       
+  --border: #26382d;
+}
+
+body {
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+:root {
+  --surface: #ffffff;
+  --surface-text: #1f2937;
+  --border: #e5e7eb;
+}
+
+:root[data-theme='dark'] {
+  --surface: #15231b;
+  --surface-text: #e5e7eb;
+  --border: #26382d;
+}
+
+/* ===== Dark mode: Venues page + Footer ===== */
+:root[data-theme='dark'] body {
+  background: #0b140f;
+  color: #e5e7eb;
+}
+
+/* الكروت */
+:root[data-theme='dark'] .venue-card {
+  background: #15231b;
+  color: #e5e7eb;
+  border-color: #26382d;
+}
+
+:root[data-theme='dark'] .venue-card h3,
+:root[data-theme='dark'] .venue-price strong {
+  color: #f3f4f6;
+}
+
+:root[data-theme='dark'] .venue-location,
+:root[data-theme='dark'] .venue-description,
+:root[data-theme='dark'] .venue-price > span {
+  color: #9ca3af;
+}
+
+:root[data-theme='dark'] .venue-amenities span {
+  background: #1f3328;
+  color: #d1fae5;
+}
+
+:root[data-theme='dark'] .venue-image-placeholder {
+  background: #1c2b23;
+  color: #9ca3af;
+}
+
+:root[data-theme='dark'] .venue-details-link {
+  color: var(--yellow);
+}
+
+/* عنوان الصفحة والنتائج */
+:root[data-theme='dark'] .venues-page {
+  background: transparent;
+  color: #e5e7eb;
+}
+
+:root[data-theme='dark'] .venues-results-heading h2 {
+  color: #f3f4f6;
+}
+
+:root[data-theme='dark'] .venues-section-label {
+  color: #9ca3af;
+}
+
+:root[data-theme='dark'] .venues-count {
+  background: #1f3328;
+  color: #d1fae5;
+}
+
+/* البحث */
+:root[data-theme='dark'] .venues-search {
+  background: #15231b;
+  border-color: #26382d;
+}
+
+:root[data-theme='dark'] .venues-search input {
+  background: transparent;
+  color: #e5e7eb;
+}
+
+:root[data-theme='dark'] .venues-search input::placeholder {
+  color: #6b7280;
+}
+
+/* الفوتر */
+:root[data-theme='dark'] .site-footer {
+  background: #0f1f17;
+  color: #d1d5db;
+  border-color: #26382d;
+}
+
+:root[data-theme='dark'] .site-footer a {
+  color: #e5e7eb;
+}
+/* ===== Dark mode: Home page ===== */
+:root[data-theme='dark'] .home-page {
+  background: transparent;
+  color: #e5e7eb;
+}
+
+/* الكروت العامة (.card) وكروت الخطوات */
+:root[data-theme='dark'] .card,
+:root[data-theme='dark'] .home-step {
+  background: #15231b;
+  color: #e5e7eb;
+  border-color: #26382d;
+}
+
+:root[data-theme='dark'] .home-step h3 {
+  color: #f3f4f6;
+}
+
+:root[data-theme='dark'] .home-step p {
+  color: #9ca3af;
+}
+
+:root[data-theme='dark'] .home-step-number {
+  color: var(--yellow);
+}
+
+/* العناوين */
+:root[data-theme='dark'] .home-section h2,
+:root[data-theme='dark'] .home-owner-cta h2 {
+  color: #f3f4f6;
+}
+
+:root[data-theme='dark'] .home-eyebrow {
+  color: var(--yellow);
+}
+
+/* الـ Hero */
+:root[data-theme='dark'] .home-hero {
+  background: linear-gradient(135deg, #0f1f17, #15231b);
+  color: #f3f4f6;
+}
+
+:root[data-theme='dark'] .home-hero-description,
+:root[data-theme='dark'] .home-hero-note {
+  color: #cbd5d0;
+}
+
+:root[data-theme='dark'] .home-secondary-link {
+  color: #e5e7eb;
+}
+
+/* قسم أصحاب الملاعب */
+:root[data-theme='dark'] .home-owner-cta {
+  background: #15231b;
+  color: #e5e7eb;
+  border: 1px solid #26382d;
+}
+
+:root[data-theme='dark']
