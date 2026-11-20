@@ -1,6 +1,6 @@
-
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { Search, X, MapPinned, CircleArrowLeft } from "lucide-react";
 import { getVenues, searchVenues } from "../../services/venuesService";
 import "./VenuesPage.css";
 
@@ -52,9 +52,9 @@ export default function VenuesPage() {
           <p>اكتشف ملاعب قريبة منك، قارن الأسعار، واحجز وقتك بسهولة.</p>
 
           <div className="venues-search">
-            <span aria-hidden="true">⌕</span>
+            <span aria-hidden="true"><Search /></span>
             <input
-              type="search"
+              type="text"
               value={searchTerm}
               onChange={(event) => setSearchTerm(event.target.value)}
               placeholder="ابحث باسم الملعب أو المنطقة..."
@@ -62,7 +62,7 @@ export default function VenuesPage() {
             />
             {searchTerm && (
               <button type="button" onClick={() => setSearchTerm("")} aria-label="مسح البحث">
-                ×
+                <X />
               </button>
             )}
           </div>
@@ -108,7 +108,7 @@ export default function VenuesPage() {
                   <h3>{venue.name}</h3>
 
                   <p className="venue-location">
-                    <span aria-hidden="true">⌖</span>{" "}
+                    <span aria-hidden="true"><MapPinned /></span>{" "}
                     {venue.area || venue.address || "العنوان غير متوفر"}
                   </p>
 
@@ -134,7 +134,7 @@ export default function VenuesPage() {
                       to={`/venues/${venue.id}`}
                       aria-label={`عرض تفاصيل ${venue.name}`}
                     >
-                      التفاصيل <span aria-hidden="true">←</span>
+                      التفاصيل <span aria-hidden="true"><CircleArrowLeft size={20} /></span>
                     </Link>
                   </div>
                 </div>

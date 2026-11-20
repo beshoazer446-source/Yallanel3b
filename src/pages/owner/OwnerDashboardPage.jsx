@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { CalendarDays, ChartNoAxesCombined, Volleyball, CircleCheckBig, ClipboardClock, HandCoins, Trophy, Flame, ChartColumn, MapPin } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/useAuth";
 import { getOwnerBookings } from "../../services/bookingsService";
 import { getOwnerVenues } from "../../services/venuesService";
+import Pitch from "../../components/StadiumIcon";
 import { PLATFORM_COMMISSION_PERCENT } from "../../lib/constants";
 import { supabase } from "../../lib/supabaseClient";
 import "./OwnerPages.css";
@@ -15,7 +17,7 @@ const statusLabels = {
 };
 
 function formatCurrency(amount) {
-  return new Intl.NumberFormat("ar-EG", {
+  return new Intl.NumberFormat("en-EG", {
     maximumFractionDigits: 0,
   }).format(amount || 0);
 }
@@ -299,7 +301,7 @@ export default function OwnerDashboardPage() {
         {/* الترويسة الرئيسية */}
         <header className="owner-header">
           <div className="owner-heading">
-            <div className="owner-heading-mark">🏟️</div>
+            <div className="owner-heading-mark"><Pitch /></div>
             <div>
               <h1>لوحة تحكم صاحب الملعب</h1>
               <p>متابعة الإيرادات، صافي الأرباح، ونشاط الملاعب لحظة بلحظة</p>
@@ -379,7 +381,7 @@ export default function OwnerDashboardPage() {
 
               {/* إيرادات الشهر الحالي */}
               <article className="owner-stat">
-                <div className="owner-stat-icon">📅</div>
+                <div className="owner-stat-icon"><CalendarDays /></div>
                 <p>إيرادات هذا الشهر</p>
                 <h2>{formatCurrency(analytics.thisMonthGross)} <small style={{ fontSize: 14 }}>ج.م</small></h2>
                 <small>صافي هذا الشهر: {formatCurrency(analytics.thisMonthNet)} ج.م</small>
@@ -387,7 +389,7 @@ export default function OwnerDashboardPage() {
 
               {/* نسبة الإشغال */}
               <article className="owner-stat">
-                <div className="owner-stat-icon">📊</div>
+                <div className="owner-stat-icon"><ChartNoAxesCombined color="#0b3b2c" /></div>
                 <p>نسبة الإشغال المقدرة</p>
                 <h2>{analytics.occupancyRate}%</h2>
                 <div className="owner-occupancy-wrap">
@@ -407,21 +409,21 @@ export default function OwnerDashboardPage() {
             {/* بطاقات الإحصائيات السريعة الإضافية */}
             <section className="owner-stats">
               <article className="owner-stat">
-                <div className="owner-stat-icon">⚽</div>
+                <div className="owner-stat-icon"><Volleyball /></div>
                 <p>إجمالي الملاعب</p>
                 <h2>{venues.length}</h2>
                 <small>ملاعب نشطة ومسجلة</small>
               </article>
 
               <article className="owner-stat">
-                <div className="owner-stat-icon">✓</div>
+                <div className="owner-stat-icon"><CircleCheckBig /></div>
                 <p>الحجوزات المؤكدة</p>
                 <h2>{analytics.confirmedCount}</h2>
                 <small>حجز مدفوع ومكتمل</small>
               </article>
 
               <article className="owner-stat">
-                <div className="owner-stat-icon">⏳</div>
+                <div className="owner-stat-icon"><ClipboardClock /></div>
                 <p>حجوزات معلقة</p>
                 <h2 style={{ color: analytics.pendingCount > 0 ? "var(--status-pending)" : "var(--green)" }}>
                   {analytics.pendingCount}
@@ -430,7 +432,7 @@ export default function OwnerDashboardPage() {
               </article>
 
               <article className="owner-stat">
-                <div className="owner-stat-icon">💵</div>
+                <div className="owner-stat-icon"><HandCoins /></div>
                 <p>إيرادات اليوم</p>
                 <h2>{formatCurrency(analytics.todayGross)} <small style={{ fontSize: 13 }}>ج.م</small></h2>
                 <small>من حجوزات اليوم المؤكدة</small>
@@ -440,7 +442,7 @@ export default function OwnerDashboardPage() {
             {/* بطاقات التحليل الذكي: الملعب الأكثر طلباً وساعات الذروة */}
             <section className="owner-insights-grid">
               <div className="owner-insight-card">
-                <div className="owner-insight-icon">🏆</div>
+                <div className="owner-insight-icon"><Trophy /></div>
                 <div className="owner-insight-info">
                   <h4>أكثر ملعب مطلوب</h4>
                   <p>{analytics.topVenue?.name || "لا توجد حجوزات كافية بعد"}</p>
@@ -453,7 +455,7 @@ export default function OwnerDashboardPage() {
               </div>
 
               <div className="owner-insight-card">
-                <div className="owner-insight-icon">🔥</div>
+                <div className="owner-insight-icon"><Flame /></div>
                 <div className="owner-insight-info">
                   <h4>ساعات الذروة (الأكثر ازدحامًا)</h4>
                   <p>{analytics.peakHoursText}</p>
@@ -466,7 +468,7 @@ export default function OwnerDashboardPage() {
             <section className="owner-chart-card">
               <div className="owner-chart-header">
                 <div className="owner-chart-title">
-                  <span style={{ fontSize: 22 }}>📈</span>
+                  <span style={{ fontSize: 22 }}><ChartColumn /></span>
                   <h3>رسم بياني للإيرادات والحجوزات</h3>
                 </div>
                 <div className="owner-chart-toggle">
@@ -669,7 +671,7 @@ export default function OwnerDashboardPage() {
                           {venue.name}
                         </h3>
                         <p style={{ color: "var(--text-muted)", fontSize: 13, marginTop: 4 }}>
-                          📍 {venue.address || venue.area || venue.city || "العنوان غير محدد"} · سعر الساعة: {venue.price_per_hour || 0} ج.م
+                          <MapPin size={16} /> {venue.address || venue.area || venue.city || "العنوان غير محدد"} · سعر الساعة: {venue.price_per_hour || 0} ج.م
                         </p>
                       </div>
                       <div style={{ display: "flex", gap: 10 }}>

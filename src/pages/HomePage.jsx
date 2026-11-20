@@ -66,9 +66,9 @@ export default function HomePage() {
             أضف ملعبك، حدّد الأسعار والمواعيد وطرق الدفع، واستقبل طلبات الحجز
             وإثباتات التحويل من لوحة التحكم.
           </p>
-          <small>عمولة المنصة 10% من إجمالي قيمة الحجز بعد الموافقة، وتُسجل كمستحقات للتحصيل اليدوي من الأونر.</small>
+          <small>عمولة المنصة 10% من إجمالي قيمة الحجز بعد الموافقة، وتُسجل كمستحقات للتحصيل اليدوي من صاحب الملعب</small>
         </div>
-        <Link to="/register-owner" className="btn btn-primary">أنشئ حساب أونر</Link>
+        <Link to="/register-owner" className="btn btn-primary">إنشاء حساب صاحب ملعب</Link>
       </section>
     </div>
   );

@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { CircleCheckBig, Map, MapPinned, RefreshCw, Share2, ShieldLock } from "lucide-react";
 import { useAuth } from "../../context/useAuth";
 import { cancelBooking, getUserBookings } from "../../services/bookingsService";
 
@@ -84,7 +85,7 @@ export default function MyBookingsPage() {
     }
   }
 
-  function getShareWhatsAppUrl(booking) {
+  function buildShareText(booking) {
     const venueName = booking.venue?.name || "الملعب";
     const timeFormatted = `${formatTime12(booking.start_time)} إلى ${formatTime12(booking.end_time)}`;
     const remaining =
@@ -92,7 +93,7 @@ export default function MyBookingsPage() {
         ? `${booking.price - booking.deposit_amount} جنيه`
         : "";
 
-    const text = [
+    return [
       "⚽ ماتشنا القادم يا شباب!",
       `🏟️ الملعب: ${venueName}`,
       `📅 التاريخ: ${booking.date}`,
@@ -103,8 +104,37 @@ export default function MyBookingsPage() {
     ]
       .filter(Boolean)
       .join("\n");
+  }
 
-    return `https://wa.me/?text=${encodeURIComponent(text)}`;
+  function isMobileDevice() {
+    // iPadOS 13+ بيبعت نفسه كـ Mac، فبنفحص الـ touch معاه
+    const isIPadOS =
+      navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1;
+
+    return /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent) || isIPadOS;
+  }
+
+  async function handleShare(booking) {
+    const text = buildShareText(booking);
+
+    // موبايل + المتصفح بيدعم الشير: افتح القائمة الأصلية
+    if (isMobileDevice() && navigator.share) {
+      try {
+        await navigator.share({ title: "تفاصيل الحجز", text });
+      } catch (err) {
+        if (err.name !== "AbortError") {
+          console.error("Share failed:", err);
+        }
+      }
+      return;
+    }
+
+    // ديسكتوب (أو متصفح مش بيدعم الشير): واتساب مباشرة
+    window.open(
+      `https://wa.me/?text=${encodeURIComponent(text)}`,
+      "_blank",
+      "noopener,noreferrer"
+    );
   }
 
   const filteredBookings = bookings.filter((booking) => {
@@ -131,7 +161,7 @@ export default function MyBookingsPage() {
           style={{ color: "var(--green)", borderColor: "var(--green)", fontSize: 13, padding: "8px 16px" }}
           onClick={() => loadBookings()}
         >
-          🔄 تحديث الحالة
+          <RefreshCw size={20} /> تحديث الحالة
         </button>
       </div>
 
@@ -150,7 +180,7 @@ export default function MyBookingsPage() {
           gap: 8,
         }}
       >
-        <span>🔒</span>
+        <span style={{ display: "flex", alignItems: "center" }}><ShieldLock size={20} /></span>
         <span>
           <strong>حماية وخصوصية:</strong> جميع عمليات تأكيد الحجز، التعديل، والإلغاء تتم وتُدار آلياً عبر المنصة مباشرة لضمان أمان الطرفين.
         </span>
@@ -158,13 +188,13 @@ export default function MyBookingsPage() {
 
       {location.state?.bookingCreated && (
         <p role="status" style={{ marginTop: 12, color: "var(--status-confirmed)", fontWeight: 700 }}>
-          ✓ تم إرسال طلب الحجز بنجاح ومتاح للمتابعة أدناه.
+          <CircleCheckBig /> تم إرسال طلب الحجز بنجاح ومتاح للمتابعة أدناه.
         </p>
       )}
 
       {actionSuccess && (
         <p role="status" style={{ marginTop: 12, color: "var(--status-confirmed)", fontWeight: 700 }}>
-          ✓ {actionSuccess}
+          <CircleCheckBig /> {actionSuccess}
         </p>
       )}
 
@@ -268,8 +298,8 @@ export default function MyBookingsPage() {
                       </span>
                     </div>
                     {booking.venue?.address && (
-                      <p style={{ color: "var(--text-muted)", fontSize: 13, marginTop: 4 }}>
-                        📍 {booking.venue.address}
+                      <p style={{ color: "var(--text-muted)", fontSize: 13, marginTop: 4, display: "flex", alignItems: "center", gap: 4 }}>
+                        <MapPinned size={16} /> {booking.venue.address}
                       </p>
                     )}
                   </div>
@@ -281,8 +311,8 @@ export default function MyBookingsPage() {
                         booking.status === "confirmed"
                           ? "#e4f5eb"
                           : booking.status === "pending"
-                          ? "var(--cream)"
-                          : "var(--error-bg)",
+                            ? "var(--cream)"
+                            : "var(--error-bg)",
                       padding: "6px 14px",
                       borderRadius: 999,
                       fontSize: 13,
@@ -347,10 +377,8 @@ export default function MyBookingsPage() {
                 >
                   <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
                     {/* شير مع أصحابك على واتساب */}
-                    <a
-                      href={getShareWhatsAppUrl(booking)}
-                      target="_blank"
-                      rel="noreferrer"
+                    <button
+                      onClick={() => handleShare(booking)}
                       className="btn btn-outline"
                       style={{
                         fontSize: 13,
@@ -362,8 +390,8 @@ export default function MyBookingsPage() {
                       }}
                       title="مشاركة تفاصيل الماتش واللوكيشن مع أصحابك على الواتساب"
                     >
-                      📲 شير تفاصيل الماتش
-                    </a>
+                      <Share2 size={20} /> شير تفاصيل الماتش
+                    </button>
 
                     {/* رابط الخريطة المباشر إن وجد */}
                     {booking.venue?.maps_url && (
@@ -374,7 +402,7 @@ export default function MyBookingsPage() {
                         className="btn btn-outline"
                         style={{ fontSize: 13, padding: "6px 14px", color: "var(--green)" }}
                       >
-                        🗺️ الاتجاهات
+                        <Map size={20} /> الاتجاهات
                       </a>
                     )}
 

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import { Copy, MapPinned, SavePlus, ClipboardClock } from "lucide-react";
 import { useAuth } from "../../context/useAuth";
 import { PAYMENT_METHODS } from "../../lib/constants";
 import { EGYPT_LOCATIONS, GOVERNORATES } from "../../data/egyptLocations";
@@ -476,7 +477,7 @@ export default function OwnerVenueFormPage() {
           className="btn btn-outline"
           style={{ fontSize: 13, borderColor: "var(--yellow)", color: "var(--green-dark)" }}
         >
-          💾 حفظ كمسودة
+          <SavePlus /> حفظ كمسودة
         </button>
       </div>
 
@@ -484,7 +485,7 @@ export default function OwnerVenueFormPage() {
       {hasSavedDraft && (
         <div className="venue-draft-banner">
           <div>
-            <strong>📝 وجدنا مسودة محفوظة مسبقًا لهذا الملعب على جهازك.</strong>
+            <strong><ClipboardClock /> وجدنا مسودة محفوظة مسبقًا لهذا الملعب على جهازك.</strong>
             <p style={{ marginTop: 2, fontSize: 12 }}>هل تريد استعادة البيانات التي أدخلتها سابقًا؟</p>
           </div>
           <div className="venue-draft-actions">
@@ -521,7 +522,7 @@ export default function OwnerVenueFormPage() {
             {isEditing ? "تعديل الملعب" : "إضافة ملعب جديد"}
           </h1>
           <span style={{ fontSize: 13, color: "var(--text-muted)" }}>
-            الحقول المعلمة بـ (*) مطلوبة
+            الحقول المعلمة بـ <span style={{ color: "red" }}>*</span> مطلوبة
           </span>
         </div>
 
@@ -531,7 +532,7 @@ export default function OwnerVenueFormPage() {
         <form onSubmit={handleSubmit}>
           {/* محدد عدد اللاعبين (نوع الملعب) */}
           <div className="pitch-selector-wrap">
-            <label>حجم الملعب وعدد اللاعبين (*)</label>
+            <label>حجم الملعب وعدد اللاعبين <span style={{color: "red"}}>*</span></label>
             <div className="pitch-pills">
               {PITCH_TYPES.map((type) => (
                 <button
@@ -548,11 +549,11 @@ export default function OwnerVenueFormPage() {
           </div>
 
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 16, marginTop: 20 }}>
-            <Field label="اسم الملعب (*)" name="name" value={venue.name} onChange={changeField} required placeholder="مثال: ملعب الأبطال" />
+            <Field label={<>اسم الملعب <span style={{color: "red"}}>*</span></>} name="name" value={venue.name} onChange={changeField} required placeholder="مثال: ملعب الأبطال" />
 
             {/* دروب داون المحافظة الموحدة */}
             <label style={{ display: "block", fontWeight: 700 }}>
-              المحافظة (*)
+              المحافظة <span style={{color: "red"}}>*</span>
               <select
                 name="city"
                 value={venue.city}
@@ -571,7 +572,7 @@ export default function OwnerVenueFormPage() {
 
             {/* دروب داون المنطقة التابع للمحافظة */}
             <label style={{ display: "block", fontWeight: 700 }}>
-              المنطقة / الحي (*)
+              المنطقة / الحي <span style={{color: "red"}}>*</span>
               {availableAreas.length > 0 && !customArea ? (
                 <select
                   name="area"
@@ -612,7 +613,7 @@ export default function OwnerVenueFormPage() {
               )}
             </label>
 
-            <Field label="العنوان التفصيلي (*)" name="address" value={venue.address} onChange={changeField} required placeholder="مثال: بجوار مدرسة كذا، متفرع من شارع كذا" />
+            <Field label={<>العنوان التفصيلي <span style={{color: "red"}}>*</span></>} name="address" value={venue.address} onChange={changeField} required placeholder="مثال: بجوار مدرسة كذا، متفرع من شارع كذا" />
 
             {/* حقل رابط الخريطة مع زر تحديد على الخريطة */}
             <div className="map-field-wrap">
@@ -635,7 +636,7 @@ export default function OwnerVenueFormPage() {
                   className="map-picker-btn"
                   onClick={() => setIsMapOpen(true)}
                 >
-                  📍 حدد على الخريطة (Leaflet + OpenStreetMap)
+                  <MapPinned size={20} /> حدد على الخريطة (Leaflet + OpenStreetMap)
                 </button>
                 {venue.maps_url && (
                   <a
@@ -650,8 +651,8 @@ export default function OwnerVenueFormPage() {
               </div>
             </div>
 
-            <Field label="سعر الساعة بالجنيه (*)" name="price_per_hour" value={venue.price_per_hour} onChange={changeField} type="number" min="1" required placeholder="مثال: 450" />
-            <Field label="مدة الحجز بالدقائق (*)" name="slot_minutes" value={venue.slot_minutes} onChange={changeField} type="number" min="15" step="15" required />
+            <Field label={<>سعر الساعة بالجنيه <span style={{color: "red"}}>*</span></>} name="price_per_hour" value={venue.price_per_hour} onChange={changeField} type="number" min="1" required placeholder="مثال: 450" />
+            <Field label={<>مدة الحجز بالدقائق <span style={{color: "red"}}>*</span></>} name="slot_minutes" value={venue.slot_minutes} onChange={changeField} type="number" min="15" step="15" required />
           </div>
 
           <label htmlFor="venue-description" style={labelStyle}>وصف الملعب</label>
@@ -737,7 +738,7 @@ export default function OwnerVenueFormPage() {
                   onClick={() => copyDayHoursToAll(0)}
                   title="نسخ مواعيد يوم الأحد لجميع أيام الأسبوع بضغطة واحدة"
                 >
-                  📋 تطبيق مواعيد الأحد على كل الأيام
+                  <Copy size={18}/> تطبيق مواعيد الأحد على كل الأيام
                 </button>
               </div>
             </div>
@@ -753,7 +754,7 @@ export default function OwnerVenueFormPage() {
                       onClick={() => copyDayHoursToAll(day)}
                       title={`نسخ مواعيد ${dayName} لجميع الأيام`}
                     >
-                      📋 نسخ هذا اليوم لباقي الأسبوع
+                      <Copy size={18}/> نسخ هذا اليوم لباقي الأسبوع
                     </button>
                   </div>
 
@@ -922,8 +923,9 @@ export default function OwnerVenueFormPage() {
               type="button"
               onClick={handleSaveDraftManual}
               className="btn btn-outline"
+              style={{color: "var(--green-dark)", borderColor: "var(--green-dark)", minWidth: 160}}
             >
-              💾 حفظ كمسودة
+              <SavePlus /> حفظ كمسودة
             </button>
           </div>
         </form>
