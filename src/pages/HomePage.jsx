@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import logoImage from "../../Logo/Glossy Gold Soccer Ball Emblem.png";
 import "./HomePage.css";
 
 const steps = [
@@ -38,7 +39,9 @@ export default function HomePage() {
             السعر والعربون وطرق الدفع بتظهر لك قبل إرسال طلب الحجز.
           </div>
         </div>
-        <div className="home-hero-ball" aria-hidden="true">⚽</div>
+        <div className="home-hero-ball" aria-hidden="true">
+          <img src={logoImage} alt="" />
+        </div>
       </section>
 
       <section className="home-section home-how">
