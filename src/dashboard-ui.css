@@ -1,0 +1,603 @@
+/* ==========================================================================
+   dashboard-ui.css
+   مكونات مشتركة لصفحات الداشبورد: أزرار، شارات، تنبيهات، حالة فاضية،
+   نافذة تأكيد، رأس الصفحة، وكروت الملاعب.
+   الألوان كلها من المتغيرات في index.css.
+   ========================================================================== */
+
+.dash-muted {
+  color: var(--text-muted);
+}
+
+/* ---------- الأزرار ---------- */
+
+.dash-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 16px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  white-space: nowrap;
+  transition: background 0.15s, opacity 0.15s;
+}
+
+.dash-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.dash-btn:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.dash-btn-primary {
+  background: var(--yellow);
+  color: var(--green-dark);
+}
+
+.dash-btn-primary:hover:not(:disabled) {
+  opacity: 0.92;
+}
+
+.dash-btn-secondary {
+  background: transparent;
+  border-color: var(--border);
+  color: var(--text-strong);
+}
+
+.dash-btn-secondary:hover:not(:disabled) {
+  background: var(--bg-dashboard);
+}
+
+.dash-btn-ghost {
+  background: transparent;
+  color: var(--text);
+}
+
+.dash-btn-ghost:hover:not(:disabled) {
+  background: var(--bg-dashboard);
+}
+
+.dash-btn-danger {
+  background: var(--status-cancelled);
+  color: var(--green-darker);
+}
+
+.dash-btn-danger:hover:not(:disabled) {
+  opacity: 0.92;
+}
+
+/* ---------- شارة الحالة ---------- */
+
+.dash-badge {
+  --badge-color: var(--text-muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--badge-color) 14%, transparent);
+  color: var(--badge-color);
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.dash-badge::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.dash-badge.is-success {
+  --badge-color: var(--status-confirmed);
+}
+
+.dash-badge.is-warning {
+  --badge-color: var(--status-pending);
+}
+
+.dash-badge.is-danger {
+  --badge-color: var(--status-cancelled);
+}
+
+.dash-badge.is-muted {
+  color: var(--text);
+}
+
+.dash-badge.is-muted::before {
+  background: var(--text-muted);
+}
+
+/* ---------- التنبيهات ---------- */
+
+.dash-alert {
+  --alert-color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  padding: 12px 16px;
+  border: 1px solid color-mix(in srgb, var(--alert-color) 35%, transparent);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--alert-color) 10%, transparent);
+  color: var(--text);
+  font-size: 14px;
+}
+
+.dash-alert > svg {
+  flex-shrink: 0;
+  color: var(--alert-color);
+}
+
+.dash-alert > span {
+  flex: 1;
+}
+
+.dash-alert.is-success {
+  --alert-color: var(--status-confirmed);
+}
+
+.dash-alert.is-danger {
+  --alert-color: var(--status-cancelled);
+}
+
+.dash-alert.is-warning {
+  --alert-color: var(--status-pending);
+}
+
+.dash-alert-close {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-muted);
+}
+
+.dash-alert-close:hover {
+  background: color-mix(in srgb, var(--alert-color) 15%, transparent);
+}
+
+/* ---------- رأس الصفحة ---------- */
+
+.dash-page-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.dash-page-header-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--text-strong);
+}
+
+.dash-page-header-desc {
+  margin-top: 4px;
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+/* ---------- الحالة الفاضية ---------- */
+
+.dash-empty {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  padding: 64px 24px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface);
+  text-align: center;
+}
+
+.dash-empty-icon {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--bg-dashboard);
+  color: var(--text-muted);
+}
+
+.dash-empty-title {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text-strong);
+}
+
+.dash-empty-desc {
+  max-width: 420px;
+  color: var(--text-muted);
+}
+
+.dash-empty .dash-btn {
+  margin-top: 8px;
+}
+
+/* ---------- نافذة التأكيد ---------- */
+
+.dash-dialog {
+  width: min(440px, calc(100vw - 32px));
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface-raised);
+  color: var(--text);
+  box-shadow: var(--card-shadow);
+}
+
+/* لون ثابت (نفس --green-darker) لأن ::backdrop ممكن ما يشوفش المتغيرات في بعض المتصفحات */
+.dash-dialog::backdrop {
+  background: rgba(4, 17, 13, 0.6);
+}
+
+.dash-dialog-body {
+  display: grid;
+  gap: 12px;
+  padding: 24px;
+}
+
+.dash-dialog-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--text-strong);
+}
+
+.dash-dialog-message {
+  color: var(--text-muted);
+  line-height: 1.7;
+}
+
+.dash-dialog-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+/* ---------- كروت الملاعب ---------- */
+
+.dash-court-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.dash-court-grid.is-single {
+  grid-template-columns: 1fr;
+}
+
+.dash-court-card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface);
+  box-shadow: var(--card-shadow);
+}
+
+.dash-court-media {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  background: var(--bg-dashboard);
+}
+
+.dash-court-media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.dash-court-placeholder {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  color: var(--text-muted);
+}
+
+.dash-court-card.is-hidden .dash-court-media img {
+  opacity: 0.55;
+  filter: grayscale(1);
+}
+
+.dash-court-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px;
+}
+
+.dash-court-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.dash-court-name {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--text-strong);
+}
+
+.dash-court-meta {
+  display: grid;
+  gap: 8px;
+  list-style: none;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.dash-court-meta li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dash-court-meta svg {
+  flex-shrink: 0;
+}
+
+.dash-court-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 8px;
+}
+
+@media (min-width: 720px) {
+  .dash-court-card.is-featured {
+    flex-direction: row;
+  }
+
+  .dash-court-card.is-featured .dash-court-media {
+    flex: 0 0 40%;
+    aspect-ratio: auto;
+    min-height: 240px;
+  }
+
+  .dash-court-card.is-featured .dash-court-body {
+    justify-content: center;
+    padding: 28px;
+  }
+
+  .dash-court-card.is-featured .dash-court-actions {
+    margin-top: 0;
+  }
+}
+
+/* ==========================================================================
+   الفورم: كروت الأقسام، الحقول، الشرائح (chips)، المفتاح (switch)، شريط الحفظ
+   ========================================================================== */
+
+.dash-section-card {
+  display: grid;
+  gap: 20px;
+  padding: 24px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface);
+  box-shadow: var(--card-shadow);
+}
+
+.dash-section-head h2 {
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--text-strong);
+}
+
+.dash-section-head p {
+  margin-top: 4px;
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.dash-field-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.dash-field {
+  display: grid;
+  gap: 6px;
+  align-content: start;
+}
+
+.dash-label {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-strong);
+}
+
+.dash-required {
+  color: var(--status-cancelled);
+}
+
+.dash-hint {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.dash-field-error {
+  font-size: 13px;
+  color: var(--status-cancelled);
+}
+
+.dash-input {
+  width: 100%;
+  min-height: 44px;
+  padding: 0 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--input-bg);
+  color: var(--input-text);
+  font-size: 15px;
+}
+
+textarea.dash-input {
+  min-height: 96px;
+  padding: 10px 12px;
+  line-height: 1.6;
+  resize: vertical;
+}
+
+.dash-input::placeholder {
+  color: var(--input-placeholder);
+}
+
+.dash-input:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 1px;
+  border-color: var(--focus-ring);
+}
+
+.dash-input:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.dash-input-wrap {
+  position: relative;
+}
+
+.dash-input.has-suffix {
+  padding-inline-end: 56px;
+}
+
+.dash-input-suffix {
+  position: absolute;
+  inset-inline-end: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  font-size: 14px;
+  pointer-events: none;
+}
+
+/* ---------- الشرائح ---------- */
+
+.dash-chip-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.dash-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 0 14px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 600;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.dash-chip:hover {
+  background: var(--bg-dashboard);
+}
+
+.dash-chip.is-selected {
+  border-color: var(--yellow);
+  background: var(--yellow);
+  color: var(--green-dark);
+}
+
+.dash-chip:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+/* ---------- المفتاح (switch) ---------- */
+
+.dash-switch {
+  position: relative;
+  flex-shrink: 0;
+  width: 44px;
+  height: 24px;
+  margin: 0;
+  border-radius: 999px;
+  background: var(--border);
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.dash-switch::before {
+  content: "";
+  position: absolute;
+  top: 3px;
+  inset-inline-start: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--white);
+  transition: inset-inline-start 0.15s;
+}
+
+.dash-switch:checked {
+  background: var(--status-confirmed);
+}
+
+.dash-switch:checked::before {
+  inset-inline-start: 23px;
+}
+
+.dash-switch:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+/* ---------- شريط الحفظ ---------- */
+
+.dash-form-bar {
+  position: sticky;
+  bottom: 16px;
+  z-index: 5;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface);
+  box-shadow: var(--card-shadow);
+}
+
+@media (max-width: 1023.98px) {
+  .dash-section-card {
+    padding: 18px;
+  }
+
+  .dash-form-bar {
+    bottom: 8px;
+  }
+}
