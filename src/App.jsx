@@ -2,6 +2,7 @@ import { lazy, Suspense } from "react";
 import { Route, Routes } from "react-router-dom";
 import MainLayout from "./components/MainLayout";
 import ProtectedRoute from "./components/ProtectedRoute";
+import Profile from "./pages/Profile";
 
 const HomePage = lazy(() => import("./pages/HomePage"));
 const Login = lazy(() => import("./pages/auth/Login"));
@@ -19,7 +20,6 @@ const BookingPage = lazy(() => import("./pages/booking/BookingPage"));
 const BookingSuccessPage = lazy(
   () => import("./pages/booking/BookingSuccessPage"),
 );
-const ProfilePage = lazy(() => import("./pages/ProfilePage"));
 const OwnerDashboardPage = lazy(
   () => import("./pages/owner/OwnerDashboardPage"),
 );
@@ -49,7 +49,7 @@ export default function App() {
           <Route path="/venues/:id" element={<VenueDetailsPage />} />
 
           <Route element={<ProtectedRoute />}>
-            <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/profile" element={<Profile />} />
           </Route>
 
           <Route element={<ProtectedRoute roles={["user"]} />}>
