@@ -1,53 +1,88 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabaseClient";
-
-const AuthContext = createContext(null);
+import { AuthContext } from "./authContext";
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null); // حساب الدخول (Supabase Auth)
   const [profile, setProfile] = useState(null); // بياناته: الاسم والتليفون والنوع (user / owner / admin)
   const [loading, setLoading] = useState(true);
+  const [authError, setAuthError] = useState("");
 
   async function loadProfile(userId) {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from("profiles")
       .select("*")
       .eq("id", userId)
       .single();
-    setProfile(data ?? null);
+    if (error) throw error;
+    return data;
   }
 
   useEffect(() => {
-    // أول ما الموقع يفتح: هل في حد مسجّل دخول؟
-    supabase.auth.getSession().then(async ({ data }) => {
-      const u = data.session?.user ?? null;
-      setUser(u);
-      if (u) await loadProfile(u.id);
-      setLoading(false);
-    });
+    let active = true;
+    let requestId = 0;
 
-    // وبعد كده: كل ما حد يسجّل دخول أو يخرج
+    async function applySession(session) {
+      if (!active) return;
+      const currentRequest = ++requestId;
+      const currentUser = session?.user ?? null;
+      setUser(currentUser);
+      setAuthError("");
+
+      if (!currentUser) {
+        setProfile(null);
+        setLoading(false);
+        return;
+      }
+
+      setLoading(true);
+      try {
+        const currentProfile = await loadProfile(currentUser.id);
+        if (active && currentRequest === requestId) setProfile(currentProfile);
+      } catch (error) {
+        if (active && currentRequest === requestId) {
+          setProfile(null);
+          setAuthError(error.message || "تعذر تحميل بيانات الحساب.");
+        }
+      } finally {
+        if (active && currentRequest === requestId) setLoading(false);
+      }
+    }
+
     const { data: listener } = supabase.auth.onAuthStateChange(
       (_event, session) => {
-        const u = session?.user ?? null;
-        setUser(u);
-        if (u) {
-          setTimeout(() => loadProfile(u.id), 0);
-        } else {
-          setProfile(null);
-        }
+        setTimeout(() => void applySession(session), 0);
       },
     );
 
-    return () => listener.subscription.unsubscribe();
+    supabase.auth.getSession().then(({ data, error }) => {
+      if (!active) return;
+      if (error) throw error;
+      return applySession(data.session);
+    }).catch((error) => {
+      if (active) {
+        setAuthError(error.message || "تعذر استعادة جلسة تسجيل الدخول.");
+        setLoading(false);
+      }
+    });
+
+    return () => {
+      active = false;
+      listener.subscription.unsubscribe();
+    };
   }, []);
 
-  // role: 'user' (لاعب) أو 'owner' (صاحب ملعب)
   async function signUp({ name, phone, email, password, role = "user" }) {
     return supabase.auth.signUp({
       email,
       password,
-      options: { data: { name, phone, role } },
+      options: {
+        data: {
+          name,
+          phone,
+          role: role === "owner" ? "owner" : "user",
+        },
+      },
     });
   }
 
@@ -56,14 +91,32 @@ export function AuthProvider({ children }) {
   }
 
   async function signOut() {
-    await supabase.auth.signOut();
+    const { error } = await supabase.auth.signOut();
+    if (error) throw error;
   }
 
-  const value = { user, profile, loading, signUp, signIn, signOut };
+  async function updateProfile(changes) {
+    if (!user) throw new Error("يجب تسجيل الدخول أولًا.");
+    const { error } = await supabase
+      .from("profiles")
+      .update(changes)
+      .eq("id", user.id);
+    if (error) throw error;
+    const updatedProfile = await loadProfile(user.id);
+    setProfile(updatedProfile);
+    return updatedProfile;
+  }
+
+  const value = {
+    user,
+    profile,
+    loading,
+    authError,
+    signUp,
+    signIn,
+    signOut,
+    updateProfile,
+  };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
-}
-
-export function useAuth() {
-  return useContext(AuthContext);
 }

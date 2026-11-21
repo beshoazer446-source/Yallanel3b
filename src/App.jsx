@@ -1,43 +1,77 @@
-import { Routes, Route } from "react-router-dom";
-import OwnerRegister from "./components/OwnerRegister";
-import AddVenue from "./components/AddVenue";
-import EditVenue from "./components/EditVenue";
-import Placeholder from "./components/Placeholder";
+import { lazy, Suspense } from "react";
+import { Route, Routes } from "react-router-dom";
+import MainLayout from "./components/MainLayout";
+import ProtectedRoute from "./components/ProtectedRoute";
 import Profile from "./pages/Profile";
+
+const HomePage = lazy(() => import("./pages/HomePage"));
+const Login = lazy(() => import("./pages/auth/Login"));
+const Register = lazy(() => import("./pages/auth/Register"));
+const OwnerRegistrationPage = lazy(
+  () => import("./pages/auth/OwnerRegistrationPage"),
+);
+const ForgotPassword = lazy(() => import("./pages/auth/ForgotPassword"));
+const VenuesPage = lazy(() => import("./pages/venues/VenuesPage"));
+const VenueDetailsPage = lazy(
+  () => import("./pages/venues/VenueDetailsPage"),
+);
+const MyBookingsPage = lazy(() => import("./pages/venues/MyBookingsPage"));
+const BookingPage = lazy(() => import("./pages/booking/BookingPage"));
+const BookingSuccessPage = lazy(
+  () => import("./pages/booking/BookingSuccessPage"),
+);
+const OwnerDashboardPage = lazy(
+  () => import("./pages/owner/OwnerDashboardPage"),
+);
+const OwnerBookingsPage = lazy(
+  () => import("./pages/owner/OwnerBookingsPage"),
+);
+const OwnerVenueFormPage = lazy(
+  () => import("./pages/owner/OwnerVenueFormPage"),
+);
+const AdminDashboardPage = lazy(
+  () => import("./pages/admin/AdminDashboardPage"),
+);
 
 export default function App() {
   return (
-    <Routes>
-      {/* شخص 1 */}
-      <Route path="/login" element={<Placeholder name="تسجيل الدخول" />} />
-      <Route path="/register" element={<Placeholder name="تسجيل مستخدم" />} />
+    <Suspense fallback={<p style={{ padding: 24 }}>جاري تحميل الصفحة...</p>}>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/register-owner" element={<OwnerRegistrationPage />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/booking-success" element={<BookingSuccessPage />} />
 
-      {/* شخص 2 */}
-      <Route path="/register-owner" element={<OwnerRegister />} />
-      <Route path="/owner/venues/new" element={<AddVenue />} />
-      <Route path="/owner/venues/:id/edit" element={<EditVenue />} />
+        <Route element={<MainLayout />}>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/venues" element={<VenuesPage />} />
+          <Route path="/venues/:id" element={<VenueDetailsPage />} />
 
-      {/* شخص 3 */}
-      <Route path="/book/:venueId" element={<Placeholder name="الحجز" />} />
+          <Route element={<ProtectedRoute />}>
+            <Route path="/profile" element={<Profile />} />
+          </Route>
 
-      {/* شخص 4 */}
-      <Route
-        path="/owner/dashboard"
-        element={<Placeholder name="لوحة الأونر" />}
-      />
-      <Route
-        path="/owner/bookings"
-        element={<Placeholder name="إدارة الحجوزات" />}
-      />
+          <Route element={<ProtectedRoute roles={["user"]} />}>
+            <Route path="/book/:venueId" element={<BookingPage />} />
+            <Route path="/my-bookings" element={<MyBookingsPage />} />
+          </Route>
 
-      {/* شخص 5 */}
-      <Route path="/venues" element={<Placeholder name="الملاعب" />} />
-      <Route
-        path="/venues/:id"
-        element={<Placeholder name="تفاصيل الملعب" />}
-      />
-      <Route path="/my-bookings" element={<Placeholder name="حجوزاتي" />} />
-      <Route path="/profile" element={<Profile />} />
-    </Routes>
+          <Route element={<ProtectedRoute roles={["owner"]} />}>
+            <Route path="/owner/dashboard" element={<OwnerDashboardPage />} />
+            <Route path="/owner/bookings" element={<OwnerBookingsPage />} />
+            <Route path="/owner/venues/new" element={<OwnerVenueFormPage />} />
+            <Route
+              path="/owner/venues/:id/edit"
+              element={<OwnerVenueFormPage />}
+            />
+          </Route>
+
+          <Route element={<ProtectedRoute roles={["admin"]} />}>
+            <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
+          </Route>
+        </Route>
+      </Routes>
+    </Suspense>
   );
 }

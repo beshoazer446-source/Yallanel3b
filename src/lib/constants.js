@@ -1,5 +1,6 @@
 // نسبة العربون ثابتة لكل الملاعب
 export const DEPOSIT_PERCENT = 25;
+export const PLATFORM_COMMISSION_PERCENT = 10;
 export const PAYMENT_METHODS = {
   vodafone_cash: "فودافون كاش",
   instapay: "إنستاباي",

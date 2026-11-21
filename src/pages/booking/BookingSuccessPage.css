@@ -1,0 +1,175 @@
+/* ===== صفحة نتيجة الحجز ===== */
+
+.success-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+  background:
+    linear-gradient(to bottom, var(--green-dark) 0, var(--green-dark) 260px, var(--bg) 260px);
+}
+
+.success-card {
+  width: 100%;
+  max-width: 480px;
+  padding: 36px 24px 28px;
+  border-radius: 20px;
+  background: var(--white);
+  box-shadow: 0 8px 32px rgba(7, 28, 22, 0.14);
+  text-align: center;
+}
+
+.success-loading {
+  padding: 24px 0;
+  color: var(--text-muted);
+  font-size: 15px;
+}
+
+/* ---------- الأيقونة ---------- */
+.success-icon {
+  width: 76px;
+  height: 76px;
+  margin: -74px auto 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 5px solid var(--white);
+  font-size: 34px;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--white);
+  box-shadow: 0 6px 18px rgba(7, 28, 22, 0.18);
+}
+
+.icon-success {
+  background: var(--status-confirmed);
+}
+
+.icon-pending,
+.icon-venue {
+  background: var(--yellow);
+  color: var(--green-dark);
+}
+
+.icon-failed {
+  background: var(--status-cancelled);
+}
+
+/* ---------- النصوص ---------- */
+.success-title {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--green-dark);
+}
+
+.success-text {
+  margin: 10px auto 0;
+  max-width: 360px;
+  font-size: 15px;
+  line-height: 1.8;
+  color: var(--text-muted);
+}
+
+/* ---------- التفاصيل ---------- */
+.success-details {
+  margin-top: 24px;
+  padding: 6px 16px;
+  border-radius: 14px;
+  background: var(--cream);
+  text-align: start;
+}
+
+.success-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 11px 0;
+  border-bottom: 1px dashed rgba(16, 35, 29, 0.14);
+  font-size: 14px;
+}
+
+.success-row:last-child {
+  border-bottom: none;
+}
+
+.success-row span {
+  flex-shrink: 0;
+  color: var(--text-muted);
+}
+
+.success-row strong {
+  color: var(--green-dark);
+  font-weight: 700;
+  text-align: end;
+  word-break: break-all;
+}
+
+.success-ltr {
+  direction: ltr;
+}
+
+/* ---------- الأزرار ---------- */
+.success-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 26px;
+}
+
+.success-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 24px;
+  border-radius: 999px;
+  font-size: 15px;
+  font-weight: 800;
+  transition: transform 0.15s, opacity 0.15s;
+}
+
+.success-btn:hover {
+  transform: translateY(-1px);
+  opacity: 0.92;
+}
+
+.success-btn:focus-visible {
+  outline: 3px solid var(--yellow);
+  outline-offset: 3px;
+}
+
+.success-btn-primary {
+  background: var(--green);
+  color: var(--yellow);
+}
+
+.success-btn-outline {
+  border: 1.5px solid rgba(16, 35, 29, 0.2);
+  color: var(--green-dark);
+}
+
+@media (min-width: 520px) {
+  .success-card {
+    padding: 40px 36px 32px;
+  }
+
+  .success-actions {
+    flex-direction: row-reverse;
+  }
+
+  .success-btn {
+    flex: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .success-btn {
+    transition: none;
+  }
+
+  .success-btn:hover {
+    transform: none;
+  }
+}

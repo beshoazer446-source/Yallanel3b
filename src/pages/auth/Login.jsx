@@ -1,17 +1,20 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Moon, Sun } from "lucide-react";
+import { useAuth } from "../../context/useAuth";
+import { useTheme } from "../../context/useTheme";
 import { supabase } from "../../lib/supabaseClient";
 import { homePath } from "../../lib/homePath";
 import "./Auth.css";
 
 export default function Login() {
   const { signIn } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
-  const [noAccount, setNoAccount] = useState(false);
   const [loading, setLoading] = useState(false);
 
   function handleChange(e) {
@@ -27,47 +30,52 @@ export default function Login() {
     }
 
     setError("");
-    setNoAccount(false);
     setLoading(true);
 
-    const { data, error: err } = await signIn({
-      email: form.email.trim(),
-      password: form.password,
-    });
+    try {
+      const { data, error: err } = await signIn({
+        email: form.email.trim(),
+        password: form.password,
+      });
 
-    if (err) {
-      if (err.message.includes("Invalid login credentials")) {
-        // الإيميل مسجّل ولا لأ؟
-        const { data: exists } = await supabase.rpc("email_exists", {
-          p_email: form.email.trim(),
-        });
-        setLoading(false);
-        if (exists) {
-          setError("كلمة المرور غير صحيحة");
-        } else {
-          setNoAccount(true);
-        }
+      if (err) {
+        setError(
+          err.message.includes("Invalid login credentials")
+            ? "بيانات الدخول غير صحيحة. راجع البريد وكلمة المرور."
+            : err.message,
+        );
         return;
       }
+
+      const { data: profile, error: profileError } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", data.user.id)
+        .single();
+      if (profileError) {
+        setError(`تم تسجيل الدخول لكن تعذر تحميل نوع الحساب: ${profileError.message}`);
+        return;
+      }
+
+      navigate(location.state?.from?.pathname || homePath(profile.role), { replace: true });
+    } catch (loginError) {
+      setError(loginError.message || "تعذر تسجيل الدخول.");
+    } finally {
       setLoading(false);
-      setError(err.message);
-      return;
     }
-
-    // نجيب نوع الحساب عشان نوجّهه للصفحة المناسبة
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("role")
-      .eq("id", data.user.id)
-      .single();
-
-    setLoading(false);
-    navigate(homePath(profile?.role));
   }
 
   return (
     <div className="auth-page">
       <div className="auth-panel">
+        <button
+          type="button"
+          className="auth-theme-toggle"
+          onClick={toggleTheme}
+          aria-label={theme === "dark" ? "التبديل إلى الوضع الفاتح" : "التبديل إلى الوضع الداكن"}
+        >
+          {theme === "dark" ? <Sun size={19} /> : <Moon size={19} />}
+        </button>
         <div className="auth-box">
           <div className="auth-logo">
             <span className="auth-logo-mark" />
@@ -80,13 +88,6 @@ export default function Login() {
           </p>
 
           {error && <div className="auth-error">{error}</div>}
-
-          {noAccount && (
-            <div className="auth-info">
-              مفيش حساب بالإيميل ده.{" "}
-              <Link to="/register">أنشئ حساباً أولاً</Link>
-            </div>
-          )}
 
           <form onSubmit={handleSubmit} noValidate>
             <div className="auth-field">

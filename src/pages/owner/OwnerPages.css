@@ -1,0 +1,948 @@
+
+.owner-page {
+  min-height: 100vh;
+  padding: 36px 0 60px;
+  background: var(--bg-dashboard);
+  color: var(--text);
+  direction: rtl;
+}
+
+.owner-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.owner-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.owner-heading {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.owner-heading-mark {
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 15px;
+  background: var(--yellow);
+  color: var(--green-dark);
+  font-size: 23px;
+  font-weight: 800;
+}
+
+.owner-heading-mark svg,
+.owner-stat-icon svg,
+.owner-insight-icon svg {
+  display: block;
+}
+
+.owner-stat-icon svg {
+  width: 19px;
+  height: 19px;
+}
+
+.owner-insight-icon svg {
+  width: 22px;
+  height: 22px;
+}
+
+.owner-header h1 {
+  margin-bottom: 6px;
+  color: var(--text-strong);
+  font-size: 27px;
+  font-weight: 800;
+}
+
+.owner-header p {
+  color: var(--text-muted);
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+.owner-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.owner-btn {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 7px;
+  min-height: 42px;
+  padding: 10px 20px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--yellow);
+  color: var(--green-dark);
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: transform 0.15s, opacity 0.15s;
+  cursor: pointer;
+}
+
+.owner-btn:hover {
+  transform: translateY(-1px);
+  opacity: 0.92;
+}
+
+.owner-btn.secondary {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-strong);
+}
+
+.owner-btn.danger {
+  border: 1px solid color-mix(in srgb, var(--status-cancelled) 30%, transparent);
+  background: var(--error-bg);
+  color: var(--status-cancelled);
+}
+
+.owner-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.owner-notice {
+  margin-bottom: 24px;
+  padding: 14px 18px;
+  border: 1px solid color-mix(in srgb, var(--status-pending) 35%, transparent);
+  border-radius: 12px;
+  background: var(--cream);
+  color: var(--status-pending);
+  font-size: 13px;
+  line-height: 1.9;
+}
+
+.owner-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+  margin-bottom: 28px;
+}
+
+.owner-stat,
+.owner-panel {
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface);
+  box-shadow: var(--card-shadow);
+}
+
+.owner-stat {
+  position: relative;
+  overflow: hidden;
+  padding: 23px;
+}
+
+.owner-stat::before {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 4px;
+  height: 100%;
+  background: var(--yellow);
+  content: "";
+}
+
+.owner-stat-icon {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  margin-bottom: 18px;
+  border-radius: 12px;
+  background: var(--cream);
+  color: var(--text-strong);
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.owner-stat p {
+  margin-bottom: 10px;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.owner-stat h2 {
+  color: var(--text-strong);
+  font-size: 27px;
+  font-weight: 800;
+}
+
+.owner-stat small {
+  display: block;
+  margin-top: 9px;
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.owner-panel {
+  margin-bottom: 24px;
+  padding: 24px;
+}
+
+.owner-panel-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.owner-panel h2 {
+  color: var(--text-strong);
+  font-size: 19px;
+  font-weight: 800;
+}
+
+.owner-panel > p {
+  color: var(--text-muted);
+  font-size: 14px;
+  line-height: 1.9;
+}
+
+.owner-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.owner-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.owner-table th,
+.owner-table td {
+  padding: 15px 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.owner-table th {
+  background: var(--bg);
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.owner-table td {
+  color: var(--text);
+  font-size: 13px;
+}
+
+.owner-table tbody tr:hover {
+  background: var(--surface-raised);
+}
+
+.owner-status {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 11px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.owner-status.pending {
+  background: var(--cream);
+  color: var(--status-pending);
+}
+
+.owner-status.confirmed {
+  background: color-mix(in srgb, var(--status-confirmed) 15%, var(--surface));
+  color: var(--status-confirmed);
+}
+
+.owner-status.rejected {
+  background: var(--error-bg);
+  color: var(--status-cancelled);
+}
+
+.owner-row-actions {
+  display: flex;
+  gap: 7px;
+}
+
+.owner-row-actions .owner-btn {
+  min-height: 34px;
+  padding: 7px 13px;
+  font-size: 12px;
+}
+
+.owner-empty {
+  padding: 40px 16px;
+  color: var(--text-muted);
+  text-align: center;
+  font-size: 14px;
+  line-height: 1.9;
+}
+
+.owner-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.owner-filter .owner-btn {
+  min-height: 37px;
+  padding: 8px 15px;
+  font-size: 13px;
+}
+
+@media (max-width: 900px) {
+  .owner-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 600px) {
+  .owner-page {
+    padding: 24px 0 40px;
+  }
+
+  .owner-container {
+    padding: 0 15px;
+  }
+
+  .owner-header h1 {
+    font-size: 22px;
+  }
+
+  .owner-heading-mark {
+    width: 42px;
+    height: 42px;
+  }
+
+  .owner-stats {
+    gap: 11px;
+  }
+
+  .owner-stat {
+    padding: 17px 14px;
+  }
+
+  .owner-stat h2 {
+    font-size: 22px;
+  }
+
+  .owner-panel {
+    padding: 17px 13px;
+  }
+
+  .owner-panel-heading {
+    align-items: flex-start;
+  }
+
+  .owner-actions {
+    width: 100%;
+  }
+
+  .owner-actions .owner-btn {
+    flex: 1;
+  }
+}
+
+
+/* Booking filters */
+.owner-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 24px;
+  padding: 0;
+  border: none;
+  background: transparent;
+}
+
+.owner-filter .owner-btn {
+  font-size: 14px;
+  padding: 10px 18px;
+}
+
+.owner-btn.danger {
+  background: var(--error-bg);
+  color: var(--status-cancelled);
+}
+
+.owner-btn.danger:hover {
+  background: color-mix(in srgb, var(--status-cancelled) 18%, var(--surface));
+}
+
+.owner-row-actions .owner-btn {
+  padding: 8px 14px;
+  font-size: 13px;
+}
+
+.owner-table-wrap {
+  margin-top: 12px;
+}
+
+.owner-empty {
+  padding: 40px 16px;
+  text-align: center;
+  color: var(--text-muted, #87928d);
+  line-height: 1.8;
+}
+
+@media (max-width: 600px) {
+  .owner-filter .owner-btn {
+    flex: 1;
+    min-width: 100px;
+  }
+}
+
+/* =========================================================
+   إضافات لوحة التحكم المتقدمة للأونر (Advanced Dashboard)
+   ========================================================= */
+
+/* شريط التنبيهات اللحظية (Real-time Alert Banner) */
+.owner-realtime-alert {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 14px 20px;
+  margin-bottom: 24px;
+  border-radius: 14px;
+  background: var(--cream);
+  border: 1px solid var(--yellow);
+  color: var(--text-strong);
+  font-size: 14px;
+  font-weight: 600;
+  animation: slideDown 0.3s ease-out;
+  box-shadow: 0 4px 14px rgba(255, 200, 87, 0.2);
+}
+
+.owner-realtime-alert.cancelled {
+  background: var(--error-bg);
+  border-color: color-mix(in srgb, var(--status-cancelled) 35%, transparent);
+  color: var(--status-cancelled);
+  box-shadow: 0 4px 14px rgba(216, 92, 82, 0.15);
+}
+
+.owner-realtime-alert-content {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.owner-realtime-badge {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 800;
+  background: var(--yellow);
+  color: var(--green-dark);
+}
+
+.owner-realtime-alert.cancelled .owner-realtime-badge {
+  background: var(--status-cancelled);
+  color: var(--white);
+}
+
+.owner-alert-close {
+  background: transparent;
+  border: none;
+  font-size: 18px;
+  line-height: 1;
+  color: inherit;
+  cursor: pointer;
+  opacity: 0.7;
+  padding: 4px;
+}
+.owner-alert-close:hover {
+  opacity: 1;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* كارت صافي الأرباح البارز (Hero Net Profit Card) */
+.owner-hero-stat {
+  position: relative;
+  overflow: hidden;
+  padding: 26px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, var(--green) 0%, var(--green-dark) 100%);
+  color: var(--white);
+  box-shadow: 0 8px 30px rgba(11, 59, 44, 0.18);
+  border: 1px solid rgba(255, 200, 87, 0.3);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.owner-hero-stat::after {
+  content: "صافي أرباحك";
+  position: absolute;
+  left: -10px;
+  bottom: -15px;
+  font-size: 50px;
+  font-weight: 900;
+  color: rgba(255, 255, 255, 0.04);
+  pointer-events: none;
+}
+
+.owner-hero-stat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.owner-hero-stat-tag {
+  background: rgba(255, 200, 87, 0.2);
+  color: var(--yellow);
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  border: 1px solid rgba(255, 200, 87, 0.4);
+}
+
+.owner-hero-stat-value {
+  font-size: 36px;
+  font-weight: 900;
+  color: var(--yellow);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.owner-hero-stat-value span {
+  font-size: 16px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.owner-hero-stat-formula {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+  background: rgba(0, 0, 0, 0.2);
+  padding: 6px 12px;
+  border-radius: 8px;
+  display: inline-block;
+  margin-top: 10px;
+}
+
+/* شبكة الإحصائيات المالية */
+.owner-financial-grid {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr 1fr;
+  gap: 18px;
+  margin-bottom: 24px;
+}
+
+@media (max-width: 960px) {
+  .owner-financial-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* بطاقات التحليل الذكي (Insights Cards: الأكثر طلباً وساعات الذروة) */
+.owner-insights-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.owner-insight-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-shadow: var(--card-shadow);
+  transition: transform 0.15s ease;
+}
+
+.owner-insight-card:hover {
+  transform: translateY(-2px);
+}
+
+.owner-insight-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 14px;
+  background: var(--cream);
+  color: var(--text-strong);
+  display: grid;
+  place-items: center;
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.owner-insight-info h4 {
+  font-size: 13px;
+  color: var(--text-muted);
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.owner-insight-info p {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--text-strong);
+  margin-bottom: 2px;
+}
+
+.owner-insight-info small {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* شريط نسبة الإشغال (Occupancy Bar) */
+.owner-occupancy-wrap {
+  margin-top: 10px;
+}
+
+.owner-occupancy-bar {
+  width: 100%;
+  height: 8px;
+  background: var(--bg);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-top: 6px;
+}
+
+.owner-occupancy-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--yellow), var(--status-confirmed));
+  border-radius: 999px;
+  transition: width 0.6s ease;
+}
+
+/* الرسم البياني (Chart Section) */
+.owner-chart-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 24px;
+  margin-bottom: 28px;
+  box-shadow: var(--card-shadow);
+}
+
+.owner-chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.owner-chart-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.owner-chart-title h3 {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--text-strong);
+}
+
+.owner-chart-toggle {
+  display: inline-flex;
+  background: var(--bg);
+  border-radius: 999px;
+  padding: 4px;
+  gap: 4px;
+}
+
+.owner-chart-toggle-btn {
+  border: none;
+  background: transparent;
+  padding: 7px 18px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.owner-chart-toggle-btn.active {
+  background: var(--surface-raised);
+  color: var(--text-strong);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* تمثيل الرسم البياني بالأعمدة المتجاوبة */
+.owner-chart-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  padding-bottom: 8px;
+}
+
+.owner-chart-bars {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 220px;
+  padding: 20px 10px 10px;
+  border-bottom: 2px solid var(--border);
+}
+
+.owner-chart-col {
+  flex: 1;
+  min-width: 48px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  cursor: pointer;
+}
+
+.owner-chart-bar-group {
+  width: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 4px;
+  height: 160px;
+}
+
+.owner-chart-bar {
+  width: 14px;
+  border-radius: 6px 6px 0 0;
+  transition: height 0.4s ease, filter 0.2s ease;
+}
+
+.owner-chart-bar.revenue {
+  background: linear-gradient(180deg, var(--status-confirmed) 0%, var(--green) 100%);
+}
+
+.owner-chart-bar.bookings {
+  background: var(--yellow);
+}
+
+.owner-chart-col:hover .owner-chart-bar {
+  filter: brightness(1.15);
+}
+
+.owner-chart-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-align: center;
+  white-space: nowrap;
+}
+
+.owner-chart-col.is-today .owner-chart-label {
+  color: var(--text-strong);
+  font-weight: 800;
+}
+
+/* وسيلة إيضاح الرسم البياني (Legend) */
+.owner-chart-legend {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-top: 18px;
+  padding-top: 14px;
+}
+
+.owner-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.owner-legend-color {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+}
+
+.owner-legend-color.rev {
+  background: var(--status-confirmed);
+}
+
+.owner-legend-color.bk {
+  background: var(--yellow);
+}
+
+/* قسم الحجوزات السريعة (Today & Upcoming Quick Feed) */
+.owner-quick-section {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 24px;
+  margin-bottom: 28px;
+  box-shadow: var(--card-shadow);
+}
+
+.owner-quick-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.owner-tabs-nav {
+  display: inline-flex;
+  background: var(--bg);
+  border-radius: 12px;
+  padding: 4px;
+  gap: 4px;
+}
+
+.owner-tab-nav-btn {
+  border: none;
+  background: transparent;
+  padding: 8px 18px;
+  border-radius: 9px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.owner-tab-nav-btn.active {
+  background: var(--surface-raised);
+  color: var(--text-strong);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+}
+
+.owner-tab-badge {
+  display: inline-grid;
+  place-items: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 800;
+  background: var(--cream);
+  color: var(--status-pending);
+}
+
+.owner-tab-nav-btn.active .owner-tab-badge {
+  background: var(--green);
+  color: var(--white);
+}
+
+.owner-booking-cards-list {
+  display: grid;
+  gap: 12px;
+}
+
+.owner-booking-quick-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 16px 20px;
+  border-radius: 14px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.owner-booking-quick-card:hover {
+  background: var(--surface-raised);
+  transform: translateX(-3px);
+}
+
+.owner-booking-quick-meta {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.owner-time-pill {
+  background: var(--green-dark);
+  color: var(--yellow);
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  direction: ltr;
+  display: inline-block;
+}
+
+.owner-time-pill.upcoming {
+  background: color-mix(in srgb, var(--status-confirmed) 16%, var(--surface));
+  color: var(--status-confirmed);
+}
+
+.owner-booking-quick-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--text-strong);
+  margin-bottom: 4px;
+}
+
+.owner-booking-quick-player {
+  font-size: 13px;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.owner-player-phone {
+  color: var(--text-strong);
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+}
+
+.owner-booking-quick-side {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.owner-booking-price-tag {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--text-strong);
+}
+

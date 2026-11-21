@@ -13,7 +13,6 @@ export default function ForgotPassword() {
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [error, setError] = useState("");
-  const [noAccount, setNoAccount] = useState(false);
   const [loading, setLoading] = useState(false);
 
   // الخطوة 1: ابعت الكود
@@ -27,28 +26,18 @@ export default function ForgotPassword() {
     setNoAccount(false);
     setLoading(true);
 
-    const { data: exists } = await supabase.rpc("email_exists", {
-      p_email: email.trim(),
-    });
-    if (!exists) {
+    try {
+      const { error: err } = await supabase.auth.resetPasswordForEmail(email.trim());
+      if (err) {
+        setError(err.message.includes("seconds") ? "استنى دقيقة وجرّب تاني" : err.message);
+        return;
+      }
+      setStep(2);
+    } catch (sendError) {
+      setError(sendError.message || "تعذر إرسال رسالة الاستعادة.");
+    } finally {
       setLoading(false);
-      setNoAccount(true);
-      return;
     }
-
-    const { error: err } = await supabase.auth.resetPasswordForEmail(
-      email.trim(),
-    );
-    setLoading(false);
-    if (err) {
-      setError(
-        err.message.includes("seconds")
-          ? "استنى دقيقة وجرّب تاني"
-          : err.message,
-      );
-      return;
-    }
-    setStep(2);
   }
 
   // الخطوة 2: اتأكد من الكود
@@ -61,17 +50,22 @@ export default function ForgotPassword() {
     setError("");
     setLoading(true);
 
-    const { error: err } = await supabase.auth.verifyOtp({
-      email: email.trim(),
-      token: code.trim(),
-      type: "recovery",
-    });
-    setLoading(false);
-    if (err) {
-      setError("الكود غير صحيح أو انتهت صلاحيته");
-      return;
+    try {
+      const { error: err } = await supabase.auth.verifyOtp({
+        email: email.trim(),
+        token: code.trim(),
+        type: "recovery",
+      });
+      if (err) {
+        setError("الكود غير صحيح أو انتهت صلاحيته");
+        return;
+      }
+      setStep(3);
+    } catch (verifyError) {
+      setError(verifyError.message || "تعذر التحقق من الكود.");
+    } finally {
+      setLoading(false);
     }
-    setStep(3);
   }
 
   // الخطوة 3: احفظ كلمة المرور الجديدة
@@ -88,21 +82,27 @@ export default function ForgotPassword() {
     setError("");
     setLoading(true);
 
-    const { error: err } = await supabase.auth.updateUser({ password });
-    if (err) {
-      setLoading(false);
-      setError(err.message);
-      return;
-    }
+    try {
+      const { error: updateError } = await supabase.auth.updateUser({ password });
+      if (updateError) {
+        setError(updateError.message);
+        return;
+      }
 
-    const { data } = await supabase.auth.getUser();
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("role")
-      .eq("id", data.user.id)
-      .single();
-    setLoading(false);
-    navigate(homePath(profile?.role));
+      const { data, error: userError } = await supabase.auth.getUser();
+      if (userError) throw userError;
+      const { data: profile, error: profileError } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", data.user.id)
+        .single();
+      if (profileError) throw profileError;
+      navigate(homePath(profile.role));
+    } catch (saveError) {
+      setError(saveError.message || "تعذر حفظ كلمة المرور.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -138,13 +138,6 @@ export default function ForgotPassword() {
           )}
 
           {error && <div className="auth-error">{error}</div>}
-          {noAccount && (
-            <div className="auth-info">
-              مفيش حساب بالإيميل ده.{" "}
-              <Link to="/register">أنشئ حساباً أولاً</Link>
-            </div>
-          )}
-
           {step === 1 && (
             <form onSubmit={sendCode} noValidate>
               <div className="auth-field">
