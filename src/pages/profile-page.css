@@ -1,0 +1,293 @@
+.yn-profile-page {
+  min-height: calc(100vh - 180px);
+  background-color: #f6f7f4;
+  padding: 36px 20px 56px;
+  color: #112218;
+  font-family: inherit;
+}
+
+.yn-profile-container {
+  max-width: 980px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.yn-profile-header-card,
+.yn-profile-form-card,
+.yn-role-info-card {
+  background-color: #ffffff;
+  border: 1px solid #e4e8e1;
+  border-radius: 18px;
+  box-shadow: 0 8px 24px rgba(13, 36, 23, 0.05);
+}
+
+.yn-profile-header-card {
+  padding: 24px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.yn-profile-identity {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.yn-profile-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 1.25rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.yn-profile-avatar.is-user {
+  background-color: #0d3b26;
+  color: #f5b727;
+}
+
+.yn-profile-avatar.is-admin {
+  background-color: #f5b727;
+  color: #0d3b26;
+}
+
+.yn-profile-title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.yn-profile-title-row h1 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #0d2417;
+}
+
+.yn-role-badge {
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.yn-role-badge.is-user {
+  background-color: #e7f3ec;
+  color: #0d3b26;
+}
+
+.yn-role-badge.is-admin {
+  background-color: #fff3d1;
+  color: #7a5200;
+  border: 1px solid #f5b727;
+}
+
+.yn-profile-email {
+  margin: 6px 0 0;
+  color: #5b6860;
+  font-size: 0.92rem;
+  text-align: right;
+}
+
+.yn-role-shortcuts {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.yn-shortcut-btn {
+  text-decoration: none;
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  transition: transform 0.15s ease, background-color 0.15s ease;
+}
+
+.yn-shortcut-btn.primary {
+  background-color: #0d3b26;
+  color: #ffffff;
+}
+
+.yn-shortcut-btn.primary:hover {
+  background-color: #145236;
+}
+
+.yn-shortcut-btn.secondary {
+  background-color: #f3f5f2;
+  color: #112218;
+  border: 1px solid #dce2da;
+}
+
+.yn-shortcut-btn.secondary:hover {
+  background-color: #e8ede6;
+}
+
+.yn-profile-grid {
+  display: grid;
+  grid-template-columns: 1.45fr 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+.yn-profile-form-card {
+  padding: 28px;
+}
+
+.yn-profile-form-card h2 {
+  margin: 0 0 6px;
+  font-size: 1.2rem;
+  color: #0d2417;
+}
+
+.yn-card-subtitle {
+  margin: 0 0 20px;
+  color: #5f6c64;
+  font-size: 0.92rem;
+}
+
+.yn-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.yn-field-group label {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #1b2e23;
+}
+
+.yn-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px 14px;
+  border: 1px solid #d5dcd4;
+  border-radius: 10px;
+  font-size: 0.96rem;
+  color: #112218;
+  background-color: #ffffff;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.yn-input:focus {
+  outline: none;
+  border-color: #0d3b26;
+  box-shadow: 0 0 0 3px rgba(13, 59, 38, 0.12);
+}
+
+.yn-input-readonly {
+  background-color: #f4f6f4;
+  color: #627067;
+  cursor: not-allowed;
+}
+
+.yn-form-actions {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 8px;
+}
+
+.yn-save-btn {
+  background-color: #f5b727;
+  color: #112218;
+  border: none;
+  border-radius: 10px;
+  padding: 12px 24px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.15s ease, transform 0.15s ease;
+}
+
+.yn-save-btn:hover:not(:disabled) {
+  background-color: #e5a817;
+}
+
+.yn-save-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.yn-alert {
+  padding: 12px 14px;
+  border-radius: 10px;
+  margin-bottom: 18px;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.yn-alert.success {
+  background-color: #e6f4ec;
+  color: #0f5132;
+  border: 1px solid #badbcc;
+}
+
+.yn-alert.error {
+  background-color: #fdecea;
+  color: #842029;
+  border: 1px solid #f5c2c7;
+}
+
+.yn-role-info-card {
+  padding: 24px;
+}
+
+.yn-aside-tag {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.yn-aside-tag.admin-tag {
+  background-color: #fff3d1;
+  color: #7a5200;
+}
+
+.yn-aside-tag.user-tag {
+  background-color: #e7f3ec;
+  color: #0d3b26;
+}
+
+.yn-role-info-card h3 {
+  margin: 0 0 10px;
+  font-size: 1.12rem;
+  color: #0d2417;
+}
+
+.yn-role-info-card p {
+  margin: 0 0 16px;
+  color: #55635a;
+  font-size: 0.92rem;
+  line-height: 1.65;
+}
+
+.yn-role-checklist {
+  margin: 0;
+  padding-right: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: #24382c;
+  font-size: 0.88rem;
+}
+
+@media (max-width: 820px) {
+  .yn-profile-grid {
+    grid-template-columns: 1fr;
+  }
+}

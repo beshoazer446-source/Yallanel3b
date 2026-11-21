@@ -3,6 +3,7 @@ import OwnerRegister from "./components/OwnerRegister";
 import AddVenue from "./components/AddVenue";
 import EditVenue from "./components/EditVenue";
 import Placeholder from "./components/Placeholder";
+import Profile from "./pages/Profile";
 
 export default function App() {
   return (
@@ -36,7 +37,7 @@ export default function App() {
         element={<Placeholder name="تفاصيل الملعب" />}
       />
       <Route path="/my-bookings" element={<Placeholder name="حجوزاتي" />} />
-      <Route path="/profile" element={<Placeholder name="حسابي" />} />
+      <Route path="/profile" element={<Profile />} />
     </Routes>
   );
 }

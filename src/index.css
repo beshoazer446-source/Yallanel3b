@@ -14,6 +14,8 @@
   --status-confirmed: #1B8A5A;
   --status-pending: #B47A14;
   --status-cancelled: #D85C52;
+    --border: #DCE5DF;
+  --error-bg: #FDECEA;
 }
 
 * {
