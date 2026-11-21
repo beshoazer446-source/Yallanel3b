@@ -1,7 +1,7 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "../lib/supabaseClient";
-import { AuthContext } from "../context/authContext";
+import { useAuth } from "../context/useAuth";
 import "./profile-page.css";
 
 function getInitials(name, email) {
@@ -14,7 +14,7 @@ function getInitials(name, email) {
 }
 
 export default function Profile() {
-  const auth = useContext(AuthContext);
+  const auth = useAuth();
   const user = auth?.user ?? null;
   const profile = auth?.profile ?? null;
   const authLoading = auth?.loading ?? false;
