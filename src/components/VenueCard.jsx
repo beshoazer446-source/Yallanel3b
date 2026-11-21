@@ -1,5 +1,6 @@
-import { ArrowLeft, MapPin, Trophy } from "lucide-react";
+import { ArrowLeft, MapPin, Navigation, Trophy } from "lucide-react";
 import { Link } from "react-router-dom";
+import { formatDistance } from "../utils/geoUtils";
 import "./VenueCard.css";
 
 export default function VenueCard({ venue }) {
@@ -14,9 +15,17 @@ export default function VenueCard({ venue }) {
             <span>ملعبك في انتظارك</span>
           </div>
         )}
+
         <span className="venue-city">
           {venue.city || "الموقع غير محدد"}
         </span>
+
+        {venue.distanceKm != null && (
+          <span className="venue-distance-badge" title="المسافة التقريبية من موقعك الحالي">
+            <Navigation size={12} aria-hidden="true" />
+            <span>{formatDistance(venue.distanceKm)}</span>
+          </span>
+        )}
       </div>
 
       <div className="venue-card-content">
