@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "../lib/supabaseClient";
-import { useAuth } from "../context/AuthContext";
+import { AuthContext } from "../context/authContext";
 import "./profile-page.css";
 
 function getInitials(name, email) {
@@ -14,7 +14,7 @@ function getInitials(name, email) {
 }
 
 export default function Profile() {
-  const auth = useAuth();
+  const auth = useContext(AuthContext);
   const user = auth?.user ?? null;
   const profile = auth?.profile ?? null;
   const authLoading = auth?.loading ?? false;
@@ -72,7 +72,7 @@ export default function Profile() {
           "",
       );
       setPhone(sourceData.phone || user.user_metadata?.phone || "");
-const rawRole = sourceData.role || user.user_metadata?.role || "user";
+      const rawRole = sourceData.role || user.user_metadata?.role || "user";
       setRole(rawRole === "admin" ? "admin" : rawRole);
       setLoadingProfile(false);
     }
