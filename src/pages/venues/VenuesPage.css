@@ -520,6 +520,90 @@
   font-weight: 700;
 }
 
+:root[data-theme="dark"] .venues-control-btn {
+  border-color: var(--border);
+  background: var(--surface-raised);
+  color: var(--text);
+}
+
+:root[data-theme="dark"] .venues-control-btn:hover:not(:disabled) {
+  border-color: var(--status-confirmed);
+  background: var(--surface-raised);
+  color: var(--text-strong);
+}
+
+:root[data-theme="dark"] .venues-control-btn.is-active {
+  border-color: var(--status-confirmed);
+  background: rgba(99, 200, 155, 0.16);
+  color: var(--text-strong);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22);
+}
+
+:root[data-theme="dark"] .venues-control-btn.geo-btn.is-active {
+  border-color: var(--yellow);
+  background: rgba(255, 200, 87, 0.14);
+  color: var(--yellow);
+}
+
+:root[data-theme="dark"] .venues-control-btn svg,
+:root[data-theme="dark"] .venues-control-btn.is-active svg {
+  color: inherit;
+}
+
+:root[data-theme="dark"] .venues-reset-btn {
+  border-color: var(--status-cancelled);
+  background: rgba(255, 140, 130, 0.12);
+  color: var(--status-cancelled);
+}
+
+:root[data-theme="dark"] .venues-filter-panel-header h3 {
+  color: var(--text-strong);
+}
+
+:root[data-theme="dark"] .panel-clear-btn {
+  color: var(--text-muted);
+}
+
+:root[data-theme="dark"] .panel-close-btn {
+  background: var(--surface-raised);
+  color: var(--text);
+}
+
+:root[data-theme="dark"] .venues-custom-checkbox-pill {
+  border-color: var(--border);
+  background: var(--surface-raised);
+  color: var(--text);
+}
+
+:root[data-theme="dark"] .venues-custom-checkbox-pill:hover {
+  border-color: var(--status-confirmed);
+  background: var(--bg-dashboard);
+  color: var(--text-strong);
+}
+
+:root[data-theme="dark"] .venues-custom-checkbox-pill.is-checked {
+  border-color: var(--status-confirmed);
+  background: rgba(99, 200, 155, 0.16);
+  color: var(--text-strong);
+}
+
+:root[data-theme="dark"] .venues-custom-checkbox-pill.is-checked .custom-check-box {
+  border-color: var(--status-confirmed);
+  background: var(--status-confirmed);
+  color: var(--green-darker);
+}
+
+:root[data-theme="dark"] .custom-check-box {
+  border-color: var(--text-muted);
+  background: var(--bg);
+  color: var(--green-darker);
+}
+
+:root[data-theme="dark"] .pill-count {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text);
+}
+
 .venues-custom-checkbox-pill.is-checked .pill-count {
   background: var(--yellow);
   color: var(--green-dark);
