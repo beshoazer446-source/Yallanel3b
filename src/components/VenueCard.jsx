@@ -8,7 +8,15 @@ export default function VenueCard({ venue }) {
     <article className="venue-card">
       <div className="venue-card-image">
         {venue.images?.[0]?.image_url ? (
-          <img src={venue.images[0].image_url} alt={`ملعب ${venue.name}`} loading="lazy" />
+          <img
+            src={venue.images[0].image_url}
+            alt={`ملعب ${venue.name}`}
+            width="1200"
+            height="675"
+            loading="lazy"
+            decoding="async"
+            draggable="false"
+          />
         ) : (
           <div className="venue-image-placeholder" aria-hidden="true">
             <Trophy size={30} />

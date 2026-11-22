@@ -160,7 +160,9 @@
 
 .venues-grid {
   display: grid;
+  align-items: stretch;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  grid-auto-rows: 1fr;
   gap: 22px;
 }
 
