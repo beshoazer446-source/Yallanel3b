@@ -1,6 +1,7 @@
 import { lazy, Suspense } from "react";
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import MainLayout from "./components/MainLayout";
+import OwnerLayout from "./components/OwnerLayout";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Profile from "./pages/Profile";
 
@@ -26,11 +27,30 @@ const OwnerDashboardPage = lazy(
 const OwnerBookingsPage = lazy(
   () => import("./pages/owner/OwnerBookingsPage"),
 );
+<<<<<<< HEAD
 const OwnerCustomersPage = lazy(
   () => import("./pages/owner/OwnerCustomersPage"),
 );
 const OwnerVenueFormPage = lazy(
   () => import("./pages/owner/OwnerVenueFormPage"),
+=======
+const OwnerCalendarPage = lazy(
+  () => import("./pages/owner/OwnerCalendarPage"),
+);
+const OwnerCourtsPage = lazy(() => import("./pages/owner/OwnerCourtsPage"));
+const OwnerEarningsPage = lazy(
+  () => import("./pages/owner/OwnerEarningsPage"),
+);
+const OwnerCustomersPage = lazy(
+  () => import("./pages/owner/OwnerCustomersPage"),
+);
+const OwnerSettingsPage = lazy(
+  () => import("./pages/owner/OwnerSettingsPage"),
+);
+const OwnerSupportPage = lazy(() => import("./pages/owner/OwnerSupportPage"));
+const OwnerCourtFormPage = lazy(
+  () => import("./pages/owner/OwnerCourtFormPage"),
+>>>>>>> origin/main
 );
 const AdminDashboardPage = lazy(
   () => import("./pages/admin/AdminDashboardPage"),
@@ -60,6 +80,7 @@ export default function App() {
             <Route path="/my-bookings" element={<MyBookingsPage />} />
           </Route>
 
+<<<<<<< HEAD
           <Route element={<ProtectedRoute roles={["owner"]} />}>
             <Route path="/owner/dashboard" element={<OwnerDashboardPage />} />
             <Route path="/owner/bookings" element={<OwnerBookingsPage />} />
@@ -71,8 +92,32 @@ export default function App() {
             />
           </Route>
 
+=======
+>>>>>>> origin/main
           <Route element={<ProtectedRoute roles={["admin"]} />}>
             <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
+          </Route>
+        </Route>
+
+        {/* داشبورد الأونر: layout خاص بيه (sidebar) بره MainLayout */}
+        <Route element={<ProtectedRoute roles={["owner"]} />}>
+          <Route path="/owner" element={<Navigate to="/owner/dashboard" replace />} />
+
+          <Route element={<OwnerLayout />}>
+            <Route path="/owner/dashboard" element={<OwnerDashboardPage />} />
+            <Route path="/owner/bookings" element={<OwnerBookingsPage />} />
+            <Route path="/owner/calendar" element={<OwnerCalendarPage />} />
+            <Route path="/owner/courts" element={<OwnerCourtsPage />} />
+            <Route path="/owner/earnings" element={<OwnerEarningsPage />} />
+            <Route path="/owner/customers" element={<OwnerCustomersPage />} />
+            <Route path="/owner/settings" element={<OwnerSettingsPage />} />
+            <Route path="/owner/support" element={<OwnerSupportPage />} />
+
+            <Route path="/owner/courts/new" element={<OwnerCourtFormPage />} />
+            <Route
+              path="/owner/courts/:id/edit"
+              element={<OwnerCourtFormPage />}
+            />
           </Route>
         </Route>
       </Routes>

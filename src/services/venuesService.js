@@ -1,5 +1,6 @@
 import { supabase } from "../lib/supabaseClient";
 import { PLATFORM_COMMISSION_PERCENT } from "../lib/constants";
+import { getImageDimensionsError } from "../lib/venueImageRules";
 
 function getVenueImagesBucket() {
   return import.meta.env.VITE_SUPABASE_VENUE_IMAGES_BUCKET || "venue-images";
@@ -313,4 +314,102 @@ export async function getAdminOverview() {
     bookings: bookingCount,
     platformCommission,
   };
+}
+
+// الصق الدالتين دول في آخر ملف src/services/venuesService.js
+// (بيستخدموا supabase و getOwnerVenues و getVenueImagesByVenueIds الموجودين في الملف نفسه)
+
+export async function getOwnerVenuesWithImages(ownerId) {
+  const venues = await getOwnerVenues(ownerId);
+  const imagesByVenueId = await getVenueImagesByVenueIds(
+    venues.map((venue) => venue.id),
+  );
+  return venues.map((venue) => ({
+    ...venue,
+    images: imagesByVenueId.get(String(venue.id)) ?? [],
+  }));
+}
+
+export async function setVenueActive({ venueId, ownerId, isActive }) {
+  const { data, error } = await supabase
+    .from("venues")
+    .update({ is_active: isActive })
+    .eq("id", venueId)
+    .eq("owner_id", ownerId)
+    .select("*")
+    .single();
+
+  if (error) throw error;
+  return data;
+}
+
+function readImageSize(file) {
+  return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(file);
+    const image = new Image();
+    image.onload = () => {
+      URL.revokeObjectURL(url);
+      resolve({ width: image.naturalWidth, height: image.naturalHeight });
+    };
+    image.onerror = () => {
+      URL.revokeObjectURL(url);
+      reject(new Error("تعذر قراءة الصورة. تأكد إن الملف صورة سليمة."));
+    };
+    image.src = url;
+  });
+}
+
+// فحص صورة واحدة: الصيغة والحجم والأبعاد. بترمي Error برسالة عربي لو مرفوضة.
+export async function validateVenueImageFile(file) {
+  validateVenueImageFiles([file]);
+  const { width, height } = await readImageSize(file);
+  const message = getImageDimensionsError(width, height);
+  if (message) throw new Error(message);
+}
+
+// مسار الملف داخل الـ bucket من رابط الصورة العام
+function getStoragePathFromUrl(url, bucket) {
+  const marker = `/object/public/${bucket}/`;
+  const index = url.indexOf(marker);
+  if (index === -1) return null;
+  return decodeURIComponent(url.slice(index + marker.length).split("?")[0]);
+}
+
+// حذف صورة: الصف من venue_images والملف من الـ Storage
+export async function removeVenueImage(image) {
+  const bucket = getVenueImagesBucket();
+
+  const { data: deletedRows, error } = await supabase
+    .from("venue_images")
+    .delete()
+    .eq("id", image.id)
+    .select("id");
+  if (error) throw error;
+  if (!deletedRows?.length) {
+    throw new Error(
+      "تعذر حذف الصورة. غالبًا مفيش صلاحية حذف على جدول venue_images في Supabase.",
+    );
+  }
+
+  const path = getStoragePathFromUrl(image.image_url, bucket);
+  if (!path) return;
+
+  const { data: removedFiles, error: storageError } = await supabase.storage
+    .from(bucket)
+    .remove([path]);
+  if (storageError) {
+    throw new Error(`تم حذف الصورة لكن تعذر حذف الملف من التخزين: ${storageError.message}`);
+  }
+  if (!removedFiles?.length) {
+    throw new Error(
+      "تم حذف الصورة لكن الملف فضل في التخزين. غالبًا مفيش صلاحية حذف على الـ bucket في Supabase.",
+    );
+  }
+}
+
+// استبدال صورة: بنرفع الجديدة الأول وبعدين نحذف القديمة، فالملعب مايفضلش من غير صورة لو حصل خطأ
+export async function replaceVenueImage({ venueId, ownerId, file, existingImage }) {
+  await validateVenueImageFile(file);
+  await saveVenueImages({ venueId, ownerId, files: [file] });
+  if (existingImage) await removeVenueImage(existingImage);
 }

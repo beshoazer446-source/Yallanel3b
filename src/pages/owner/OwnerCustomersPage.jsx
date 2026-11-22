@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../context/useAuth";
@@ -386,3 +387,10 @@ export default function OwnerCustomersPage() {
     </section>
   );
 }
+=======
+import ComingSoon from "../../components/dashboard/ComingSoon";
+
+export default function OwnerCustomersPage() {
+  return <ComingSoon />;
+}
+>>>>>>> origin/main

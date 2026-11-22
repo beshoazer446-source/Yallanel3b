@@ -164,6 +164,199 @@
   gap: 22px;
 }
 
+.venue-card {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: var(--white);
+  box-shadow: 0 5px 18px #071c1610;
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+.venue-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 32px #071c161a;
+}
+
+.venue-card-image {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 16 / 10;
+  background: var(--bg-dashboard);
+}
+
+.venue-card-image>img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 250ms ease;
+}
+
+.venue-card:hover .venue-card-image>img {
+  transform: scale(1.035);
+}
+
+.venue-image-placeholder {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: linear-gradient(145deg, #e8f1eb, #dce9e0);
+  color: var(--green);
+  font-size: 13px;
+}
+
+.venue-image-placeholder span:first-child {
+  display: grid;
+  width: 58px;
+  height: 58px;
+  place-items: center;
+  border: 1px solid #0b3b2c20;
+  border-radius: 18px;
+  background: #ffffffa6;
+  font-size: 28px;
+}
+
+.venue-city {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  max-width: calc(100% - 28px);
+  overflow: hidden;
+  padding: 7px 12px;
+  border: 1px solid #ffffff65;
+  border-radius: 999px;
+  background: #071c16d9;
+  color: var(--white);
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.venue-card-content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: 18px;
+}
+
+.venue-card h3 {
+  overflow: hidden;
+  margin-bottom: 8px;
+  color: var(--green-dark);
+  font-size: 19px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.venue-location {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow: hidden;
+  color: var(--text-muted);
+  font-size: 13px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.venue-location span {
+  color: var(--status-confirmed);
+  font-size: 18px;
+}
+
+.venue-description {
+  display: -webkit-box;
+  overflow: hidden;
+  min-height: 44px;
+  margin-top: 10px;
+  color: #64736a;
+  font-size: 13px;
+  line-height: 1.7;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+}
+
+.venue-amenities {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 14px;
+}
+
+.venue-amenities span {
+  padding: 5px 9px;
+  border-radius: 8px;
+  background: var(--bg);
+  color: #58655d;
+  font-size: 11px;
+}
+
+.venue-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: auto;
+  padding-top: 16px;
+}
+
+.venue-price {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  color: var(--text-muted);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.venue-price strong {
+  color: var(--status-confirmed);
+  font-size: 21px;
+}
+
+.venue-price strong span {
+  font-size: 12px;
+}
+
+.venue-details-link {
+  display: inline-flex;
+  min-height: 40px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 9px 14px;
+  border-radius: 10px;
+  background: var(--yellow);
+  color: var(--green-dark);
+  font-size: 13px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.venue-details-link:hover {
+  filter: brightness(0.97);
+}
+
+.venue-details-link:focus-visible,
+.venues-search button:focus-visible,
+.venues-search input:focus-visible {
+  outline: 2px solid var(--status-confirmed);
+  outline-offset: 3px;
+}
+
+.venue-details-link>span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .venues-message {
   padding: 48px 20px;
   border: 1px dashed var(--border);
@@ -197,4 +390,463 @@
     grid-template-columns: 1fr;
     gap: 16px;
   }
+}
+
+/* =========================================================
+   أدوات الفلترة والترتيب الذكي والجغرافي (Smart Filters & Geo)
+   ========================================================= */
+
+.venues-controls-bar {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.venues-controls-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.venues-control-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: 999px;
+  border: 1.5px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.venues-control-btn:hover:not(:disabled) {
+  border-color: var(--green);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(11, 59, 44, 0.1);
+}
+
+.venues-control-btn.is-active {
+  border-color: var(--green);
+  background: var(--cream);
+  color: var(--green-dark);
+  box-shadow: 0 4px 14px rgba(11, 59, 44, 0.12);
+}
+
+.venues-control-btn.geo-btn.is-active {
+  border-color: var(--status-confirmed);
+  color: var(--green-dark);
+}
+
+.control-active-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--status-confirmed);
+  box-shadow: 0 0 0 3px rgba(27, 138, 90, 0.25);
+  animation: pulseDot 1.8s infinite;
+}
+
+@keyframes pulseDot {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.3);
+    opacity: 0.7;
+  }
+}
+
+.control-badge {
+  display: inline-grid;
+  place-items: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: var(--green);
+  color: var(--white);
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.venues-reset-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 16px;
+  border-radius: 999px;
+  border: 1px dashed var(--status-cancelled);
+  background: rgba(216, 92, 82, 0.08);
+  color: var(--status-cancelled);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.venues-reset-btn:hover {
+  background: rgba(216, 92, 82, 0.16);
+  transform: translateY(-1px);
+}
+
+.spin-icon {
+  animation: spinGeo 1.2s linear infinite;
+}
+
+@keyframes spinGeo {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.venues-geo-error {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: rgba(216, 92, 82, 0.1);
+  border: 1px solid rgba(216, 92, 82, 0.3);
+  color: var(--status-cancelled);
+  font-size: 13px;
+}
+
+.venues-geo-error button {
+  margin-right: auto;
+  background: transparent;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  opacity: 0.7;
+  display: grid;
+  place-items: center;
+}
+
+.venues-geo-error button:hover {
+  opacity: 1;
+}
+
+/* بانل الفلاتر (Filter Drawer Panel) */
+.venues-filter-panel {
+  padding: 22px;
+  margin-bottom: 22px;
+  border-radius: 20px;
+  border: 1.5px solid var(--border);
+  background: var(--surface);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+  animation: filterSlide 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes filterSlide {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.venues-filter-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 14px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.venues-filter-panel-header h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--green);
+}
+
+.panel-clear-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+.panel-clear-btn:hover {
+  color: var(--status-cancelled);
+  background: rgba(216, 92, 82, 0.08);
+}
+
+.panel-close-btn {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: var(--bg);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.panel-close-btn:hover {
+  background: var(--border);
+  color: var(--text);
+}
+
+.venues-filter-group-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.filter-group-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.filter-group-count {
+  font-size: 12px;
+  color: var(--status-confirmed);
+  font-weight: 700;
+}
+
+/* مربعات الاختيار والشارات العصرية (Custom Checkbox Pills) */
+.venues-checkbox-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  max-height: 220px;
+  overflow-y: auto;
+  padding: 2px;
+}
+
+.venues-checkbox-pills::-webkit-scrollbar {
+  width: 6px;
+}
+
+.venues-checkbox-pills::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 999px;
+}
+
+.venues-custom-checkbox-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  border: 1.5px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.18s ease;
+}
+
+.venues-custom-checkbox-pill:hover {
+  border-color: var(--green);
+  background: var(--bg);
+  transform: translateY(-1px);
+}
+
+.venues-custom-checkbox-pill input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.custom-check-box {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  border: 1.5px solid var(--text-muted);
+  display: grid;
+  place-items: center;
+  background: var(--surface);
+  color: var(--white);
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.venues-custom-checkbox-pill.is-checked {
+  border-color: var(--green);
+  background: var(--cream);
+  color: var(--green-dark);
+  font-weight: 700;
+}
+
+.venues-custom-checkbox-pill.is-checked .custom-check-box {
+  background: var(--green);
+  border-color: var(--green);
+}
+
+.pill-count {
+  font-size: 11px;
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.08);
+  color: var(--text-muted);
+  font-weight: 700;
+}
+
+:root[data-theme="dark"] .venues-control-btn {
+  border-color: var(--border);
+  background: var(--surface-raised);
+  color: var(--text);
+}
+
+:root[data-theme="dark"] .venues-control-btn:hover:not(:disabled) {
+  border-color: var(--status-confirmed);
+  background: var(--surface-raised);
+  color: var(--text-strong);
+}
+
+:root[data-theme="dark"] .venues-control-btn.is-active {
+  border-color: var(--status-confirmed);
+  background: rgba(99, 200, 155, 0.16);
+  color: var(--text-strong);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22);
+}
+
+:root[data-theme="dark"] .venues-control-btn.geo-btn.is-active {
+  border-color: var(--yellow);
+  background: rgba(255, 200, 87, 0.14);
+  color: var(--yellow);
+}
+
+:root[data-theme="dark"] .venues-control-btn svg,
+:root[data-theme="dark"] .venues-control-btn.is-active svg {
+  color: inherit;
+}
+
+:root[data-theme="dark"] .venues-reset-btn {
+  border-color: var(--status-cancelled);
+  background: rgba(255, 140, 130, 0.12);
+  color: var(--status-cancelled);
+}
+
+:root[data-theme="dark"] .venues-filter-panel-header h3 {
+  color: var(--text-strong);
+}
+
+:root[data-theme="dark"] .panel-clear-btn {
+  color: var(--text-muted);
+}
+
+:root[data-theme="dark"] .panel-close-btn {
+  background: var(--surface-raised);
+  color: var(--text);
+}
+
+:root[data-theme="dark"] .venues-custom-checkbox-pill {
+  border-color: var(--border);
+  background: var(--surface-raised);
+  color: var(--text);
+}
+
+:root[data-theme="dark"] .venues-custom-checkbox-pill:hover {
+  border-color: var(--status-confirmed);
+  background: var(--bg-dashboard);
+  color: var(--text-strong);
+}
+
+:root[data-theme="dark"] .venues-custom-checkbox-pill.is-checked {
+  border-color: var(--status-confirmed);
+  background: rgba(99, 200, 155, 0.16);
+  color: var(--text-strong);
+}
+
+:root[data-theme="dark"] .venues-custom-checkbox-pill.is-checked .custom-check-box {
+  border-color: var(--status-confirmed);
+  background: var(--status-confirmed);
+  color: var(--green-darker);
+}
+
+:root[data-theme="dark"] .custom-check-box {
+  border-color: var(--text-muted);
+  background: var(--bg);
+  color: var(--green-darker);
+}
+
+:root[data-theme="dark"] .pill-count {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text);
+}
+
+.venues-custom-checkbox-pill.is-checked .pill-count {
+  background: var(--yellow);
+  color: var(--green-dark);
+}
+
+/* شريط التاجز النشطة (Active Filter Tags) */
+.venues-active-tags-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.active-tag-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: var(--cream);
+  border: 1px solid var(--yellow);
+  color: var(--green-dark);
+  font-size: 12px;
+  font-weight: 700;
+  animation: tagIn 0.2s ease-out;
+}
+
+@keyframes tagIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.active-tag-chip button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  color: var(--green-dark);
+  opacity: 0.7;
+  padding: 0;
+}
+
+.active-tag-chip button:hover {
+  opacity: 1;
 }
