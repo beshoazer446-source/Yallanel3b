@@ -12,10 +12,21 @@
   --text-strong: #0B3B2C;
   --text-muted: #87928D;
 
+  --sidebar-bg: var(--green-dark);
+  --sidebar-text: rgba(255, 255, 255, 0.72);
+  --sidebar-text-active: var(--yellow);
+  --sidebar-hover-bg: rgba(255, 255, 255, 0.06);
+  --sidebar-active-bg: rgba(255, 200, 87, 0.12);
+  --sidebar-border: rgba(255, 255, 255, 0.08);
+  --sidebar-section-title: rgba(255, 255, 255, 0.4);
+  --sidebar-width: 260px;
+  --sidebar-width-collapsed: 76px;
+  --header-height: 64px;
+
   --status-confirmed: #1B8A5A;
   --status-pending: #B47A14;
   --status-cancelled: #D85C52;
-    --border: #DCE5DF;
+  --border: #DCE5DF;
   --error-bg: #FDECEA;
   --surface: #FFFFFF;
   --surface-raised: #FFFFFF;
@@ -53,6 +64,7 @@
   --focus-ring: #FFC857;
   --navbar-bg: #09130F;
   --navbar-text: #F7FAF8;
+  --sidebar-bg: var(--navbar-bg);
   color-scheme: dark;
 }
 
@@ -74,7 +86,15 @@ body,
 #root {
   min-height: 100%;
   max-width: 100%;
+}
+
+html {
   overflow-x: hidden;
+}
+
+body,
+#root {
+  overflow-x: clip;
 }
 
 a {

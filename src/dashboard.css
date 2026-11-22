@@ -1,0 +1,506 @@
+/* ==========================================================================
+   dashboard.css
+   ستايل مشترك لكل الداشبوردات (الأونر، وبعدين السوبر أدمن).
+   - كل الكلاسات بتبدأ بـ dash- عشان ما تتعارضش مع كلاسات الموقع.
+   - الألوان كلها من المتغيرات في index.css، فالدارك مود بيشتغل لوحده.
+   - الموقع RTL: الـ sidebar على اليمين، واستخدمنا خصائص logical
+     (inline-start / inline-end) بدل left / right.
+   - الـ breakpoint: 1024px. فوقه sidebar عادي قابل للطي، وتحته drawer.
+
+   الهيكل المتوقع (للـ JSX):
+   .dash-shell
+     .dash-overlay                       (.is-visible)
+     aside.dash-sidebar                  (.is-collapsed  .is-open)
+       .dash-sidebar-top
+         .dash-brand > .dash-logo + .dash-brand-name
+         button.dash-collapse-btn        (ديسكتوب)
+         button.dash-close-btn           (موبايل / تابلت)
+       nav.dash-nav
+         .dash-section
+           .dash-section-title
+           a | button .dash-nav-link     (.is-active)  [data-label="..."]
+             svg + span.dash-nav-label + span.dash-nav-badge
+       .dash-user > .dash-avatar + .dash-user-info > .dash-user-name
+     .dash-main
+       header.dash-header
+         button.dash-menu-btn            (موبايل / تابلت)
+         h1.dash-page-title
+         .dash-header-actions > button.dash-icon-btn
+       main.dash-content
+   ========================================================================== */
+
+/* ---------- الإطار العام ---------- */
+
+.dash-shell {
+  display: flex;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: var(--bg-dashboard);
+  color: var(--text);
+}
+
+body.dash-drawer-open {
+  overflow: hidden;
+}
+
+/* ---------- الـ Sidebar ---------- */
+
+.dash-sidebar {
+  position: sticky;
+  top: 0;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  width: var(--sidebar-width);
+  height: 100vh;
+  height: 100dvh;
+  background: var(--sidebar-bg);
+  color: var(--sidebar-text);
+  border-inline-end: 1px solid var(--sidebar-border);
+  transition: width 0.2s ease;
+}
+
+/* أعلى الـ sidebar: اللوجو + زرار الطي */
+
+.dash-sidebar-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: var(--header-height);
+  padding: 0 16px;
+  border-bottom: 1px solid var(--sidebar-border);
+}
+
+.dash-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  color: var(--white);
+}
+
+/* مكان اللوجو: دايرة فيها أيقونة، تتبدل باللوجو الحقيقي بعدين */
+.dash-logo {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--yellow);
+  color: var(--green-dark);
+}
+
+.dash-logo img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.dash-brand-name {
+  font-size: 18px;
+  font-weight: 800;
+  white-space: nowrap;
+  letter-spacing: 0.2px;
+}
+
+.dash-collapse-btn,
+.dash-close-btn {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--sidebar-text);
+  transition: background 0.15s, color 0.15s;
+}
+
+.dash-collapse-btn:hover,
+.dash-close-btn:hover {
+  background: var(--sidebar-hover-bg);
+  color: var(--white);
+}
+
+.dash-collapse-btn svg {
+  transition: transform 0.2s ease;
+}
+
+/* زرار الإغلاق بيظهر في الـ drawer بس */
+.dash-close-btn {
+  display: none;
+}
+
+/* ---------- القايمة ---------- */
+
+.dash-nav {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 14px 12px 12px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--sidebar-border) transparent;
+}
+
+.dash-section {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.dash-section-title {
+  padding: 0 12px 6px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--sidebar-section-title);
+  white-space: nowrap;
+}
+
+.dash-nav-link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 44px;
+  padding: 0 10px;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--sidebar-text);
+  font-size: 15px;
+  font-weight: 600;
+  text-align: start;
+  white-space: nowrap;
+  transition: background 0.15s, color 0.15s;
+}
+
+.dash-nav-link svg {
+  flex-shrink: 0;
+}
+
+.dash-nav-link:hover {
+  background: var(--sidebar-hover-bg);
+  color: var(--white);
+}
+
+/* العنصر النشط: خلفية + شريط رفيع جنب الحافة */
+.dash-nav-link.is-active,
+.dash-nav-link.active {
+  background: var(--sidebar-active-bg);
+  color: var(--sidebar-text-active);
+}
+
+.dash-nav-link.is-active::before,
+.dash-nav-link.active::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: -12px;
+  inset-block: 10px;
+  width: 3px;
+  border-start-end-radius: 3px;
+  border-end-end-radius: 3px;
+  background: var(--sidebar-text-active);
+}
+
+.dash-nav-label {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dash-nav-badge {
+  flex-shrink: 0;
+  min-width: 22px;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: var(--yellow);
+  color: var(--green-dark);
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.4;
+  text-align: center;
+}
+
+/* ---------- حساب المستخدم (أسفل الـ sidebar) ---------- */
+
+.dash-user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  border-top: 1px solid var(--sidebar-border);
+}
+
+.dash-avatar {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--yellow);
+  color: var(--green-dark);
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.dash-user-info {
+  min-width: 0;
+}
+
+.dash-user-name {
+  display: block;
+  overflow: hidden;
+  color: var(--white);
+  font-size: 14px;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ---------- المحتوى + الهيدر ---------- */
+
+.dash-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.dash-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: var(--header-height);
+  padding: 0 24px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.dash-page-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--text-strong);
+}
+
+.dash-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-inline-start: auto;
+}
+
+.dash-icon-btn,
+.dash-menu-btn {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: transparent;
+  color: var(--text);
+  transition: background 0.15s;
+}
+
+.dash-icon-btn:hover,
+.dash-menu-btn:hover {
+  background: var(--bg-dashboard);
+}
+
+/* زرار القايمة بيظهر على الموبايل والتابلت بس */
+.dash-menu-btn {
+  display: none;
+}
+
+.dash-content {
+  flex: 1;
+  padding: 24px;
+}
+
+/* ---------- الـ Overlay (الـ drawer) ---------- */
+
+.dash-overlay {
+  display: none;
+}
+
+/* ---------- Focus ---------- */
+
+.dash-nav-link:focus-visible,
+.dash-collapse-btn:focus-visible,
+.dash-close-btn:focus-visible,
+.dash-icon-btn:focus-visible,
+.dash-menu-btn:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+/* ==========================================================================
+   ديسكتوب (1024px وأكتر): الـ sidebar القابل للطي
+   ========================================================================== */
+
+@media (min-width: 1024px) {
+  .dash-sidebar.is-collapsed {
+    width: var(--sidebar-width-collapsed);
+  }
+
+  .dash-sidebar.is-collapsed .dash-sidebar-top {
+    flex-direction: column;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 0;
+  }
+
+  .dash-sidebar.is-collapsed .dash-brand-name,
+  .dash-sidebar.is-collapsed .dash-section-title,
+  .dash-sidebar.is-collapsed .dash-nav-label,
+  .dash-sidebar.is-collapsed .dash-user-info {
+    display: none;
+  }
+
+  .dash-sidebar.is-collapsed .dash-collapse-btn svg {
+    transform: rotate(180deg);
+  }
+
+  /* مفيش overflow هنا عشان التولتيب يبان بره الـ sidebar */
+  .dash-sidebar.is-collapsed .dash-nav {
+    overflow: visible;
+    gap: 0;
+  }
+
+  .dash-sidebar.is-collapsed .dash-section + .dash-section {
+    margin-top: 10px;
+    padding-top: 4px;
+    border-top: 1px solid var(--sidebar-border);
+  }
+
+  .dash-sidebar.is-collapsed .dash-nav-link {
+    justify-content: center;
+    padding: 0;
+  }
+
+  .dash-sidebar.is-collapsed .dash-nav-badge {
+    position: absolute;
+    inset-block-start: 4px;
+    inset-inline-end: 6px;
+    min-width: 18px;
+    padding: 0 5px;
+    font-size: 11px;
+  }
+
+  .dash-sidebar.is-collapsed .dash-nav-link.is-active::before,
+  .dash-sidebar.is-collapsed .dash-nav-link.active::before {
+    inset-inline-start: -12px;
+  }
+
+  .dash-sidebar.is-collapsed .dash-user {
+    justify-content: center;
+    padding: 12px 0;
+  }
+
+  /* التولتيب: بيظهر على الـ hover والـ focus وهو مطوي */
+  .dash-sidebar.is-collapsed .dash-nav-link[data-label]::after {
+    content: attr(data-label);
+    position: absolute;
+    inset-inline-end: calc(100% + 20px);
+    inset-block-start: 50%;
+    transform: translateY(-50%);
+    padding: 6px 12px;
+    border-radius: 8px;
+    background: var(--surface-raised);
+    color: var(--text-strong);
+    box-shadow: var(--card-shadow);
+    font-size: 13px;
+    font-weight: 700;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s;
+    z-index: 20;
+  }
+
+  .dash-sidebar.is-collapsed .dash-nav-link[data-label]:hover::after,
+  .dash-sidebar.is-collapsed .dash-nav-link[data-label]:focus-visible::after {
+    opacity: 1;
+  }
+}
+
+/* ==========================================================================
+   موبايل وتابلت (أقل من 1024px): الـ drawer
+   ========================================================================== */
+
+@media (max-width: 1023.98px) {
+  .dash-sidebar {
+    position: fixed;
+    inset-block: 0;
+    inset-inline-start: 0;
+    z-index: 50;
+    width: min(var(--sidebar-width), 85vw);
+    box-shadow: var(--card-shadow);
+    /* الـ drawer بيطلع من اليمين (الموقع RTL) */
+    transform: translateX(100%);
+    visibility: hidden;
+    transition: transform 0.25s ease, visibility 0s linear 0.25s;
+  }
+
+  .dash-sidebar.is-open {
+    transform: translateX(0);
+    visibility: visible;
+    transition: transform 0.25s ease, visibility 0s;
+  }
+
+  .dash-collapse-btn {
+    display: none;
+  }
+
+  .dash-close-btn,
+  .dash-menu-btn {
+    display: grid;
+  }
+
+  .dash-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 40;
+    display: block;
+    background: color-mix(in srgb, var(--green-darker) 60%, transparent);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.25s ease, visibility 0s linear 0.25s;
+  }
+
+  .dash-overlay.is-visible {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.25s ease, visibility 0s;
+  }
+
+  .dash-header {
+    padding: 0 16px;
+  }
+
+  .dash-content {
+    padding: 16px;
+  }
+}
+
+/* ---------- تقليل الحركة ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .dash-sidebar,
+  .dash-overlay,
+  .dash-collapse-btn svg {
+    transition: none;
+  }
+}
