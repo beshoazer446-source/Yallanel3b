@@ -2,8 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../context/useAuth";
 import { useTheme } from "../../context/useTheme";
-import { getOwnerBookings } from "../../services/bookingService";
-import { getOwnerVenues } from "../../services/venueService";
+import { getOwnerBookings } from "../../services/bookingsService";
 import "./OwnerCustomersPage.css";
 
 function formatCurrency(amount) {
@@ -130,7 +129,6 @@ export default function OwnerCustomersPage() {
 
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState("");
-  const [venues, setVenues] = useState([]);
   const [bookings, setBookings] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterType, setFilterType] = useState("all"); // all | repeat | confirmed
@@ -153,13 +151,9 @@ export default function OwnerCustomersPage() {
       setErrorMsg("");
 
       try {
-        const [ownerVenues, ownerBookings] = await Promise.all([
-          getOwnerVenues(user.id),
-          getOwnerBookings(user.id),
-        ]);
+        const ownerBookings = await getOwnerBookings(user.id);
 
         if (!isMounted) return;
-        setVenues(ownerVenues ?? []);
         setBookings(ownerBookings ?? []);
       } catch (err) {
         if (!isMounted) return;
@@ -176,6 +170,17 @@ export default function OwnerCustomersPage() {
       isMounted = false;
     };
   }, [user?.id, authLoading]);
+
+  const venuesCount = useMemo(() => {
+    const uniqueVenues = new Set();
+    for (const booking of bookings) {
+      const venueKey = booking?.venue?.id || booking?.venue_id || booking?.venue?.name;
+      if (venueKey) {
+        uniqueVenues.add(String(venueKey));
+      }
+    }
+    return uniqueVenues.size;
+  }, [bookings]);
 
   const customers = useMemo(() => buildCustomersSummary(bookings), [bookings]);
 
@@ -230,7 +235,7 @@ export default function OwnerCustomersPage() {
             <div>
               <h1>العملاء</h1>
               <p>
-                متابعة العملاء الذين حجزوا في ملاعبك ({venues.length} ملعب مسجل)،
+                متابعة العملاء الذين حجزوا في ملاعبك ({venuesCount} ملعب مسجل)،
                 ومراجعة عدد الحجوزات وبيانات التواصل.
               </p>
             </div>
