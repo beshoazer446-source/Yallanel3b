@@ -27,13 +27,6 @@ const OwnerDashboardPage = lazy(
 const OwnerBookingsPage = lazy(
   () => import("./pages/owner/OwnerBookingsPage"),
 );
-<<<<<<< HEAD
-const OwnerCustomersPage = lazy(
-  () => import("./pages/owner/OwnerCustomersPage"),
-);
-const OwnerVenueFormPage = lazy(
-  () => import("./pages/owner/OwnerVenueFormPage"),
-=======
 const OwnerCalendarPage = lazy(
   () => import("./pages/owner/OwnerCalendarPage"),
 );
@@ -50,7 +43,6 @@ const OwnerSettingsPage = lazy(
 const OwnerSupportPage = lazy(() => import("./pages/owner/OwnerSupportPage"));
 const OwnerCourtFormPage = lazy(
   () => import("./pages/owner/OwnerCourtFormPage"),
->>>>>>> origin/main
 );
 const AdminDashboardPage = lazy(
   () => import("./pages/admin/AdminDashboardPage"),
@@ -80,20 +72,6 @@ export default function App() {
             <Route path="/my-bookings" element={<MyBookingsPage />} />
           </Route>
 
-<<<<<<< HEAD
-          <Route element={<ProtectedRoute roles={["owner"]} />}>
-            <Route path="/owner/dashboard" element={<OwnerDashboardPage />} />
-            <Route path="/owner/bookings" element={<OwnerBookingsPage />} />
-            <Route path="/owner/customers" element={<OwnerCustomersPage />} />
-            <Route path="/owner/venues/new" element={<OwnerVenueFormPage />} />
-            <Route
-              path="/owner/venues/:id/edit"
-              element={<OwnerVenueFormPage />}
-            />
-          </Route>
-
-=======
->>>>>>> origin/main
           <Route element={<ProtectedRoute roles={["admin"]} />}>
             <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
           </Route>
