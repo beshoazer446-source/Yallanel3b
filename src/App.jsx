@@ -26,6 +26,9 @@ const OwnerDashboardPage = lazy(
 const OwnerBookingsPage = lazy(
   () => import("./pages/owner/OwnerBookingsPage"),
 );
+const OwnerCustomersPage = lazy(
+  () => import("./pages/owner/OwnerCustomersPage"),
+);
 const OwnerVenueFormPage = lazy(
   () => import("./pages/owner/OwnerVenueFormPage"),
 );
@@ -60,6 +63,7 @@ export default function App() {
           <Route element={<ProtectedRoute roles={["owner"]} />}>
             <Route path="/owner/dashboard" element={<OwnerDashboardPage />} />
             <Route path="/owner/bookings" element={<OwnerBookingsPage />} />
+            <Route path="/owner/customers" element={<OwnerCustomersPage />} />
             <Route path="/owner/venues/new" element={<OwnerVenueFormPage />} />
             <Route
               path="/owner/venues/:id/edit"
