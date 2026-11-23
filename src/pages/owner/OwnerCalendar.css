@@ -1,0 +1,110 @@
+.calendar-wrapper {
+  background: var(--surface);
+  padding: 24px;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  box-shadow: var(--card-shadow);
+  direction: rtl;
+  color: var(--text);
+}
+
+/* أزرار التحكم */
+.fc .fc-button-primary {
+  background-color: var(--green);
+  border-color: var(--green);
+  color: #FFFFFF;
+  font-weight: 700;
+  border-radius: 10px;
+  padding: 6px 14px;
+  box-shadow: none !important;
+}
+
+.fc .fc-button-primary:hover,
+.fc .fc-button-primary:not(:disabled).fc-button-active {
+  background-color: var(--yellow);
+  border-color: var(--yellow);
+  color: var(--green-dark);
+}
+
+.fc .fc-button-primary:disabled {
+  background-color: var(--bg-dashboard);
+  border-color: var(--border);
+  color: var(--text-muted);
+  opacity: 0.7;
+}
+
+/* عنوان الشهر والأسبوع */
+.fc .fc-toolbar-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--text-strong);
+}
+
+/* حدود الجدول والخلايا */
+.fc-theme-standard td,
+.fc-theme-standard th,
+.fc-theme-standard .fc-scrollgrid {
+  border-color: var(--border);
+}
+
+/* توحيد خلفية رأس الجدول والركن العلوي الأيمن */
+.fc .fc-col-header-cell,
+.fc .fc-timegrid-axis,
+.fc .fc-scrollgrid-section-header > * {
+  background-color: var(--bg-dashboard) !important;
+  padding: 8px 0;
+}
+
+.fc .fc-col-header-cell-cushion,
+.fc .fc-daygrid-day-number,
+.fc .fc-timegrid-slot-label-cushion {
+  color: var(--text) !important;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+/* خلفية الساعات الفارغة */
+.fc .fc-timegrid-slot,
+.fc .fc-daygrid-day {
+  background-color: var(--surface);
+}
+
+/* تمييز عمود اليوم الحالي بلون هادئ ومناسب للوضعين */
+.fc .fc-timegrid-col.fc-day-today,
+.fc .fc-daygrid-day.fc-day-today {
+  background-color: color-mix(in srgb, var(--yellow) 8%, transparent) !important;
+}
+
+/* تمييز عنوان اليوم الحالي في الرأس بإطار سفلي أصفر فقط */
+.fc .fc-col-header-cell.fc-day-today {
+  background-color: var(--bg-dashboard) !important;
+  border-bottom: 3px solid var(--yellow) !important;
+}
+
+.fc .fc-col-header-cell.fc-day-today .fc-col-header-cell-cushion {
+  color: var(--yellow) !important;
+}
+
+/* مربعات الحجوزات */
+.fc-event {
+  border: none !important;
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* أزرار الوضع الليلي */
+:root[data-theme="dark"] .fc .fc-button-primary {
+  background-color: var(--surface-raised);
+  border-color: var(--border);
+  color: var(--text-strong);
+}
+
+:root[data-theme="dark"] .fc .fc-button-primary:hover,
+:root[data-theme="dark"] .fc .fc-button-primary:not(:disabled).fc-button-active {
+  background-color: var(--yellow);
+  border-color: var(--yellow);
+  color: var(--green-dark);
+}
