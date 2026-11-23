@@ -5,14 +5,17 @@
 }
 
 .auth-hero {
-  background: linear-gradient(160deg, var(--green) 0%, var(--green-darker) 100%);
+  background: url('../../../Logo/side.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   color: var(--white);
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
   padding: 48px;
 }
-
+سس
 .auth-hero-quote {
   font-size: 32px;
   font-weight: 800;
@@ -21,6 +24,7 @@
 
 .auth-hero-stats {
   color: var(--yellow);
+  
   margin-top: 12px;
   font-size: 14px;
 }
