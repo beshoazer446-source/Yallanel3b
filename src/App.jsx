@@ -21,8 +21,8 @@ const BookingSuccessPage = lazy(
   () => import("./pages/booking/BookingSuccessPage"),
 );
 const ProfilePage = lazy(() => import("./pages/ProfilePage"));
-const OwnerDashboardPage = lazy(
-  () => import("./pages/owner/OwnerDashboardPage"),
+const OwnerOverviewPage = lazy(
+  () => import("./pages/owner/OwnerOverviewPage"),
 );
 const OwnerBookingsPage = lazy(
   () => import("./pages/owner/OwnerBookingsPage"),
@@ -82,7 +82,7 @@ export default function App() {
           <Route path="/owner" element={<Navigate to="/owner/dashboard" replace />} />
 
           <Route element={<OwnerLayout />}>
-            <Route path="/owner/dashboard" element={<OwnerDashboardPage />} />
+            <Route path="/owner/dashboard" element={<OwnerOverviewPage />} />
             <Route path="/owner/bookings" element={<OwnerBookingsPage />} />
             <Route path="/owner/calendar" element={<OwnerCalendarPage />} />
             <Route path="/owner/courts" element={<OwnerCourtsPage />} />
