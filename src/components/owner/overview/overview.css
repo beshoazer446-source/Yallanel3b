@@ -1,0 +1,314 @@
+/* ستايل صفحة النظرة العامة (المكونات العامة في dashboard-ui.css) */
+
+.overview {
+  display: grid;
+  gap: 20px;
+}
+
+.overview-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.overview-greeting {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--text-strong);
+}
+
+.overview-date {
+  margin-top: 4px;
+  color: var(--text-muted);
+}
+
+.overview-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.overview-controls .dash-input {
+  width: auto;
+  min-width: 180px;
+}
+
+.overview-updated {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.overview-spin {
+  animation: overview-rotate 0.9s linear infinite;
+}
+
+@keyframes overview-rotate {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.overview-columns,
+.overview-charts {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  gap: 20px;
+}
+
+/* ---------- التبويبات والقوايم ---------- */
+
+.overview-tabs {
+  display: flex;
+  width: fit-content;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 12px;
+  background: var(--bg-dashboard);
+}
+
+.overview-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border: none;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.overview-tab.is-active {
+  background: var(--surface);
+  color: var(--text-strong);
+  box-shadow: var(--card-shadow);
+}
+
+.overview-tab:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.overview-tab-count {
+  min-width: 22px;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: var(--border);
+  color: var(--text-strong);
+  font-size: 12px;
+  text-align: center;
+}
+
+.overview-list {
+  display: grid;
+  list-style: none;
+}
+
+.overview-row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-top: 1px solid var(--border);
+}
+
+.overview-row:first-child {
+  border-top: none;
+}
+
+.overview-row.is-dim {
+  opacity: 0.6;
+}
+
+.overview-time {
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: var(--bg-dashboard);
+  color: var(--text-strong);
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.overview-row-main {
+  display: grid;
+  min-width: 0;
+}
+
+.overview-row-main strong {
+  overflow: hidden;
+  color: var(--text-strong);
+  font-size: 15px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.overview-row-main span {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.overview-row-side {
+  display: grid;
+  justify-items: end;
+  gap: 4px;
+}
+
+.overview-price {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.overview-empty {
+  padding: 24px 0;
+  text-align: center;
+  color: var(--text-muted);
+}
+
+.overview-ok {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.overview-ok svg {
+  color: var(--status-confirmed);
+}
+
+.overview-alert {
+  margin-bottom: 0;
+}
+
+/* ---------- الرسوم ---------- */
+
+.overview-chart {
+  min-width: 0;
+}
+
+.overview-tooltip {
+  display: grid;
+  gap: 2px;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface-raised);
+  box-shadow: var(--card-shadow);
+  color: var(--text);
+  font-size: 13px;
+}
+
+.overview-tooltip strong {
+  color: var(--text-strong);
+}
+
+/* ---------- الملاعب ---------- */
+
+.overview-courts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.overview-court {
+  display: grid;
+  gap: 6px;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.overview-court-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  color: var(--text-strong);
+}
+
+/* ---------- خطوات البداية ---------- */
+
+.overview-steps {
+  display: grid;
+  list-style: none;
+}
+
+.overview-step {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-top: 1px solid var(--border);
+}
+
+.overview-step:first-child {
+  border-top: none;
+}
+
+.overview-step-mark {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  border: 2px solid var(--border);
+  border-radius: 50%;
+  color: var(--green-darker);
+}
+
+.overview-step.is-done .overview-step-mark {
+  border-color: var(--status-confirmed);
+  background: var(--status-confirmed);
+}
+
+.overview-step-label {
+  flex: 1;
+  font-weight: 700;
+  color: var(--text-strong);
+}
+
+.overview-step.is-done .overview-step-label {
+  color: var(--text-muted);
+  text-decoration: line-through;
+}
+
+/* ---------- الاستجابة ---------- */
+
+@media (max-width: 1100px) {
+  .overview-columns,
+  .overview-charts {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .overview-row {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .overview-time {
+    grid-column: 1 / -1;
+    width: fit-content;
+  }
+
+  .overview-greeting {
+    font-size: 20px;
+  }
+
+  .overview-controls .dash-input {
+    min-width: 0;
+    flex: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .overview-spin {
+    animation: none;
+  }
+}

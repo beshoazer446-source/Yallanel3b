@@ -4,7 +4,8 @@ const STATUS_MAP = {
   active: { label: "نشط", tone: "success" },
   hidden: { label: "مخفي", tone: "muted" },
   confirmed: { label: "مؤكد", tone: "success" },
-  pending: { label: "معلق", tone: "warning" },
+  pending: { label: "قيد المراجعة", tone: "warning" },
+  rejected: { label: "مرفوض", tone: "danger" },
   cancelled: { label: "ملغي", tone: "danger" },
 };
 
