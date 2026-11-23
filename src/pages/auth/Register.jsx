@@ -1,16 +1,16 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Moon, Sun } from "lucide-react";
 import { useAuth } from "../../context/useAuth";
-import { useTheme } from "../../context/useTheme";
 import { supabase } from "../../lib/supabaseClient";
+import { homePath } from "../../lib/homePath";
+import VerifyEmailCode from "../../components/VerifyEmailCode";
 import "./Auth.css";
 
 export default function Register({ role = "user" }) {
   const { signUp } = useAuth();
-  const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
 
+  const [step, setStep] = useState(1); // 1: البيانات | 2: كود التأكيد
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -19,7 +19,6 @@ export default function Register({ role = "user" }) {
     agree: false,
   });
   const [error, setError] = useState("");
-  const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
   function handleChange(e) {
@@ -46,13 +45,22 @@ export default function Register({ role = "user" }) {
       return;
     }
     setError("");
-    setMessage("");
     setLoading(true);
 
+    const email = form.email.trim().toLowerCase();
+
     try {
+      const { data: confirmed, error: confirmedError } =
+        await supabase.rpc("email_confirmed", { p_email: email });
+
+      if (!confirmedError && confirmed) {
+        setError("الإيميل ده مسجّل بالفعل. سجّل دخولك.");
+        return;
+      }
+
       const { data, error: err } = await signUp({
         name: form.name.trim(),
-        email: form.email.trim(),
+        email,
         password: form.password,
         phone: form.phone,
         role,
@@ -63,32 +71,13 @@ export default function Register({ role = "user" }) {
         return;
       }
 
+      // لو تأكيد الإيميل مقفول في Supabase بيدخل الحساب على طول
       if (data.session) {
-        if (role === "owner") {
-          const { data: profile, error: profileError } = await supabase
-            .from("profiles")
-            .select("role")
-            .eq("id", data.user.id)
-            .single();
-          if (profileError) {
-            setError(`الحساب اتعمل لكن تعذر التحقق من صلاحيته: ${profileError.message}`);
-            return;
-          }
-          if (profile.role !== "owner") {
-            setError("حسابك اتعمل لكن قاعدة البيانات لم تسجله كصاحب ملعب. يلزم تفعيل دور owner في إعداد إنشاء profiles داخل Supabase.");
-            return;
-          }
-          navigate("/owner/dashboard", { replace: true });
-        } else {
-          navigate("/venues");
-        }
-      } else {
-        setMessage(
-          role === "owner"
-            ? "تم إنشاء حساب صاحب الملعب. أكّد بريدك الإلكتروني، ثم سجّل الدخول لفتح لوحة الأونر."
-            : "تم إنشاء الحساب. راجع بريدك الإلكتروني لتأكيده قبل تسجيل الدخول.",
-        );
+        navigate(homePath(role === "owner" ? "owner" : "user"));
+        return;
       }
+
+      setStep(2);
     } catch (signupError) {
       setError(signupError.message || "تعذر إنشاء الحساب.");
     } finally {
@@ -96,17 +85,36 @@ export default function Register({ role = "user" }) {
     }
   }
 
+  if (step === 2) {
+    return (
+      <div className="auth-page">
+        <div className="auth-panel">
+          <div className="auth-box">
+            <div className="auth-logo">
+              <span className="auth-logo-mark" />
+              يلا نلعب
+            </div>
+            <VerifyEmailCode
+              email={form.email.trim()}
+              onVerified={() =>
+                navigate(homePath(role === "owner" ? "owner" : "user"))
+              }
+              onBack={() => setStep(1)}
+            />
+          </div>
+        </div>
+        <div className="auth-hero">
+          <div className="auth-hero-quote">
+            "كل مباراة عظيمة تبدأ بملعب جاهز."
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="auth-page">
       <div className="auth-panel">
-        <button
-          type="button"
-          className="auth-theme-toggle"
-          onClick={toggleTheme}
-          aria-label={theme === "dark" ? "التبديل إلى الوضع الفاتح" : "التبديل إلى الوضع الداكن"}
-        >
-          {theme === "dark" ? <Sun size={19} /> : <Moon size={19} />}
-        </button>
         <div className="auth-box">
           <div className="auth-logo">
             <span className="auth-logo-mark" />
@@ -123,7 +131,6 @@ export default function Register({ role = "user" }) {
           </p>
 
           {error && <div className="auth-error">{error}</div>}
-          {message && <div className="auth-info" role="status">{message}</div>}
 
           <form onSubmit={handleSubmit} noValidate>
             <div className="auth-field">
@@ -139,7 +146,6 @@ export default function Register({ role = "user" }) {
                 onChange={handleChange}
               />
             </div>
-
             <div className="auth-field">
               <label className="auth-label" htmlFor="email">
                 البريد الإلكتروني
@@ -154,7 +160,6 @@ export default function Register({ role = "user" }) {
                 onChange={handleChange}
               />
             </div>
-
             <div className="auth-field">
               <label className="auth-label" htmlFor="password">
                 كلمة المرور
@@ -169,7 +174,6 @@ export default function Register({ role = "user" }) {
                 onChange={handleChange}
               />
             </div>
-
             <div className="auth-field">
               <label className="auth-label" htmlFor="phone">
                 رقم الهاتف
@@ -207,19 +211,12 @@ export default function Register({ role = "user" }) {
           <p className="auth-switch">
             لديك حساب بالفعل؟ <Link to="/login">تسجيل الدخول</Link>
           </p>
-          <p className="auth-switch">
-            {role === "owner" ? (
-              <>تريد الحجز كلاعب؟ <Link to="/register">إنشاء حساب لاعب</Link></>
-            ) : (
-              <>لديك ملعب؟ <Link to="/register-owner">إنشاء حساب صاحب ملعب</Link></>
-            )}
-          </p>
         </div>
       </div>
 
       <div className="auth-hero">
         <div className="auth-hero-quote">
-          "كل مباراة عظيمة تبدأ بملعب جاهز"
+          "كل مباراة عظيمة تبدأ بملعب جاهز."
         </div>
         <div className="auth-hero-stats">120+ ملعب · 18,000+ حجز ناجح</div>
       </div>

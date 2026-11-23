@@ -1,0 +1,369 @@
+.yn-profile-page {
+  --yn-bg-page: #f6f7f4;
+  --yn-bg-card: #ffffff;
+  --yn-bg-subtle: #f3f5f2;
+  --yn-bg-readonly: #f4f6f4;
+  --yn-border: #e4e8e1;
+  --yn-border-input: #d5dcd4;
+  --yn-border-secondary: #dce2da;
+  --yn-text-primary: #112218;
+  --yn-text-heading: #0d2417;
+  --yn-text-label: #1b2e23;
+  --yn-text-checklist: #24382c;
+  --yn-text-muted: #5b6860;
+  --yn-text-subtitle: #5f6c64;
+  --yn-text-body: #55635a;
+  --yn-text-readonly: #627067;
+  --yn-shadow-card: 0 8px 24px rgba(13, 36, 23, 0.05);
+  --yn-focus-ring: rgba(13, 59, 38, 0.12);
+  --yn-accent-green: #0d3b26;
+  --yn-accent-green-hover: #145236;
+  --yn-accent-gold: #f5b727;
+  --yn-accent-gold-hover: #e5a817;
+  --yn-badge-user-bg: #e7f3ec;
+  --yn-badge-user-text: #0d3b26;
+  --yn-badge-admin-bg: #fff3d1;
+  --yn-badge-admin-text: #7a5200;
+  --yn-alert-success-bg: #e6f4ec;
+  --yn-alert-success-text: #0f5132;
+  --yn-alert-success-border: #badbcc;
+  --yn-alert-error-bg: #fdecea;
+  --yn-alert-error-text: #842029;
+  --yn-alert-error-border: #f5c2c7;
+
+  min-height: calc(100vh - 180px);
+  background-color: var(--yn-bg-page);
+  padding: 36px 20px 56px;
+  color: var(--yn-text-primary);
+  font-family: inherit;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+:root[data-theme="dark"] .yn-profile-page {
+  --yn-bg-page: #0c1410;
+  --yn-bg-card: #132019;
+  --yn-bg-subtle: #192920;
+  --yn-bg-readonly: #101b15;
+  --yn-border: #23382c;
+  --yn-border-input: #2c4637;
+  --yn-border-secondary: #2b4436;
+  --yn-text-primary: #ecf3ee;
+  --yn-text-heading: #f4f8f5;
+  --yn-text-label: #dce8e0;
+  --yn-text-checklist: #cad8cf;
+  --yn-text-muted: #98aba0;
+  --yn-text-subtitle: #98aba0;
+  --yn-text-body: #a8b9ae;
+  --yn-text-readonly: #7f9287;
+  --yn-shadow-card: 0 10px 28px rgba(0, 0, 0, 0.35);
+  --yn-focus-ring: rgba(245, 183, 39, 0.2);
+  --yn-accent-green: #165b3b;
+  --yn-accent-green-hover: #1d734b;
+  --yn-accent-gold: #f5b727;
+  --yn-accent-gold-hover: #ffca47;
+  --yn-badge-user-bg: rgba(34, 197, 94, 0.14);
+  --yn-badge-user-text: #6ee79c;
+  --yn-badge-admin-bg: rgba(245, 183, 39, 0.16);
+  --yn-badge-admin-text: #ffd260;
+  --yn-alert-success-bg: rgba(25, 135, 84, 0.18);
+  --yn-alert-success-text: #75e2ae;
+  --yn-alert-success-border: rgba(117, 226, 174, 0.32);
+  --yn-alert-error-bg: rgba(220, 53, 69, 0.18);
+  --yn-alert-error-text: #ff9aa4;
+  --yn-alert-error-border: rgba(255, 154, 164, 0.32);
+}
+
+.yn-profile-container {
+  max-width: 980px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.yn-profile-header-card,
+.yn-profile-form-card,
+.yn-role-info-card {
+  background-color: var(--yn-bg-card);
+  border: 1px solid var(--yn-border);
+  border-radius: 18px;
+  box-shadow: var(--yn-shadow-card);
+  transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.yn-profile-header-card {
+  padding: 24px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.yn-profile-identity {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.yn-profile-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 1.25rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.yn-profile-avatar.is-user {
+  background-color: var(--yn-accent-green);
+  color: var(--yn-accent-gold);
+}
+
+.yn-profile-avatar.is-admin {
+  background-color: var(--yn-accent-gold);
+  color: #0d3b26;
+}
+
+.yn-profile-title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.yn-profile-title-row h1 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--yn-text-heading);
+}
+
+.yn-role-badge {
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.yn-role-badge.is-user {
+  background-color: var(--yn-badge-user-bg);
+  color: var(--yn-badge-user-text);
+}
+
+.yn-role-badge.is-admin {
+  background-color: var(--yn-badge-admin-bg);
+  color: var(--yn-badge-admin-text);
+  border: 1px solid var(--yn-accent-gold);
+}
+
+.yn-profile-email {
+  margin: 6px 0 0;
+  color: var(--yn-text-muted);
+  font-size: 0.92rem;
+  text-align: right;
+}
+
+.yn-role-shortcuts {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.yn-shortcut-btn {
+  text-decoration: none;
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  transition: transform 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.yn-shortcut-btn.primary {
+  background-color: var(--yn-accent-green);
+  color: #ffffff;
+}
+
+.yn-shortcut-btn.primary:hover {
+  background-color: var(--yn-accent-green-hover);
+}
+
+.yn-shortcut-btn.secondary {
+  background-color: var(--yn-bg-subtle);
+  color: var(--yn-text-primary);
+  border: 1px solid var(--yn-border-secondary);
+}
+
+.yn-shortcut-btn.secondary:hover {
+  filter: brightness(0.97);
+}
+
+:root[data-theme="dark"] .yn-shortcut-btn.secondary:hover {
+  filter: brightness(1.12);
+}
+
+.yn-profile-grid {
+  display: grid;
+  grid-template-columns: 1.45fr 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+.yn-profile-form-card {
+  padding: 28px;
+}
+
+.yn-profile-form-card h2 {
+  margin: 0 0 6px;
+  font-size: 1.2rem;
+  color: var(--yn-text-heading);
+}
+
+.yn-card-subtitle {
+  margin: 0 0 20px;
+  color: var(--yn-text-subtitle);
+  font-size: 0.92rem;
+}
+
+.yn-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.yn-field-group label {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--yn-text-label);
+}
+
+.yn-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px 14px;
+  border: 1px solid var(--yn-border-input);
+  border-radius: 10px;
+  font-size: 0.96rem;
+  color: var(--yn-text-primary);
+  background-color: var(--yn-bg-card);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.2s ease, color 0.2s ease;
+}
+
+.yn-input:focus {
+  outline: none;
+  border-color: var(--yn-accent-green);
+  box-shadow: 0 0 0 3px var(--yn-focus-ring);
+}
+
+:root[data-theme="dark"] .yn-input:focus {
+  border-color: var(--yn-accent-gold);
+}
+
+.yn-input-readonly {
+  background-color: var(--yn-bg-readonly);
+  color: var(--yn-text-readonly);
+  cursor: not-allowed;
+}
+
+.yn-form-actions {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 8px;
+}
+
+.yn-save-btn {
+  background-color: var(--yn-accent-gold);
+  color: #112218;
+  border: none;
+  border-radius: 10px;
+  padding: 12px 24px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.15s ease, transform 0.15s ease;
+}
+
+.yn-save-btn:hover:not(:disabled) {
+  background-color: var(--yn-accent-gold-hover);
+}
+
+.yn-save-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.yn-alert {
+  padding: 12px 14px;
+  border-radius: 10px;
+  margin-bottom: 18px;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.yn-alert.success {
+  background-color: var(--yn-alert-success-bg);
+  color: var(--yn-alert-success-text);
+  border: 1px solid var(--yn-alert-success-border);
+}
+
+.yn-alert.error {
+  background-color: var(--yn-alert-error-bg);
+  color: var(--yn-alert-error-text);
+  border: 1px solid var(--yn-alert-error-border);
+}
+
+.yn-role-info-card {
+  padding: 24px;
+}
+
+.yn-aside-tag {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.yn-aside-tag.admin-tag {
+  background-color: var(--yn-badge-admin-bg);
+  color: var(--yn-badge-admin-text);
+}
+
+.yn-aside-tag.user-tag {
+  background-color: var(--yn-badge-user-bg);
+  color: var(--yn-badge-user-text);
+}
+
+.yn-role-info-card h3 {
+  margin: 0 0 10px;
+  font-size: 1.12rem;
+  color: var(--yn-text-heading);
+}
+
+.yn-role-info-card p {
+  margin: 0 0 16px;
+  color: var(--yn-text-body);
+  font-size: 0.92rem;
+  line-height: 1.65;
+}
+
+.yn-role-checklist {
+  margin: 0;
+  padding-right: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: var(--yn-text-checklist);
+  font-size: 0.88rem;
+}
+
+@media (max-width: 820px) {
+  .yn-profile-grid {
+    grid-template-columns: 1fr;
+  }
+}
