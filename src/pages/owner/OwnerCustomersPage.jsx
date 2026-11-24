@@ -8,7 +8,7 @@ import "./OwnerCustomersPage.css";
 function formatCurrency(amount) {
   const numeric = Number(amount);
   if (!Number.isFinite(numeric) || numeric <= 0) return "0 ج.م";
-  return `${numeric.toLocaleString("ar-EG")} ج.م`;
+  return `${numeric.toLocaleString("en-US")} ج.م`;
 }
 
 function formatBookingDate(dateStr, startTime) {
