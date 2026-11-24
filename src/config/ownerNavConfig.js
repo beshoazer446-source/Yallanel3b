@@ -5,7 +5,7 @@ import {
   LifeBuoy,
   LogOut,
   MapPinned,
-  Settings,
+  UserCheck,
   Users,
   Wallet,
 } from "lucide-react";
@@ -70,8 +70,8 @@ export const ownerNavSections = [
     title: "الحساب",
     items: [
       {
-        label: "الإعدادات",
-        icon: Settings,
+        label: "الحساب الشخصي",
+        icon: UserCheck,
         to: "/owner/settings",
       },
       {
