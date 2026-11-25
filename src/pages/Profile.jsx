@@ -73,7 +73,7 @@ export default function Profile() {
       );
       setPhone(sourceData.phone || user.user_metadata?.phone || "");
       const rawRole = sourceData.role || user.user_metadata?.role || "user";
-      setRole(rawRole === "admin" ? "admin" : rawRole);
+      setRole(rawRole === "super_admin" ? "super_admin" : rawRole);
       setLoadingProfile(false);
     }
 
@@ -128,7 +128,7 @@ export default function Profile() {
   }
 
   const isLoading = authLoading || loadingProfile;
-  const isAdmin = role === "admin";
+  const isAdmin = role === "super_admin";
   const email = user?.email || "";
 
   return (
@@ -146,7 +146,9 @@ export default function Profile() {
             <div className="yn-profile-meta">
               <div className="yn-profile-title-row">
                 <h1>حسابي</h1>
-                <span className={`yn-role-badge ${isAdmin ? "is-admin" : "is-user"}`}>
+                <span
+                  className={`yn-role-badge ${isAdmin ? "is-admin" : "is-user"}`}
+                >
                   {isAdmin ? "مدير ملعب" : "المستخدم"}
                 </span>
               </div>
@@ -162,7 +164,10 @@ export default function Profile() {
                 <Link to="/venues" className="yn-shortcut-btn primary">
                   استعراض الملاعب
                 </Link>
-                <Link to="/owner/bookings" className="yn-shortcut-btn secondary">
+                <Link
+                  to="/owner/bookings"
+                  className="yn-shortcut-btn secondary"
+                >
                   إدارة الحجوزات
                 </Link>
               </>
@@ -251,8 +256,9 @@ export default function Profile() {
                 <span className="yn-aside-tag admin-tag">حساب مدير ملعب</span>
                 <h3>إدارة الملاعب والحجوزات</h3>
                 <p>
-                  بصفتك مدير ملعب في منصة يلا نلعب، يمكنك متابعة الملاعب المسجلة،
-                  مراجعة حجوزات اللاعبين، وتحديث بيانات التواصل الخاصة بك.
+                  بصفتك مدير ملعب في منصة يلا نلعب، يمكنك متابعة الملاعب
+                  المسجلة، مراجعة حجوزات اللاعبين، وتحديث بيانات التواصل الخاصة
+                  بك.
                 </p>
                 <ul className="yn-role-checklist">
                   <li>متابعة طلبات الحجز وحالات التأكيد</li>

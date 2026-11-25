@@ -1,860 +1,307 @@
-.venues-page {
-  min-height: 100vh;
-  padding: 32px max(24px, 6vw) 64px;
-  background: var(--bg);
-  color: var(--text);
-}
-
-.venues-header {
-  position: relative;
+.owner-calendar-page {
   display: grid;
-  min-height: 310px;
-  place-items: center;
-  overflow: hidden;
-  padding: 48px 24px;
-  border-radius: 28px;
-  background:
-    radial-gradient(ellipse at 12% 100%, #1b8a5a66, transparent 38%),
-    linear-gradient(125deg, var(--green-dark), var(--green));
-  color: var(--white);
-  text-align: center;
+  min-width: 0;
+  gap: 20px;
 }
 
-.venues-header::after {
-  position: absolute;
-  inset: auto -40px -150px auto;
-  width: 340px;
-  height: 340px;
-  border: 1px solid #ffffff1a;
-  border-radius: 50%;
-  box-shadow: 0 0 0 36px #ffffff08, 0 0 0 72px #ffffff06;
-  content: "";
-  pointer-events: none;
-}
-
-.venues-header-content {
-  position: relative;
-  z-index: 1;
-  width: min(100%, 680px);
-}
-
-.venues-eyebrow {
-  margin-bottom: 12px;
-  color: var(--yellow);
-  font-size: 13px;
-  font-weight: 800;
-  letter-spacing: 2px;
-}
-
-.venues-header h1 {
-  margin-bottom: 10px;
-  font-size: clamp(30px, 5vw, 48px);
-  line-height: 1.25;
-}
-
-.venues-header-content > p:not(.venues-eyebrow) {
-  color: #F0F5F2;
-  line-height: 1.9;
-}
-
-.venues-search {
+.calendar-toolbar {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-top: 26px;
-  padding: 0 18px;
-  border: 1px solid #ffffff30;
-  border-radius: 14px;
-  background: var(--surface);
-  box-shadow: 0 12px 30px #00000020;
-  color: var(--input-text);
-}
-
-.venues-search > svg {
-  color: var(--status-confirmed);
-  flex: 0 0 auto;
-}
-
-.venues-search input {
-  width: 100%;
-  min-width: 0;
-  padding: 16px 0;
-  border: 0;
-  outline: none;
-  background: transparent;
-  color: var(--input-text);
-  font: inherit;
-}
-
-.venues-search input::-webkit-search-cancel-button,
-.venues-search input::-webkit-search-decoration {
-  display: none;
-  -webkit-appearance: none;
-}
-
-.venues-search:focus-within {
-  border-color: var(--focus-ring);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--focus-ring) 28%, transparent);
-}
-
-:root[data-theme="dark"] .venues-search input {
-  background-color: transparent !important;
-}
-
-.venues-search input::placeholder {
-  color: var(--input-placeholder);
-}
-
-.venues-search button {
-  display: grid;
-  width: 32px;
-  height: 32px;
-  flex: 0 0 auto;
-  place-items: center;
-  border: 0;
-  border-radius: 50%;
-  background: var(--bg);
-  color: var(--text-muted);
-  font-size: 22px;
-}
-
-.venues-search button:focus-visible {
-  outline: 2px solid var(--focus-ring);
-  outline-offset: 0;
-}
-
-.venues-results {
-  max-width: 1200px;
-  margin: 44px auto 0;
-}
-
-.venues-results-heading {
-  display: flex;
-  align-items: end;
   justify-content: space-between;
   gap: 16px;
-  margin-bottom: 22px;
-}
-
-.venues-section-label {
-  margin-bottom: 4px;
-  color: var(--status-confirmed);
-  font-size: 13px;
-  font-weight: 700;
-}
-
-.venues-results-heading h2 {
-  color: var(--text-strong);
-  font-size: clamp(22px, 3vw, 28px);
-}
-
-.venues-count {
-  padding: 7px 12px;
+  padding: 16px 20px;
   border: 1px solid var(--border);
-  border-radius: 999px;
-  background: var(--surface);
-  color: var(--text-strong);
-  font-size: 13px;
-  white-space: nowrap;
-}
-
-.venues-grid {
-  display: grid;
-  align-items: stretch;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
-  grid-auto-rows: 1fr;
-  gap: 22px;
-}
-
-.venue-card {
-  display: flex;
-  min-width: 0;
-  flex-direction: column;
-  overflow: hidden;
-  border: 1px solid var(--border);
-  border-radius: 20px;
+  border-radius: 16px;
   background: var(--surface);
   box-shadow: var(--card-shadow);
-  transition: transform 180ms ease, box-shadow 180ms ease;
 }
 
-.venue-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.16);
-}
-
-.venue-card-image {
-  position: relative;
-  overflow: hidden;
-  aspect-ratio: 16 / 10;
-  background: var(--bg-dashboard);
-}
-
-.venue-card-image>img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 250ms ease;
-}
-
-.venue-card:hover .venue-card-image>img {
-  transform: scale(1.035);
-}
-
-.venue-image-placeholder {
+.calendar-legend {
   display: flex;
-  height: 100%;
-  flex-direction: column;
+  flex-wrap: wrap;
   align-items: center;
-  justify-content: center;
+  gap: 10px 20px;
+}
+
+.calendar-legend-item {
+  display: inline-flex;
+  align-items: center;
   gap: 8px;
-  background: linear-gradient(
-    145deg,
-    color-mix(in srgb, var(--status-confirmed) 16%, var(--surface)),
-    var(--bg-dashboard)
-  );
-  color: var(--text-strong);
-  font-size: 13px;
+  color: var(--text);
+  font-size: 14px;
   font-weight: 700;
 }
 
-.venue-image-placeholder span:first-child {
-  display: grid;
-  width: 58px;
-  height: 58px;
-  place-items: center;
-  border: 1px solid var(--border);
-  border-radius: 18px;
-  background: var(--surface);
-  font-size: 28px;
+.calendar-legend-dot {
+  width: 11px;
+  height: 11px;
+  flex: 0 0 auto;
+  border-radius: 50%;
 }
 
-.venue-city {
-  position: absolute;
-  top: 14px;
-  right: 14px;
-  max-width: calc(100% - 28px);
-  overflow: hidden;
-  padding: 7px 12px;
-  border: 1px solid #ffffff65;
-  border-radius: 999px;
-  background: #071c16d9;
-  color: var(--white);
-  font-size: 12px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+.calendar-legend-confirmed {
+  background: var(--status-confirmed);
 }
 
-.venue-card-content {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  padding: 18px;
+.calendar-legend-pending {
+  background: var(--status-pending);
 }
 
-.venue-card h3 {
-  overflow: hidden;
-  margin-bottom: 8px;
-  color: var(--text-strong);
-  font-size: 19px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+.calendar-legend-cancelled {
+  background: var(--status-cancelled);
 }
 
-.venue-location {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  overflow: hidden;
-  color: var(--text-muted);
-  font-size: 13px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.venue-location span {
-  color: var(--status-confirmed);
-  font-size: 18px;
-}
-
-.venue-description {
-  display: -webkit-box;
-  overflow: hidden;
-  min-height: 44px;
-  margin-top: 10px;
-  color: var(--text-muted);
-  font-size: 13px;
-  line-height: 1.7;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-}
-
-.venue-amenities {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 7px;
-  margin-top: 14px;
-}
-
-.venue-amenities span {
-  padding: 5px 9px;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  background: var(--bg);
-  color: var(--text-muted);
-  font-size: 11px;
-}
-
-.venue-card-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-top: auto;
-  padding-top: 16px;
-}
-
-.venue-price {
-  display: flex;
-  align-items: baseline;
-  gap: 4px;
-  color: var(--text-muted);
-  font-size: 12px;
-  white-space: nowrap;
-}
-
-.venue-price strong {
-  color: var(--status-confirmed);
-  font-size: 21px;
-}
-
-.venue-price strong span {
-  font-size: 12px;
-}
-
-.venue-details-link {
-  display: inline-flex;
-  min-height: 40px;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 9px 14px;
+.calendar-venue-filter {
+  width: min(100%, 260px);
+  min-height: 42px;
+  padding: 8px 14px;
   border-radius: 10px;
-  background: var(--yellow);
-  color: var(--green-dark);
-  font-size: 13px;
-  font-weight: 800;
-  white-space: nowrap;
+  font-weight: 700;
 }
 
-.venue-details-link:hover {
-  filter: brightness(0.97);
+.calendar-error {
+  color: var(--status-cancelled);
+  font-weight: 700;
 }
 
-.venue-details-link:focus-visible,
-.venues-search button:focus-visible,
-.venues-search input:focus-visible {
-  outline: 2px solid var(--status-confirmed);
-  outline-offset: 3px;
-}
-
-.venue-details-link>span {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.venues-message {
-  padding: 48px 20px;
-  border: 1px dashed var(--border);
-  border-radius: 18px;
+.calendar-wrapper {
+  min-width: 0;
+  overflow: hidden;
+  padding: clamp(12px, 2.5vw, 24px);
+  border: 1px solid var(--border);
+  border-radius: 16px;
   background: var(--surface);
+  box-shadow: var(--card-shadow);
+  color: var(--text);
+  direction: rtl;
+}
+
+.calendar-loading {
+  padding: 32px 16px;
   color: var(--text-muted);
   text-align: center;
 }
 
-.venues-error {
-  border-color: var(--status-cancelled);
-  color: var(--status-cancelled);
-}
+.calendar-wrapper .fc {
+  --fc-border-color: var(--border);
+  --fc-page-bg-color: var(--surface);
+  --fc-neutral-bg-color: var(--bg-dashboard);
+  --fc-neutral-text-color: var(--text-muted);
+  --fc-today-bg-color: color-mix(in srgb, var(--yellow) 10%, transparent);
 
-@media (max-width: 600px) {
-  .venues-page {
-    padding: 18px 16px 40px;
-  }
-
-  .venues-header {
-    min-height: 280px;
-    padding: 36px 18px;
-    border-radius: 20px;
-  }
-
-  .venues-results {
-    margin-top: 32px;
-  }
-
-  .venues-grid {
-    grid-template-columns: 1fr;
-    gap: 16px;
-  }
-}
-
-/* =========================================================
-   أدوات الفلترة والترتيب الذكي والجغرافي (Smart Filters & Geo)
-   ========================================================= */
-
-.venues-controls-bar {
-  margin-bottom: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.venues-controls-actions {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.venues-control-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 18px;
-  border-radius: 999px;
-  border: 1.5px solid var(--border);
-  background: var(--surface);
+  min-width: 0;
   color: var(--text);
-  font-size: 14px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  font-family: inherit;
 }
 
-.venues-control-btn:hover:not(:disabled) {
-  border-color: var(--green);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(11, 59, 44, 0.1);
-}
-
-.venues-control-btn.is-active {
-  border-color: var(--green);
-  background: color-mix(in srgb, var(--status-confirmed) 14%, var(--surface));
-  color: var(--text-strong);
-  box-shadow: 0 4px 14px rgba(11, 59, 44, 0.12);
-}
-
-.venues-control-btn.geo-btn.is-active {
-  border-color: var(--status-confirmed);
-  color: var(--text-strong);
-}
-
-.control-active-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--status-confirmed);
-  box-shadow: 0 0 0 3px rgba(27, 138, 90, 0.25);
-  animation: pulseDot 1.8s infinite;
-}
-
-@keyframes pulseDot {
-  0%, 100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-  50% {
-    transform: scale(1.3);
-    opacity: 0.7;
-  }
-}
-
-.control-badge {
-  display: inline-grid;
-  place-items: center;
-  min-width: 20px;
-  height: 20px;
-  padding: 0 6px;
-  border-radius: 999px;
-  background: var(--green);
-  color: var(--white);
-  font-size: 11px;
-  font-weight: 800;
-}
-
-.venues-reset-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 9px 16px;
-  border-radius: 999px;
-  border: 1px dashed var(--status-cancelled);
-  background: rgba(216, 92, 82, 0.08);
-  color: var(--status-cancelled);
-  font-size: 13px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.venues-reset-btn:hover {
-  background: rgba(216, 92, 82, 0.16);
-  transform: translateY(-1px);
-}
-
-.spin-icon {
-  animation: spinGeo 1.2s linear infinite;
-}
-
-@keyframes spinGeo {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.venues-geo-error {
+.calendar-wrapper .fc .fc-toolbar.fc-header-toolbar {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 8px;
-  padding: 10px 14px;
-  border-radius: 10px;
-  background: rgba(216, 92, 82, 0.1);
-  border: 1px solid rgba(216, 92, 82, 0.3);
-  color: var(--status-cancelled);
-  font-size: 13px;
-}
-
-.venues-geo-error button {
-  margin-right: auto;
-  background: transparent;
-  border: none;
-  color: inherit;
-  cursor: pointer;
-  opacity: 0.7;
-  display: grid;
-  place-items: center;
-}
-
-.venues-geo-error button:hover {
-  opacity: 1;
-}
-
-/* بانل الفلاتر (Filter Drawer Panel) */
-.venues-filter-panel {
-  padding: 22px;
-  margin-bottom: 22px;
-  border-radius: 20px;
-  border: 1.5px solid var(--border);
-  background: var(--surface);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
-  animation: filterSlide 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-@keyframes filterSlide {
-  from {
-    opacity: 0;
-    transform: translateY(-8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.venues-filter-panel-header {
-  display: flex;
   justify-content: space-between;
-  align-items: center;
-  padding-bottom: 14px;
-  margin-bottom: 16px;
-  border-bottom: 1px solid var(--border);
+  gap: 14px;
+  margin-bottom: 20px;
 }
 
-.venues-filter-panel-header h3 {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 16px;
-  font-weight: 800;
-  color: var(--text-strong);
-}
-
-.panel-clear-btn {
-  background: transparent;
-  border: none;
-  color: var(--text-muted);
-  font-size: 12px;
-  font-weight: 700;
-  cursor: pointer;
-  padding: 4px 8px;
-  border-radius: 6px;
-}
-
-.panel-clear-btn:hover {
-  color: var(--status-cancelled);
-  background: rgba(216, 92, 82, 0.08);
-}
-
-.panel-close-btn {
-  display: grid;
-  place-items: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  border: none;
-  background: var(--bg);
-  color: var(--text-muted);
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-
-.panel-close-btn:hover {
-  background: var(--border);
-  color: var(--text);
-}
-
-.venues-filter-group-header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 10px;
-}
-
-.filter-group-title {
-  font-size: 14px;
-  font-weight: 800;
-  color: var(--text);
-}
-
-.filter-group-count {
-  font-size: 12px;
-  color: var(--status-confirmed);
-  font-weight: 700;
-}
-
-/* مربعات الاختيار والشارات العصرية (Custom Checkbox Pills) */
-.venues-checkbox-pills {
+.calendar-wrapper .fc .fc-toolbar-chunk {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  max-height: 220px;
-  overflow-y: auto;
-  padding: 2px;
-}
-
-.venues-checkbox-pills::-webkit-scrollbar {
-  width: 6px;
-}
-
-.venues-checkbox-pills::-webkit-scrollbar-thumb {
-  background: var(--border);
-  border-radius: 999px;
-}
-
-.venues-custom-checkbox-pill {
-  display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 7px 14px;
-  border-radius: 999px;
-  border: 1.5px solid var(--border);
-  background: var(--surface);
-  color: var(--text);
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  user-select: none;
-  transition: all 0.18s ease;
 }
 
-.venues-custom-checkbox-pill:hover {
-  border-color: var(--green);
-  background: var(--bg);
-  transform: translateY(-1px);
-}
-
-.venues-custom-checkbox-pill input[type="checkbox"] {
-  position: absolute;
-  opacity: 0;
-  width: 0;
-  height: 0;
-  pointer-events: none;
-}
-
-.custom-check-box {
-  width: 16px;
-  height: 16px;
-  border-radius: 4px;
-  border: 1.5px solid var(--text-muted);
-  display: grid;
-  place-items: center;
-  background: var(--surface);
-  color: var(--white);
-  transition: all 0.15s ease;
-  flex-shrink: 0;
-}
-
-.venues-custom-checkbox-pill.is-checked {
-  border-color: var(--green);
-  background: color-mix(in srgb, var(--status-confirmed) 14%, var(--surface));
+.calendar-wrapper .fc .fc-toolbar-title {
   color: var(--text-strong);
-  font-weight: 700;
+  font-size: clamp(1.05rem, 2.3vw, 1.4rem);
+  font-weight: 800;
+  text-align: center;
 }
 
-.venues-custom-checkbox-pill.is-checked .custom-check-box {
+.calendar-wrapper .fc .fc-button-primary {
+  min-height: 38px;
+  padding: 7px 12px;
+  border: 1px solid var(--green);
+  border-radius: 9px;
   background: var(--green);
-  border-color: var(--green);
-}
-
-.pill-count {
-  font-size: 11px;
-  padding: 1px 6px;
-  border-radius: 999px;
-  background: rgba(0, 0, 0, 0.08);
-  color: var(--text-muted);
+  color: var(--white);
+  font-family: inherit;
+  font-size: 13px;
   font-weight: 700;
+  box-shadow: none;
+  transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease;
 }
 
-:root[data-theme="dark"] .venues-control-btn {
-  border-color: var(--border);
-  background: var(--surface-raised);
-  color: var(--text);
-}
-
-:root[data-theme="dark"] .venues-control-btn:hover:not(:disabled) {
-  border-color: var(--status-confirmed);
-  background: var(--surface-raised);
-  color: var(--text-strong);
-}
-
-:root[data-theme="dark"] .venues-control-btn.is-active {
-  border-color: var(--status-confirmed);
-  background: rgba(99, 200, 155, 0.16);
-  color: var(--text-strong);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22);
-}
-
-:root[data-theme="dark"] .venues-control-btn.geo-btn.is-active {
+.calendar-wrapper .fc .fc-button-primary:hover,
+.calendar-wrapper .fc .fc-button-primary:not(:disabled).fc-button-active {
   border-color: var(--yellow);
-  background: rgba(255, 200, 87, 0.14);
-  color: var(--yellow);
-}
-
-:root[data-theme="dark"] .venues-control-btn svg,
-:root[data-theme="dark"] .venues-control-btn.is-active svg {
-  color: inherit;
-}
-
-:root[data-theme="dark"] .venues-reset-btn {
-  border-color: var(--status-cancelled);
-  background: rgba(255, 140, 130, 0.12);
-  color: var(--status-cancelled);
-}
-
-:root[data-theme="dark"] .venues-filter-panel-header h3 {
-  color: var(--text-strong);
-}
-
-:root[data-theme="dark"] .panel-clear-btn {
-  color: var(--text-muted);
-}
-
-:root[data-theme="dark"] .panel-close-btn {
-  background: var(--surface-raised);
-  color: var(--text);
-}
-
-:root[data-theme="dark"] .venues-custom-checkbox-pill {
-  border-color: var(--border);
-  background: var(--surface-raised);
-  color: var(--text);
-}
-
-:root[data-theme="dark"] .venues-custom-checkbox-pill:hover {
-  border-color: var(--status-confirmed);
-  background: var(--bg-dashboard);
-  color: var(--text-strong);
-}
-
-:root[data-theme="dark"] .venues-custom-checkbox-pill.is-checked {
-  border-color: var(--status-confirmed);
-  background: rgba(99, 200, 155, 0.16);
-  color: var(--text-strong);
-}
-
-:root[data-theme="dark"] .venues-custom-checkbox-pill.is-checked .custom-check-box {
-  border-color: var(--status-confirmed);
-  background: var(--status-confirmed);
-  color: var(--green-darker);
-}
-
-:root[data-theme="dark"] .custom-check-box {
-  border-color: var(--text-muted);
-  background: var(--bg);
-  color: var(--green-darker);
-}
-
-:root[data-theme="dark"] .pill-count {
-  background: rgba(255, 255, 255, 0.08);
-  color: var(--text);
-}
-
-.venues-custom-checkbox-pill.is-checked .pill-count {
   background: var(--yellow);
   color: var(--green-dark);
 }
 
-/* شريط التاجز النشطة (Active Filter Tags) */
-.venues-active-tags-bar {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 18px;
+.calendar-wrapper .fc .fc-button-primary:disabled {
+  border-color: var(--border);
+  background: var(--bg-dashboard);
+  color: var(--text-muted);
+  opacity: 0.8;
 }
 
-.active-tag-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 5px 12px;
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--yellow) 16%, var(--surface));
-  border: 1px solid var(--yellow);
+.calendar-wrapper .fc .fc-button-primary:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.calendar-wrapper .fc-theme-standard td,
+.calendar-wrapper .fc-theme-standard th,
+.calendar-wrapper .fc-theme-standard .fc-scrollgrid {
+  border-color: var(--border);
+}
+
+.calendar-wrapper .fc .fc-col-header-cell,
+.calendar-wrapper .fc .fc-timegrid-axis,
+.calendar-wrapper .fc .fc-scrollgrid-section-header > * {
+  background: var(--bg-dashboard);
+}
+
+.calendar-wrapper .fc .fc-col-header-cell-cushion,
+.calendar-wrapper .fc .fc-daygrid-day-number,
+.calendar-wrapper .fc .fc-timegrid-slot-label-cushion,
+.calendar-wrapper .fc .fc-timegrid-axis-cushion {
+  color: var(--text);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.calendar-wrapper .fc .fc-day-other .fc-daygrid-day-number {
+  color: var(--text-muted);
+}
+
+.calendar-wrapper .fc .fc-col-header-cell.fc-day-today {
+  border-bottom: 3px solid var(--yellow);
+}
+
+.calendar-wrapper .fc .fc-col-header-cell.fc-day-today .fc-col-header-cell-cushion {
   color: var(--text-strong);
+}
+
+.calendar-wrapper .fc .fc-timegrid-slot {
+  height: 2.8em;
+}
+
+.calendar-wrapper .fc .fc-event {
+  overflow: hidden;
+  padding: 4px 6px;
+  border: 0;
+  border-radius: 7px;
   font-size: 12px;
   font-weight: 700;
-  animation: tagIn 0.2s ease-out;
-}
-
-@keyframes tagIn {
-  from {
-    opacity: 0;
-    transform: scale(0.9);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-.active-tag-chip button {
-  background: transparent;
-  border: none;
   cursor: pointer;
+}
+
+.calendar-booking-overlay {
+  position: fixed;
+  z-index: 1000;
+  inset: 0;
   display: grid;
   place-items: center;
-  color: var(--text-strong);
-  opacity: 0.75;
-  padding: 0;
+  overflow-y: auto;
+  padding: 16px;
+  background: rgb(0 0 0 / 55%);
 }
 
-.active-tag-chip button:hover {
-  opacity: 1;
+.calendar-booking-modal {
+  display: grid;
+  width: min(100%, 480px);
+  max-height: min(90vh, 760px);
+  gap: 12px;
+  overflow-y: auto;
+  padding: clamp(18px, 4vw, 26px);
+  background: var(--surface);
+  color: var(--text);
+}
+
+.calendar-booking-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+@media (max-width: 760px) {
+  .calendar-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+    padding: 14px;
+  }
+
+  .calendar-venue-filter {
+    width: 100%;
+  }
+
+  .calendar-wrapper .fc .fc-toolbar.fc-header-toolbar {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .calendar-wrapper .fc .fc-toolbar-chunk {
+    justify-content: center;
+  }
+
+  .calendar-wrapper .fc .fc-toolbar-chunk:nth-child(2) {
+    order: -1;
+  }
+
+  .calendar-wrapper .fc .fc-button-primary {
+    min-height: 36px;
+    padding: 6px 9px;
+    font-size: 12px;
+  }
+
+  .calendar-wrapper .fc .fc-timegrid-slot-label-cushion,
+  .calendar-wrapper .fc .fc-timegrid-axis-cushion,
+  .calendar-wrapper .fc .fc-col-header-cell-cushion {
+    padding-right: 3px;
+    padding-left: 3px;
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 420px) {
+  .calendar-wrapper {
+    padding: 10px;
+  }
+
+  .calendar-wrapper .fc .fc-timeGridWeek-button {
+    display: none;
+  }
+
+  .calendar-wrapper .fc .fc-toolbar-chunk {
+    gap: 5px;
+  }
+
+  .calendar-wrapper .fc .fc-button-primary {
+    padding: 6px 7px;
+  }
+
+  .calendar-booking-actions > .btn {
+    flex: 1 1 100%;
+  }
+}
+
+:root[data-theme="dark"] .calendar-wrapper .fc .fc-button-primary {
+  border-color: var(--border);
+  background: var(--surface-raised);
+  color: var(--text);
+}
+
+:root[data-theme="dark"] .calendar-wrapper .fc .fc-button-primary:hover,
+:root[data-theme="dark"] .calendar-wrapper .fc .fc-button-primary:not(:disabled).fc-button-active {
+  border-color: var(--yellow);
+  background: var(--yellow);
+  color: var(--green-dark);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .calendar-wrapper .fc .fc-button-primary {
+    transition: none;
+  }
 }

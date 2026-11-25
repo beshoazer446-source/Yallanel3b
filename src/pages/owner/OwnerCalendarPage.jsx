@@ -25,6 +25,9 @@ const STATUS_CONFIG = {
 export default function OwnerCalendarPage() {
   const { user } = useAuth();
   const calendarRef = useRef(null);
+  const [isCompactScreen, setIsCompactScreen] = useState(() =>
+    window.matchMedia("(max-width: 760px)").matches,
+  );
   const [bookings, setBookings] = useState([]);
   const [selectedVenue, setSelectedVenue] = useState("all");
   const [selectedBooking, setSelectedBooking] = useState(null);
@@ -33,26 +36,25 @@ export default function OwnerCalendarPage() {
   const [updating, setUpdating] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [isMobile, setIsMobile] = useState(() =>
-    typeof window !== "undefined" ? window.innerWidth < 768 : false
-  );
 
-  // متابعة تغيير حجم الشاشة لتبديل العرض تلقائياً بين الموبايل والكمبيوتر
   useEffect(() => {
-    function handleResize() {
-      const mobile = window.innerWidth < 768;
-      setIsMobile(mobile);
-      const calendarApi = calendarRef.current?.getApi();
-      if (calendarApi) {
-        const targetView = mobile ? "timeGridDay" : "timeGridWeek";
-        if (calendarApi.view.type !== targetView) {
-          calendarApi.changeView(targetView);
-        }
+    const mediaQuery = window.matchMedia("(max-width: 760px)");
+
+    function syncCalendarView() {
+      const compact = mediaQuery.matches;
+      setIsCompactScreen(compact);
+
+      const calendar = calendarRef.current?.getApi();
+      const currentView = calendar?.view.type;
+      if (compact && currentView === "timeGridWeek") {
+        calendar.changeView("timeGridDay");
+      } else if (!compact && currentView === "timeGridDay") {
+        calendar.changeView("timeGridWeek");
       }
     }
 
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    mediaQuery.addEventListener("change", syncCalendarView);
+    return () => mediaQuery.removeEventListener("change", syncCalendarView);
   }, []);
 
   const loadBookings = useCallback(async () => {
@@ -150,34 +152,26 @@ export default function OwnerCalendarPage() {
   }
 
   return (
-    <div style={{ display: "grid", gap: 16, maxWidth: "100%", overflowX: "hidden" }}>
+    <div className="owner-calendar-page">
       <PageHeader
         title="تقويم الحجوزات"
         subtitle="تابع مواعيد الحجوزات وأدرها مباشرة من الجدول"
       />
 
       {/* شريط الفلتر ودليل الألوان */}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          flexWrap: "wrap",
-          gap: 12,
-        }}
-      >
-        <div style={{ display: "flex", gap: 12, flexWrap: "wrap", alignItems: "center" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-            <span style={{ width: 11, height: 11, borderRadius: "50%", background: "#15803d" }} />
-            <span style={{ fontSize: 13, fontWeight: 700 }}>تمت الموافقة</span>
+      <div className="calendar-toolbar">
+        <div className="calendar-legend">
+          <div className="calendar-legend-item">
+            <span className="calendar-legend-dot calendar-legend-confirmed" />
+            <span>تمت الموافقة</span>
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-            <span style={{ width: 11, height: 11, borderRadius: "50%", background: "#b45309" }} />
-            <span style={{ fontSize: 13, fontWeight: 700 }}>قيد المراجعة</span>
+          <div className="calendar-legend-item">
+            <span className="calendar-legend-dot calendar-legend-pending" />
+            <span>قيد المراجعة</span>
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-            <span style={{ width: 11, height: 11, borderRadius: "50%", background: "#b91c1c" }} />
-            <span style={{ fontSize: 13, fontWeight: 700 }}>مرفوض / ملغي</span>
+          <div className="calendar-legend-item">
+            <span className="calendar-legend-dot calendar-legend-cancelled" />
+            <span>مرفوض / ملغي</span>
           </div>
         </div>
 
@@ -185,13 +179,8 @@ export default function OwnerCalendarPage() {
           <select
             value={selectedVenue}
             onChange={(e) => setSelectedVenue(e.target.value)}
-            style={{
-              padding: "8px 12px",
-              borderRadius: 10,
-              fontWeight: 700,
-              minWidth: 160,
-              maxWidth: "100%",
-            }}
+            className="calendar-venue-filter"
+            aria-label="تصفية الحجوزات حسب الملعب"
           >
             <option value="all">جميع الملاعب</option>
             {venues.map(([id, name]) => (
@@ -204,25 +193,31 @@ export default function OwnerCalendarPage() {
       </div>
 
       {error && (
-        <p role="alert" style={{ color: "var(--status-cancelled)", fontWeight: 700 }}>
+        <p className="calendar-error" role="alert">
           {error}
         </p>
       )}
 
       <div className="calendar-wrapper">
         {loading ? (
-          <p style={{ padding: 24, textAlign: "center" }}>جاري تحميل جدول الحجوزات...</p>
+          <p className="calendar-loading" role="status">جاري تحميل جدول الحجوزات...</p>
         ) : (
           <FullCalendar
             ref={calendarRef}
             plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-            initialView={isMobile ? "timeGridDay" : "timeGridWeek"}
+            initialView={isCompactScreen ? "timeGridDay" : "timeGridWeek"}
             locale={arLocale}
             direction="rtl"
             headerToolbar={{
               start: "today prev,next",
               center: "title",
               end: "dayGridMonth,timeGridWeek,timeGridDay",
+            }}
+            buttonText={{
+              today: "اليوم",
+              month: "شهر",
+              week: "أسبوع",
+              day: "يوم",
             }}
             slotMinTime="18:00:00"
             slotMaxTime="24:00:00"
@@ -233,6 +228,8 @@ export default function OwnerCalendarPage() {
             }}
             allDaySlot={false}
             height="auto"
+            expandRows
+            dayMaxEvents
             events={events}
             eventClick={handleEventClick}
           />
@@ -242,30 +239,19 @@ export default function OwnerCalendarPage() {
       {/* نافذة تفاصيل الحجز (Modal) */}
       {selectedBooking && (
         <div
+          className="calendar-booking-overlay"
+          role="presentation"
           onClick={() => !updating && setSelectedBooking(null)}
-          style={{
-            position: "fixed",
-            inset: 0,
-            background: "rgba(0, 0, 0, 0.55)",
-            display: "grid",
-            placeItems: "center",
-            padding: 16,
-            zIndex: 1000,
-          }}
         >
           <div
-            className="card"
+            className="card calendar-booking-modal"
             onClick={(e) => e.stopPropagation()}
-            style={{
-              width: "100%",
-              maxWidth: 440,
-              padding: 20,
-              display: "grid",
-              gap: 12,
-            }}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="calendar-booking-title"
           >
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
-              <h2 style={{ fontSize: 18, color: "var(--text-strong)" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <h2 id="calendar-booking-title" style={{ fontSize: 18, color: "var(--text-strong)" }}>
                 {selectedBooking.venue?.name || `الملعب ${selectedBooking.venue_id}`}
               </h2>
               <strong
@@ -319,7 +305,7 @@ export default function OwnerCalendarPage() {
               </div>
             )}
 
-            <div style={{ display: "flex", gap: 10, marginTop: 12, flexWrap: "wrap" }}>
+            <div className="calendar-booking-actions">
               {selectedBooking.status === "pending" && (
                 <>
                   <button

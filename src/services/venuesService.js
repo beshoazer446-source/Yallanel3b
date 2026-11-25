@@ -1,5 +1,4 @@
 import { supabase } from "../lib/supabaseClient";
-import { PLATFORM_COMMISSION_PERCENT } from "../lib/constants";
 import { getImageDimensionsError } from "../lib/venueImageRules";
 
 function getVenueImagesBucket() {
@@ -51,6 +50,7 @@ export async function getVenues() {
     .from("venues")
     .select("*")
     .eq("is_active", true)
+    .eq("approval_status", "approved")
     .order("name");
 
   if (error) throw error;
@@ -67,6 +67,7 @@ export async function getFeaturedVenues(limit = 4) {
     .from("venues")
     .select("*")
     .eq("is_active", true)
+    .eq("approval_status", "approved")
     .order("name")
     .limit(limit);
 
@@ -283,7 +284,7 @@ export async function getAdminOverview() {
     supabase.from("profiles").select("id", { count: "exact", head: true }),
     supabase.from("venues").select("id", { count: "exact", head: true }),
   ]);
-  const failedResult = [profilesResult, venuesResult].find((result) => result.error);
+  const failedResult = [profilesResult, venuesResult].find((r) => r.error);
   if (failedResult) throw failedResult.error;
 
   let bookingCount = 0;
@@ -293,17 +294,19 @@ export async function getAdminOverview() {
   while (true) {
     const { data, error } = await supabase
       .from("bookings")
-      .select("price, status")
+      .select("commission_amount, payout_status")
       .range(from, from + pageSize - 1);
     if (error) throw error;
 
     bookingCount += data.length;
-    platformCommission += data
-      .filter((booking) => booking.status === "confirmed" && Number.isFinite(Number(booking.price)))
-      .reduce(
-        (total, booking) => total + (Number(booking.price) * PLATFORM_COMMISSION_PERCENT) / 100,
-        0,
-      );
+    for (const booking of data) {
+      if (
+        booking.payout_status !== "refunded" &&
+        booking.commission_amount != null
+      ) {
+        platformCommission += Number(booking.commission_amount) || 0;
+      }
+    }
     if (data.length < pageSize) break;
     from += pageSize;
   }
@@ -315,7 +318,6 @@ export async function getAdminOverview() {
     platformCommission,
   };
 }
-
 // الصق الدالتين دول في آخر ملف src/services/venuesService.js
 // (بيستخدموا supabase و getOwnerVenues و getVenueImagesByVenueIds الموجودين في الملف نفسه)
 
@@ -412,4 +414,10 @@ export async function replaceVenueImage({ venueId, ownerId, file, existingImage 
   await validateVenueImageFile(file);
   await saveVenueImages({ venueId, ownerId, files: [file] });
   if (existingImage) await removeVenueImage(existingImage);
+}
+export async function resubmitVenue(venueId) {
+  const { error } = await supabase.rpc("owner_resubmit_venue", {
+    p_venue_id: venueId,
+  });
+  if (error) throw error;
 }

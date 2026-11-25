@@ -2,6 +2,7 @@
 // لو احتجت اسم مختلف مرر label.
 const STATUS_MAP = {
   active: { label: "نشط", tone: "success" },
+  approved: { label: "تمت الموافقة", tone: "success" },
   hidden: { label: "مخفي", tone: "muted" },
   confirmed: { label: "مؤكد", tone: "success" },
   pending: { label: "قيد المراجعة", tone: "warning" },

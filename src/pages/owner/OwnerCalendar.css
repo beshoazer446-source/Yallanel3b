@@ -1,159 +1,307 @@
-.calendar-wrapper {
-  background: var(--surface);
-  padding: 24px;
-  border-radius: 16px;
+.owner-calendar-page {
+  display: grid;
+  min-width: 0;
+  gap: 20px;
+}
+
+.calendar-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 20px;
   border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface);
   box-shadow: var(--card-shadow);
-  direction: rtl;
+}
+
+.calendar-legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 20px;
+}
+
+.calendar-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   color: var(--text);
-  overflow-x: auto;
-}
-
-/* أزرار التحكم */
-.fc .fc-button-primary {
-  background-color: var(--green);
-  border-color: var(--green);
-  color: var(--white);
+  font-size: 14px;
   font-weight: 700;
-  border-radius: 10px;
-  padding: 6px 14px;
-  box-shadow: none !important;
 }
 
-.fc .fc-button-primary:hover,
-.fc .fc-button-primary:not(:disabled).fc-button-active {
-  background-color: var(--yellow);
+.calendar-legend-dot {
+  width: 11px;
+  height: 11px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+}
+
+.calendar-legend-confirmed {
+  background: var(--status-confirmed);
+}
+
+.calendar-legend-pending {
+  background: var(--status-pending);
+}
+
+.calendar-legend-cancelled {
+  background: var(--status-cancelled);
+}
+
+.calendar-venue-filter {
+  width: min(100%, 260px);
+  min-height: 42px;
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-weight: 700;
+}
+
+.calendar-error {
+  color: var(--status-cancelled);
+  font-weight: 700;
+}
+
+.calendar-wrapper {
+  min-width: 0;
+  overflow: hidden;
+  padding: clamp(12px, 2.5vw, 24px);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface);
+  box-shadow: var(--card-shadow);
+  color: var(--text);
+  direction: rtl;
+}
+
+.calendar-loading {
+  padding: 32px 16px;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.calendar-wrapper .fc {
+  --fc-border-color: var(--border);
+  --fc-page-bg-color: var(--surface);
+  --fc-neutral-bg-color: var(--bg-dashboard);
+  --fc-neutral-text-color: var(--text-muted);
+  --fc-today-bg-color: color-mix(in srgb, var(--yellow) 10%, transparent);
+
+  min-width: 0;
+  color: var(--text);
+  font-family: inherit;
+}
+
+.calendar-wrapper .fc .fc-toolbar.fc-header-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.calendar-wrapper .fc .fc-toolbar-chunk {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.calendar-wrapper .fc .fc-toolbar-title {
+  color: var(--text-strong);
+  font-size: clamp(1.05rem, 2.3vw, 1.4rem);
+  font-weight: 800;
+  text-align: center;
+}
+
+.calendar-wrapper .fc .fc-button-primary {
+  min-height: 38px;
+  padding: 7px 12px;
+  border: 1px solid var(--green);
+  border-radius: 9px;
+  background: var(--green);
+  color: var(--white);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  box-shadow: none;
+  transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease;
+}
+
+.calendar-wrapper .fc .fc-button-primary:hover,
+.calendar-wrapper .fc .fc-button-primary:not(:disabled).fc-button-active {
   border-color: var(--yellow);
+  background: var(--yellow);
   color: var(--green-dark);
 }
 
-.fc .fc-button-primary:disabled {
-  background-color: var(--bg-dashboard);
+.calendar-wrapper .fc .fc-button-primary:disabled {
   border-color: var(--border);
+  background: var(--bg-dashboard);
   color: var(--text-muted);
-  opacity: 0.7;
+  opacity: 0.8;
 }
 
-/* عنوان الشهر والأسبوع */
-.fc .fc-toolbar-title {
-  font-size: 1.25rem;
-  font-weight: 800;
+.calendar-wrapper .fc .fc-button-primary:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.calendar-wrapper .fc-theme-standard td,
+.calendar-wrapper .fc-theme-standard th,
+.calendar-wrapper .fc-theme-standard .fc-scrollgrid {
+  border-color: var(--border);
+}
+
+.calendar-wrapper .fc .fc-col-header-cell,
+.calendar-wrapper .fc .fc-timegrid-axis,
+.calendar-wrapper .fc .fc-scrollgrid-section-header > * {
+  background: var(--bg-dashboard);
+}
+
+.calendar-wrapper .fc .fc-col-header-cell-cushion,
+.calendar-wrapper .fc .fc-daygrid-day-number,
+.calendar-wrapper .fc .fc-timegrid-slot-label-cushion,
+.calendar-wrapper .fc .fc-timegrid-axis-cushion {
+  color: var(--text);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.calendar-wrapper .fc .fc-day-other .fc-daygrid-day-number {
+  color: var(--text-muted);
+}
+
+.calendar-wrapper .fc .fc-col-header-cell.fc-day-today {
+  border-bottom: 3px solid var(--yellow);
+}
+
+.calendar-wrapper .fc .fc-col-header-cell.fc-day-today .fc-col-header-cell-cushion {
   color: var(--text-strong);
 }
 
-/* حدود الجدول والخلايا */
-.fc-theme-standard td,
-.fc-theme-standard th,
-.fc-theme-standard .fc-scrollgrid {
-  border-color: var(--border);
+.calendar-wrapper .fc .fc-timegrid-slot {
+  height: 2.8em;
 }
 
-/* توحيد خلفية رأس الجدول والركن العلوي الأيمن */
-.fc .fc-col-header-cell,
-.fc .fc-timegrid-axis,
-.fc .fc-scrollgrid-section-header > * {
-  background-color: var(--bg-dashboard) !important;
-  padding: 8px 0;
-}
-
-.fc .fc-col-header-cell-cushion,
-.fc .fc-daygrid-day-number,
-.fc .fc-timegrid-slot-label-cushion {
-  color: var(--text) !important;
-  text-decoration: none;
-  font-weight: 700;
-}
-
-/* خلفية الساعات الفارغة */
-.fc .fc-timegrid-slot,
-.fc .fc-daygrid-day {
-  background-color: var(--surface);
-}
-
-/* تمييز عمود اليوم الحالي */
-.fc .fc-timegrid-col.fc-day-today,
-.fc .fc-daygrid-day.fc-day-today {
-  background-color: color-mix(in srgb, var(--yellow) 8%, transparent) !important;
-}
-
-/* تمييز عنوان اليوم الحالي في الرأس */
-.fc .fc-col-header-cell.fc-day-today {
-  background-color: var(--bg-dashboard) !important;
-  border-bottom: 3px solid var(--yellow) !important;
-}
-
-.fc .fc-col-header-cell.fc-day-today .fc-col-header-cell-cushion {
-  color: var(--yellow) !important;
-}
-
-/* مربعات الحجوزات */
-.fc-event {
-  border: none !important;
-  border-radius: 6px;
-  padding: 4px 8px;
-  font-size: 13px;
+.calendar-wrapper .fc .fc-event {
+  overflow: hidden;
+  padding: 4px 6px;
+  border: 0;
+  border-radius: 7px;
+  font-size: 12px;
   font-weight: 700;
   cursor: pointer;
 }
 
-/* أزرار الوضع الليلي */
-:root[data-theme="dark"] .fc .fc-button-primary {
-  background-color: var(--surface-raised);
-  border-color: var(--border);
-  color: var(--text-strong);
+.calendar-booking-overlay {
+  position: fixed;
+  z-index: 1000;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  overflow-y: auto;
+  padding: 16px;
+  background: rgb(0 0 0 / 55%);
 }
 
-:root[data-theme="dark"] .fc .fc-button-primary:hover,
-:root[data-theme="dark"] .fc .fc-button-primary:not(:disabled).fc-button-active {
-  background-color: var(--yellow);
-  border-color: var(--yellow);
-  color: var(--green-dark);
+.calendar-booking-modal {
+  display: grid;
+  width: min(100%, 480px);
+  max-height: min(90vh, 760px);
+  gap: 12px;
+  overflow-y: auto;
+  padding: clamp(18px, 4vw, 26px);
+  background: var(--surface);
+  color: var(--text);
 }
 
-/* =========================================
-   تجاوب التقويم مع شاشات الموبايل (Responsive)
-   ========================================= */
-@media (max-width: 768px) {
-  .calendar-wrapper {
-    padding: 12px;
-    border-radius: 12px;
-  }
+.calendar-booking-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 12px;
+}
 
-  /* ترتيب شريط الأزرار والعنوان تحت بعض في الموبايل */
-  .fc .fc-toolbar {
-    flex-direction: column;
-    gap: 10px;
+@media (max-width: 760px) {
+  .calendar-toolbar {
     align-items: stretch;
+    flex-direction: column;
+    padding: 14px;
   }
 
-  .fc .fc-toolbar-chunk {
-    display: flex;
+  .calendar-venue-filter {
+    width: 100%;
+  }
+
+  .calendar-wrapper .fc .fc-toolbar.fc-header-toolbar {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .calendar-wrapper .fc .fc-toolbar-chunk {
     justify-content: center;
-    flex-wrap: wrap;
-    gap: 6px;
   }
 
-  .fc .fc-toolbar-title {
-    font-size: 1.05rem;
-    text-align: center;
+  .calendar-wrapper .fc .fc-toolbar-chunk:nth-child(2) {
+    order: -1;
   }
 
-  .fc .fc-button-primary {
-    padding: 5px 10px;
-    font-size: 13px;
-  }
-
-  /* منع تداخل أيام الأسبوع لو المستخدم اختار عرض الأسبوع على الموبايل */
-  .fc .fc-timegrid-axis-frame,
-  .fc .fc-col-header-cell-cushion {
+  .calendar-wrapper .fc .fc-button-primary {
+    min-height: 36px;
+    padding: 6px 9px;
     font-size: 12px;
   }
 
-  .fc-view-harness {
-    min-width: 100%;
+  .calendar-wrapper .fc .fc-timegrid-slot-label-cushion,
+  .calendar-wrapper .fc .fc-timegrid-axis-cushion,
+  .calendar-wrapper .fc .fc-col-header-cell-cushion {
+    padding-right: 3px;
+    padding-left: 3px;
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 420px) {
+  .calendar-wrapper {
+    padding: 10px;
   }
 
-  .fc-timeGridWeek-view .fc-scrollgrid {
-    min-width: 580px;
+  .calendar-wrapper .fc .fc-timeGridWeek-button {
+    display: none;
+  }
+
+  .calendar-wrapper .fc .fc-toolbar-chunk {
+    gap: 5px;
+  }
+
+  .calendar-wrapper .fc .fc-button-primary {
+    padding: 6px 7px;
+  }
+
+  .calendar-booking-actions > .btn {
+    flex: 1 1 100%;
+  }
+}
+
+:root[data-theme="dark"] .calendar-wrapper .fc .fc-button-primary {
+  border-color: var(--border);
+  background: var(--surface-raised);
+  color: var(--text);
+}
+
+:root[data-theme="dark"] .calendar-wrapper .fc .fc-button-primary:hover,
+:root[data-theme="dark"] .calendar-wrapper .fc .fc-button-primary:not(:disabled).fc-button-active {
+  border-color: var(--yellow);
+  background: var(--yellow);
+  color: var(--green-dark);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .calendar-wrapper .fc .fc-button-primary {
+    transition: none;
   }
 }
