@@ -9,6 +9,7 @@ import { useAuth } from "../../context/useAuth";
 import {
   getOwnerVenuesWithImages,
   getVenueBookingInfo,
+  resubmitVenue,
   setVenueActive,
 } from "../../services/venuesService";
 
@@ -98,6 +99,28 @@ export default function OwnerCourtsPage() {
       changeActive(court, true);
     }
   }
+    async function handleResubmit(court) {
+      setBusyId(court.id);
+      setActionError("");
+      try {
+        await resubmitVenue(court.id);
+        setCourts((current) =>
+          current.map((item) =>
+            item.id === court.id
+              ? {
+                  ...item,
+                  approval_status: "pending_review",
+                  rejection_reason: null,
+                }
+              : item,
+          ),
+        );
+      } catch (resubmitError) {
+        setActionError(resubmitError.message || "تعذر إعادة الإرسال.");
+      } finally {
+        setBusyId(null);
+      }
+    }
 
   const addButton = (
     <Link to="/owner/courts/new" className="dash-btn dash-btn-primary">
@@ -139,6 +162,7 @@ export default function OwnerCourtsPage() {
               featured={courts.length === 1}
               busy={busyId === court.id}
               onToggleActive={handleToggle}
+              onResubmit={handleResubmit}
             />
           ))}
         </div>
