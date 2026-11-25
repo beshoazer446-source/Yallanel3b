@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
@@ -16,14 +16,15 @@ import PageHeader from "../../components/dashboard/ui/PageHeader";
 import "./OwnerCalendar.css";
 
 const STATUS_CONFIG = {
-  confirmed: { label: "تمت الموافقة", color: "var(--status-confirmed)" },
-  pending: { label: "قيد المراجعة", color: "var(--status-pending)" },
-  rejected: { label: "مرفوض", color: "var(--status-cancelled)" },
-  cancelled: { label: "ملغي", color: "var(--status-cancelled)" },
+  confirmed: { label: "تمت الموافقة", color: "#15803d" },
+  pending: { label: "قيد المراجعة", color: "#b45309" },
+  rejected: { label: "مرفوض", color: "#b91c1c" },
+  cancelled: { label: "ملغي", color: "#b91c1c" },
 };
 
 export default function OwnerCalendarPage() {
   const { user } = useAuth();
+  const calendarRef = useRef(null);
   const [bookings, setBookings] = useState([]);
   const [selectedVenue, setSelectedVenue] = useState("all");
   const [selectedBooking, setSelectedBooking] = useState(null);
@@ -32,6 +33,27 @@ export default function OwnerCalendarPage() {
   const [updating, setUpdating] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [isMobile, setIsMobile] = useState(() =>
+    typeof window !== "undefined" ? window.innerWidth < 768 : false
+  );
+
+  // متابعة تغيير حجم الشاشة لتبديل العرض تلقائياً بين الموبايل والكمبيوتر
+  useEffect(() => {
+    function handleResize() {
+      const mobile = window.innerWidth < 768;
+      setIsMobile(mobile);
+      const calendarApi = calendarRef.current?.getApi();
+      if (calendarApi) {
+        const targetView = mobile ? "timeGridDay" : "timeGridWeek";
+        if (calendarApi.view.type !== targetView) {
+          calendarApi.changeView(targetView);
+        }
+      }
+    }
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const loadBookings = useCallback(async () => {
     if (!user?.id) return;
@@ -74,7 +96,7 @@ export default function OwnerCalendarPage() {
       .map((booking) => {
         const statusInfo = STATUS_CONFIG[booking.status] || {
           label: booking.status,
-          color: "var(--green)",
+          color: "#0B3B2C",
         };
         const venueName = booking.venue?.name || `ملعب ${booking.venue_id}`;
         const startTime = booking.start_time?.slice(0, 5) || "18:00";
@@ -128,7 +150,7 @@ export default function OwnerCalendarPage() {
   }
 
   return (
-    <div style={{ display: "grid", gap: 20 }}>
+    <div style={{ display: "grid", gap: 16, maxWidth: "100%", overflowX: "hidden" }}>
       <PageHeader
         title="تقويم الحجوزات"
         subtitle="تابع مواعيد الحجوزات وأدرها مباشرة من الجدول"
@@ -141,21 +163,21 @@ export default function OwnerCalendarPage() {
           justifyContent: "space-between",
           alignItems: "center",
           flexWrap: "wrap",
-          gap: 16,
+          gap: 12,
         }}
       >
-        <div style={{ display: "flex", gap: 20, flexWrap: "wrap", alignItems: "center" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <span style={{ width: 12, height: 12, borderRadius: "50%", background: "var(--status-confirmed)" }} />
-            <span style={{ fontSize: 14, fontWeight: 700 }}>تمت الموافقة</span>
+        <div style={{ display: "flex", gap: 12, flexWrap: "wrap", alignItems: "center" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <span style={{ width: 11, height: 11, borderRadius: "50%", background: "#15803d" }} />
+            <span style={{ fontSize: 13, fontWeight: 700 }}>تمت الموافقة</span>
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <span style={{ width: 12, height: 12, borderRadius: "50%", background: "var(--status-pending)" }} />
-            <span style={{ fontSize: 14, fontWeight: 700 }}>قيد المراجعة</span>
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <span style={{ width: 11, height: 11, borderRadius: "50%", background: "#b45309" }} />
+            <span style={{ fontSize: 13, fontWeight: 700 }}>قيد المراجعة</span>
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <span style={{ width: 12, height: 12, borderRadius: "50%", background: "var(--status-cancelled)" }} />
-            <span style={{ fontSize: 14, fontWeight: 700 }}>مرفوض / ملغي</span>
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <span style={{ width: 11, height: 11, borderRadius: "50%", background: "#b91c1c" }} />
+            <span style={{ fontSize: 13, fontWeight: 700 }}>مرفوض / ملغي</span>
           </div>
         </div>
 
@@ -164,10 +186,11 @@ export default function OwnerCalendarPage() {
             value={selectedVenue}
             onChange={(e) => setSelectedVenue(e.target.value)}
             style={{
-              padding: "8px 14px",
+              padding: "8px 12px",
               borderRadius: 10,
               fontWeight: 700,
-              minWidth: 180,
+              minWidth: 160,
+              maxWidth: "100%",
             }}
           >
             <option value="all">جميع الملاعب</option>
@@ -191,8 +214,9 @@ export default function OwnerCalendarPage() {
           <p style={{ padding: 24, textAlign: "center" }}>جاري تحميل جدول الحجوزات...</p>
         ) : (
           <FullCalendar
+            ref={calendarRef}
             plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-            initialView="timeGridWeek"
+            initialView={isMobile ? "timeGridDay" : "timeGridWeek"}
             locale={arLocale}
             direction="rtl"
             headerToolbar={{
@@ -235,12 +259,12 @@ export default function OwnerCalendarPage() {
             style={{
               width: "100%",
               maxWidth: 440,
-              padding: 24,
+              padding: 20,
               display: "grid",
               gap: 12,
             }}
           >
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
               <h2 style={{ fontSize: 18, color: "var(--text-strong)" }}>
                 {selectedBooking.venue?.name || `الملعب ${selectedBooking.venue_id}`}
               </h2>

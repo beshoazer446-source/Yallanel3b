@@ -8,11 +8,9 @@
   --venue-heading: var(--text-strong);
 }
 
-:root[data-theme="dark"] .venue-details-page {
-  --venue-card-bg: #121c17;
-  --venue-card-border: #1f3328;
-  --venue-accent: #4ade80;
-  --venue-heading: #f7faf8;
+:root[data-theme="dark"] .venue-details-page,
+.dark .venue-details-page {
+  --venue-accent: var(--status-confirmed);
 }
 
 .venue-back-link {
@@ -91,15 +89,14 @@
   max-width: calc(100% - 28px);
   overflow: hidden;
   padding: 7px 13px;
-  border: 1px solid #ffffff55;
+  border: 1px solid rgba(255, 255, 255, 0.35);
   border-radius: 999px;
-  background: #071c16dd;
-  color: #fff;
+  background: color-mix(in srgb, var(--green-dark) 88%, transparent);
+  color: var(--white);
   font-size: 13px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-
 .venue-details-heading {
   padding: 22px 4px 4px;
 }

@@ -119,8 +119,9 @@
 .deposit-info {
   margin-top: 8px;
   padding: 12px 14px;
+  border: 1px solid var(--border);
   border-radius: 12px;
-  background: var(--cream);
+  background: var(--bg-dashboard);
   color: var(--text);
   font-size: 14px;
 }
@@ -236,7 +237,7 @@
   border-radius: 14px;
   background: var(--surface-raised);
   color: var(--text-strong);
-  transition: transform 0.15s, background-color 0.15s, color 0.15s;
+  transition: transform 0.15s, background-color 0.15s, color 0.15s, border-color 0.15s;
 }
 
 .slot-time {
@@ -252,7 +253,8 @@
 }
 
 .slot-button:hover:not(:disabled) {
-  background: var(--cream);
+  background: var(--bg-dashboard);
+  border-color: var(--status-confirmed);
   transform: translateY(-2px);
 }
 
@@ -441,8 +443,9 @@
 
 .amenity-chip {
   padding: 5px 12px;
+  border: 1px solid var(--border);
   border-radius: 999px;
-  background: var(--cream);
+  background: var(--bg-dashboard);
   color: var(--text-strong);
   font-size: 13px;
   font-weight: 600;
@@ -520,7 +523,7 @@
 }
 
 .pitch-badge {
-  background: var(--cream);
+  background: color-mix(in srgb, var(--yellow) 16%, transparent);
   color: var(--text-strong);
   border: 1px solid var(--yellow);
 }

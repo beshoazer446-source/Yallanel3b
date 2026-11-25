@@ -6,13 +6,14 @@
   box-shadow: var(--card-shadow);
   direction: rtl;
   color: var(--text);
+  overflow-x: auto;
 }
 
 /* أزرار التحكم */
 .fc .fc-button-primary {
   background-color: var(--green);
   border-color: var(--green);
-  color: #FFFFFF;
+  color: var(--white);
   font-weight: 700;
   border-radius: 10px;
   padding: 6px 14px;
@@ -69,13 +70,13 @@
   background-color: var(--surface);
 }
 
-/* تمييز عمود اليوم الحالي بلون هادئ ومناسب للوضعين */
+/* تمييز عمود اليوم الحالي */
 .fc .fc-timegrid-col.fc-day-today,
 .fc .fc-daygrid-day.fc-day-today {
   background-color: color-mix(in srgb, var(--yellow) 8%, transparent) !important;
 }
 
-/* تمييز عنوان اليوم الحالي في الرأس بإطار سفلي أصفر فقط */
+/* تمييز عنوان اليوم الحالي في الرأس */
 .fc .fc-col-header-cell.fc-day-today {
   background-color: var(--bg-dashboard) !important;
   border-bottom: 3px solid var(--yellow) !important;
@@ -107,4 +108,52 @@
   background-color: var(--yellow);
   border-color: var(--yellow);
   color: var(--green-dark);
+}
+
+/* =========================================
+   تجاوب التقويم مع شاشات الموبايل (Responsive)
+   ========================================= */
+@media (max-width: 768px) {
+  .calendar-wrapper {
+    padding: 12px;
+    border-radius: 12px;
+  }
+
+  /* ترتيب شريط الأزرار والعنوان تحت بعض في الموبايل */
+  .fc .fc-toolbar {
+    flex-direction: column;
+    gap: 10px;
+    align-items: stretch;
+  }
+
+  .fc .fc-toolbar-chunk {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .fc .fc-toolbar-title {
+    font-size: 1.05rem;
+    text-align: center;
+  }
+
+  .fc .fc-button-primary {
+    padding: 5px 10px;
+    font-size: 13px;
+  }
+
+  /* منع تداخل أيام الأسبوع لو المستخدم اختار عرض الأسبوع على الموبايل */
+  .fc .fc-timegrid-axis-frame,
+  .fc .fc-col-header-cell-cushion {
+    font-size: 12px;
+  }
+
+  .fc-view-harness {
+    min-width: 100%;
+  }
+
+  .fc-timeGridWeek-view .fc-scrollgrid {
+    min-width: 580px;
+  }
 }

@@ -95,6 +95,7 @@
   display: block;
   font-size: 13px;
   font-weight: 700;
+  color: var(--text-strong);
   margin-bottom: 6px;
 }
 
@@ -132,7 +133,8 @@
 }
 
 .auth-info {
-  background: var(--cream);
+  background: color-mix(in srgb, var(--status-pending) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--status-pending) 35%, transparent);
   color: var(--status-pending);
   padding: 10px 14px;
   border-radius: 10px;
@@ -158,10 +160,9 @@
 }
 
 .auth-switch a {
-  color: var(--green);
+  color: var(--status-confirmed);
   font-weight: 700;
 }
-
 @media (max-width: 800px) {
   .auth-page {
     grid-template-columns: 1fr;
