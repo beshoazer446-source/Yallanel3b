@@ -16,10 +16,10 @@ import PageHeader from "../../components/dashboard/ui/PageHeader";
 import "./OwnerCalendar.css";
 
 const STATUS_CONFIG = {
-  confirmed: { label: "تمت الموافقة", color: "var(--status-confirmed)" },
-  pending: { label: "قيد المراجعة", color: "var(--status-pending)" },
-  rejected: { label: "مرفوض", color: "var(--status-cancelled)" },
-  cancelled: { label: "ملغي", color: "var(--status-cancelled)" },
+  confirmed: { label: "تمت الموافقة", color: "#15803d" },
+  pending: { label: "قيد المراجعة", color: "#b45309" },
+  rejected: { label: "مرفوض", color: "#b91c1c" },
+  cancelled: { label: "ملغي", color: "#b91c1c" },
 };
 
 export default function OwnerCalendarPage() {
@@ -98,7 +98,7 @@ export default function OwnerCalendarPage() {
       .map((booking) => {
         const statusInfo = STATUS_CONFIG[booking.status] || {
           label: booking.status,
-          color: "var(--green)",
+          color: "#0B3B2C",
         };
         const venueName = booking.venue?.name || `ملعب ${booking.venue_id}`;
         const startTime = booking.start_time?.slice(0, 5) || "18:00";

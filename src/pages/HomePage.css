@@ -191,10 +191,11 @@
   max-width: 1072px;
   margin: 0 auto 64px;
   padding: 30px;
+  border: 1px solid var(--border);
   border-radius: 18px;
-  background: var(--cream);
+  background: var(--surface);
+  box-shadow: var(--card-shadow);
 }
-
 .home-owner-cta p:not(.home-eyebrow) {
   max-width: 700px;
   margin-top: 10px;

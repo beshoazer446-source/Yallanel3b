@@ -14,9 +14,11 @@
   width: 100%;
   max-width: 480px;
   padding: 36px 24px 28px;
+  border: 1px solid var(--border);
   border-radius: 20px;
-  background: var(--white);
-  box-shadow: 0 8px 32px rgba(7, 28, 22, 0.14);
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: var(--card-shadow);
   text-align: center;
 }
 
@@ -35,7 +37,7 @@
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  border: 5px solid var(--white);
+  border: 5px solid var(--surface);
   font-size: 34px;
   font-weight: 800;
   line-height: 1;
@@ -45,6 +47,7 @@
 
 .icon-success {
   background: var(--status-confirmed);
+  color: var(--green-dark);
 }
 
 .icon-pending,
@@ -61,7 +64,7 @@
 .success-title {
   font-size: 24px;
   font-weight: 800;
-  color: var(--green-dark);
+  color: var(--text-strong);
 }
 
 .success-text {
@@ -76,8 +79,9 @@
 .success-details {
   margin-top: 24px;
   padding: 6px 16px;
+  border: 1px solid var(--border);
   border-radius: 14px;
-  background: var(--cream);
+  background: var(--bg-dashboard);
   text-align: start;
 }
 
@@ -87,7 +91,7 @@
   justify-content: space-between;
   gap: 16px;
   padding: 11px 0;
-  border-bottom: 1px dashed rgba(16, 35, 29, 0.14);
+  border-bottom: 1px dashed var(--border);
   font-size: 14px;
 }
 
@@ -101,7 +105,7 @@
 }
 
 .success-row strong {
-  color: var(--green-dark);
+  color: var(--text-strong);
   font-weight: 700;
   text-align: end;
   word-break: break-all;
@@ -141,13 +145,14 @@
 }
 
 .success-btn-primary {
-  background: var(--green);
-  color: var(--yellow);
+  background: var(--yellow);
+  color: var(--green-dark);
 }
 
 .success-btn-outline {
-  border: 1.5px solid rgba(16, 35, 29, 0.2);
-  color: var(--green-dark);
+  border: 1.5px solid var(--border);
+  background: transparent;
+  color: var(--text-strong);
 }
 
 @media (min-width: 520px) {

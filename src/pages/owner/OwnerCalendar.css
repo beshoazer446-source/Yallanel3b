@@ -123,7 +123,7 @@
   border: 1px solid var(--green);
   border-radius: 9px;
   background: var(--green);
-  color: #fff;
+  color: var(--white);
   font-family: inherit;
   font-size: 13px;
   font-weight: 700;
