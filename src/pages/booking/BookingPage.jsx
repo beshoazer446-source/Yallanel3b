@@ -581,7 +581,7 @@ export default function BookingPage() {
                 <button
                     type="button"
                     className="confirm-booking-button"
-                    onClick={() => handleBooking}
+                    onClick={() => handleBooking()}
                     disabled={!hasSelection || isPaying}
                 >
                     {isPaying ? "جاري التحويل..." : "ادفع العربون أونلاين"}
