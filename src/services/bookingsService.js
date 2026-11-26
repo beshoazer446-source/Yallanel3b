@@ -104,6 +104,9 @@ export async function getUserBookings(userId) {
   }));
 }
 
+// استبدل دالة getOwnerBookings الحالية في services/bookingsService.js بالدالة دي.
+// باقي الدوال في الملف زي ما هي.
+
 export async function getOwnerBookings(ownerId) {
   const { data: venues, error: venuesError } = await supabase
     .from("venues")
@@ -114,31 +117,33 @@ export async function getOwnerBookings(ownerId) {
   if (!venues?.length) return [];
 
   const venueById = new Map(venues.map((venue) => [String(venue.id), venue]));
+
+  // أعمدة محددة فقط (بدون payment_proof_url ولا العمولة ولا payout)
   const { data, error } = await supabase
     .from("bookings")
-    .select("*")
+    .select(
+      "id, user_id, venue_id, date, start_time, end_time, price, deposit_amount, status, " +
+        "payment_method, payment_ref, created_at, " +
+        "cancelled_at, cancellation_reason, refund_status, refund_amount",
+    )
     .in("venue_id", venues.map((venue) => venue.id))
+    .in("status", ["confirmed", "cancelled"]) // نخفي pending / rejected القديمة
     .order("date", { ascending: false })
     .order("start_time", { ascending: false });
 
   if (error) throw error;
   const bookings = data ?? [];
 
-  // جلب بيانات اللاعبين (الاسم والتليفون) لربطها بالحجوزات
+  // اسم العميل وتاريخ إنشاء حسابه فقط — بدون تليفون أو إيميل
   const userIds = [...new Set(bookings.map((booking) => booking.user_id).filter(Boolean))];
   let profileById = new Map();
   if (userIds.length > 0) {
-    try {
-      const { data: profiles } = await supabase
-        .from("profiles")
-        .select("id, name")
-        .in("id", userIds);
-      if (profiles) {
-        profileById = new Map(profiles.map((p) => [String(p.id), p]));
-      }
-    } catch {
-      // إذا حدث أي خطأ في جدول profiles لا نعطل الحجوزات
-    }
+    const { data: profiles, error: profilesError } = await supabase
+      .from("profiles")
+      .select("id, name, created_at")
+      .in("id", userIds);
+    if (profilesError) throw profilesError;
+    profileById = new Map((profiles ?? []).map((p) => [String(p.id), p]));
   }
 
   return bookings.map((booking) => ({

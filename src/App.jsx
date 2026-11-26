@@ -84,7 +84,7 @@ export default function App() {
 
           <Route element={<OwnerLayout />}>
             <Route path="/owner/dashboard" element={<OwnerOverviewPage />} />
-            <Route path="/owner/bookings" element={<OwnerBookingsPage />} />
+            <Route path="/owner/bookings/:id?" element={<OwnerBookingsPage />} />
             <Route path="/owner/calendar" element={<OwnerCalendarPage />} />
             <Route path="/owner/courts" element={<OwnerCourtsPage />} />
             <Route path="/owner/earnings" element={<OwnerEarningsPage />} />

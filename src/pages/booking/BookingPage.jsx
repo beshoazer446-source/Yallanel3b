@@ -292,7 +292,7 @@ export default function BookingPage() {
         showMessage("");
     }
 
-    async function handleBooking(paymentType) {
+    async function handleBooking() {
         if (!hasSelection) {
             showMessage("اختار موعدًا أولًا.", true);
             return;
@@ -301,9 +301,7 @@ export default function BookingPage() {
         if (isPaying) return;
 
         setIsPaying(true);
-        showMessage(
-            paymentType === "venue" ? "جاري تسجيل الحجز..." : "جاري تجهيز الدفع..."
-        );
+        showMessage("جاري تجهيز الدفع...");
 
         const { data: sessionData } = await supabase.auth.getSession();
 
@@ -318,7 +316,7 @@ export default function BookingPage() {
                 venue_id: venue.id,
                 date,
                 slots: selectedSlots.map(({ start, end }) => ({ start, end })),
-                payment_type: paymentType,
+                payment_type: "online",
             },
         });
 
@@ -330,11 +328,6 @@ export default function BookingPage() {
             );
             setIsPaying(false);
             setReloadKey((key) => key + 1);
-            return;
-        }
-
-        if (paymentType === "venue" && data?.redirect_path) {
-            navigate(data.redirect_path);
             return;
         }
 
@@ -588,26 +581,11 @@ export default function BookingPage() {
                 <button
                     type="button"
                     className="confirm-booking-button"
-                    onClick={() => handleBooking("online")}
+                    onClick={() => handleBooking}
                     disabled={!hasSelection || isPaying}
                 >
                     {isPaying ? "جاري التحويل..." : "ادفع العربون أونلاين"}
                 </button>
-
-                <button
-                    type="button"
-                    className="venue-pay-button"
-                    onClick={() => handleBooking("venue")}
-                    disabled={!hasSelection || isPaying}
-                >
-                    ادفع في الملعب
-                </button>
-
-                <p className="venue-pay-hint">
-                    {date === getToday()
-                        ? "لو اخترت الدفع في الملعب، لازم توصل وتدفع قبل بداية الميعاد عشان الحجز يتأكد."
-                        : "لو اخترت الدفع في الملعب، الميعاد هيتحفظلك مؤقتاً لحد ما تدفع عند الوصول ويتأكد الحجز."}
-                </p>
 
                 {message && (
                     <p
