@@ -9,6 +9,8 @@ import AdminLayout from "./components/AdminLayout";
 const AdminUsersPage = lazy(() => import("./pages/admin/AdminUsersPage"));
 const AdminVenuesPage = lazy(() => import("./pages/admin/AdminVenuesPage"));
 const AdminBookingsPage = lazy(() => import("./pages/admin/AdminBookingsPage"));
+const AdminTransactionsPage = lazy(
+  () => import("./pages/admin/AdminTransactionsPage"),);
 
 const HomePage = lazy(() => import("./pages/HomePage"));
 const Login = lazy(() => import("./pages/auth/Login"));
@@ -105,6 +107,7 @@ export default function App() {
             <Route path="/admin/users" element={<AdminUsersPage />} />
             <Route path="/admin/venues" element={<AdminVenuesPage />} />
             <Route path="/admin/bookings" element={<AdminBookingsPage />} />
+            <Route path="/admin/transactions" element={<AdminTransactionsPage />} />
           </Route>
         </Route>
       </Routes>
