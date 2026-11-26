@@ -1,0 +1,53 @@
+.ov-page { display: grid; gap: 20px; }
+.ov-muted { color: var(--text-muted); margin: 0; }
+.ov-welcome { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+.ov-welcome h2 { margin: 0 0 4px; }
+.ov-period { display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border: 1px solid var(--border, rgba(128,128,128,.3)); border-radius: 999px; }
+.ov-period select { background: transparent; border: 0; color: inherit; font: inherit; cursor: pointer; }
+
+.ov-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 16px; }
+.ov-stat { display: flex; align-items: center; gap: 16px; padding: 18px; }
+.ov-stat-icon { width: 56px; height: 56px; border-radius: 50%; display: grid; place-items: center; color: #fff; flex-shrink: 0; }
+.ov-stat-value { display: block; font-size: 26px; line-height: 1.2; }
+.ov-change { display: inline-flex; align-items: center; gap: 4px; font-size: 13px; font-weight: 600; margin-top: 4px; flex-wrap: wrap; }
+.ov-change small { font-weight: 400; color: var(--text-muted); }
+.ov-change.is-up { color: #22c55e; }
+.ov-change.is-down { color: #ef4444; }
+.ov-change.is-flat { color: var(--text-muted); font-weight: 400; }
+
+.ov-grid-main { display: grid; grid-template-columns: 1.6fr 1fr; gap: 16px; }
+.ov-grid-bottom { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@media (max-width: 1100px) { .ov-grid-main, .ov-grid-bottom { grid-template-columns: 1fr; } }
+
+.ov-panel { padding: 18px; min-width: 0; }
+.ov-panel-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
+.ov-panel-head h3 { display: inline-flex; align-items: center; gap: 8px; margin: 0; font-size: 17px; }
+.ov-link { color: #22c55e; font-size: 14px; text-decoration: none; }
+.ov-filters { display: flex; gap: 6px; flex-wrap: wrap; }
+.ov-pill { padding: 6px 14px; border-radius: 999px; border: 1px solid var(--border, rgba(128,128,128,.3)); background: transparent; color: inherit; cursor: pointer; font: inherit; font-size: 13px; }
+.ov-pill.is-active { background: #22c55e; border-color: #22c55e; color: #fff; }
+.ov-chart { width: 100%; }
+.ov-tooltip { background: #0f1f17; color: #fff; padding: 8px 12px; border-radius: 8px; border: 1px solid #22c55e; display: grid; gap: 2px; font-size: 13px; }
+
+.ov-pending-count { display: flex; align-items: center; gap: 12px; margin: 0 0 12px; }
+.ov-pending-count strong { font-size: 26px; padding: 4px 14px; border-radius: 10px; background: rgba(245,158,11,.15); color: #f59e0b; }
+
+.ov-list { list-style: none; margin: 0; padding: 0; display: grid; }
+.ov-row { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-top: 1px solid var(--border, rgba(128,128,128,.2)); color: inherit; text-decoration: none; }
+.ov-list > li:first-child .ov-row, .ov-list > .ov-row:first-child { border-top: 0; }
+.ov-row-text { flex: 1; min-width: 0; display: grid; gap: 4px; }
+.ov-row-text small { display: block; }
+.ov-thumb { width: 64px; height: 44px; border-radius: 8px; object-fit: cover; flex-shrink: 0; }
+.ov-thumb-empty { display: grid; place-items: center; background: rgba(128,128,128,.15); color: var(--text-muted); }
+
+.ov-activity-icon { width: 32px; height: 32px; border-radius: 50%; border: 1px solid; display: grid; place-items: center; flex-shrink: 0; }
+.ov-rank { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; color: #fff; background: #6b7280; flex-shrink: 0; }
+.ov-rank-1 { background: #f59e0b; } .ov-rank-2 { background: #9ca3af; } .ov-rank-3 { background: #b45309; }
+.ov-bar { display: block; height: 8px; border-radius: 999px; background: rgba(128,128,128,.2); overflow: hidden; }
+.ov-bar > span { display: block; height: 100%; background: #22c55e; border-radius: 999px; }
+.ov-count { white-space: nowrap; }
+
+.ov-empty { color: var(--text-muted); padding: 24px 0; text-align: center; margin: 0; }
+.ov-state { display: grid; justify-items: center; gap: 12px; padding: 32px; text-align: center; color: var(--status-cancelled); }
+.ov-skeleton { background: linear-gradient(90deg, rgba(128,128,128,.12), rgba(128,128,128,.22), rgba(128,128,128,.12)); background-size: 200% 100%; animation: ov-shimmer 1.4s infinite; }
+@keyframes ov-shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
