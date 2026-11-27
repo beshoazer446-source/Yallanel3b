@@ -4,6 +4,7 @@ import {
   LogOut,
   MapPinned,
   Users,
+  Wallet,
 } from "lucide-react";
 
 export const adminNavSections = [
@@ -23,6 +24,7 @@ export const adminNavSections = [
     items: [
       { label: "المستخدمون", icon: Users, to: "/admin/users" },
       { label: "الملاعب", icon: MapPinned, to: "/admin/venues" },
+      { label: "طلبات السحب", icon: Wallet, to: "/admin/withdrawals" },
       { label: "الحجوزات", icon: ClipboardList, to: "/admin/bookings" },
     ],
   },

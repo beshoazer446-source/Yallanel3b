@@ -7,6 +7,9 @@ import Profile from "./pages/Profile";
 import AdminLayout from "./components/AdminLayout";
 
 const AdminUsersPage = lazy(() => import("./pages/admin/AdminUsersPage"));
+const AdminWithdrawalsPage = lazy(
+  () => import("./pages/admin/AdminWithdrawalsPage"),
+);
 const AdminVenuesPage = lazy(() => import("./pages/admin/AdminVenuesPage"));
 const AdminBookingsPage = lazy(() => import("./pages/admin/AdminBookingsPage"));
 
@@ -65,8 +68,6 @@ export default function App() {
             <Route path="/book/:venueId" element={<BookingPage />} />
             <Route path="/my-bookings" element={<MyBookingsPage />} />
           </Route>
-
-
         </Route>
 
         {/* داشبورد الأونر: layout خاص بيه (sidebar) بره MainLayout */}
@@ -78,7 +79,10 @@ export default function App() {
 
           <Route element={<OwnerLayout />}>
             <Route path="/owner/dashboard" element={<OwnerOverviewPage />} />
-            <Route path="/owner/bookings/:id?" element={<OwnerBookingsPage />} />
+            <Route
+              path="/owner/bookings/:id?"
+              element={<OwnerBookingsPage />}
+            />
             <Route path="/owner/calendar" element={<OwnerCalendarPage />} />
             <Route path="/owner/courts" element={<OwnerCourtsPage />} />
             <Route path="/owner/earnings" element={<OwnerEarningsPage />} />
@@ -93,7 +97,7 @@ export default function App() {
             />
           </Route>
         </Route>
-                {/* داشبورد السوبر أدمن: layout خاص بيه (sidebar) بره MainLayout */}
+        {/* داشبورد السوبر أدمن: layout خاص بيه (sidebar) بره MainLayout */}
         <Route element={<ProtectedRoute roles={["super_admin"]} />}>
           <Route
             path="/admin"
@@ -101,6 +105,10 @@ export default function App() {
           />
 
           <Route element={<AdminLayout />}>
+            <Route
+              path="/admin/withdrawals"
+              element={<AdminWithdrawalsPage />}
+            />
             <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
             <Route path="/admin/users" element={<AdminUsersPage />} />
             <Route path="/admin/venues" element={<AdminVenuesPage />} />
