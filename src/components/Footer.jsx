@@ -1,24 +1,77 @@
-import { Link } from "react-router-dom";
-import "./Footer.css";
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import './Footer.css';
 
-export default function Footer() {
+const Footer = () => {
+  const { user, profile } = useAuth();
+  const isOwner =
+    user?.user_metadata?.role === 'owner' ||
+    profile?.role === 'owner' ||
+    profile?.is_owner === true;
+
   return (
-    <footer className="site-footer" dir="rtl">
-      <div className="site-footer-content">
-        <div>
-          <Link to="/" className="site-footer-brand">يلا نلعب</Link>
-          <p>منصة تساعدك تكتشف الملاعب وتحجز وقت لعبك بسهولة.</p>
+    <footer className="footer" dir="rtl">
+      <div className="footer-container">
+        <div className="footer-brand">
+          <Link to="/" className="footer-logo">
+            يلا نلعب
+          </Link>
+          <p className="footer-tagline">
+            منصتك الأسهل لحجز ملاعب كرة القدم وتنظيم المباريات مع أصحابك.
+          </p>
         </div>
-        <nav className="site-footer-links" aria-label="روابط سريعة">
-          <Link to="/venues">الملاعب</Link>
-          <Link to="/register-owner">لأصحاب الملاعب</Link>
-          <Link to="/login">تسجيل الدخول</Link>
-        </nav>
+
+        <div className="footer-links">
+          <h4>روابط سريعة</h4>
+          <ul>
+            <li>
+              <Link to="/">الرئيسية</Link>
+            </li>
+            <li>
+              <Link to="/venues">الملاعب</Link>
+            </li>
+
+            {!user ? (
+              <>
+                <li>
+                  <Link to="/login">تسجيل الدخول</Link>
+                </li>
+                <li>
+                  <Link to="/register">إنشاء حساب</Link>
+                </li>
+              </>
+            ) : isOwner ? (
+              <>
+                <li>
+                  <Link to="/owner/dashboard">لوحة تحكم المالك</Link>
+                </li>
+                <li>
+                  <Link to="/owner/venues">ملاعبي</Link>
+                </li>
+                <li>
+                  <Link to="/owner/bookings">حجوزات الملاعب</Link>
+                </li>
+              </>
+            ) : (
+              <>
+                <li>
+                  <Link to="/my-bookings">حجوزاتي</Link>
+                </li>
+                <li>
+                  <Link to="/profile">الملف الشخصي</Link>
+                </li>
+              </>
+            )}
+          </ul>
+        </div>
       </div>
-      <div className="site-footer-bottom">
-        <span>© يلا نلعب</span>
-        <span>احجز ملعبك، واجمع فريقك.</span>
+
+      <div className="footer-bottom">
+        <p>© {new Date().getFullYear()} يلا نلعب. جميع الحقوق محفوظة.</p>
       </div>
     </footer>
   );
-}
+};
+
+export default Footer;
