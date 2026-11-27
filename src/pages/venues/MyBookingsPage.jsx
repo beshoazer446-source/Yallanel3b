@@ -334,7 +334,7 @@ export default function MyBookingsPage() {
                   }}
                 >
                   <div>
-                    <span style={{ fontSize: 12, color: "var(--text-muted)", display: "block" }}>تاريخ الماتش</span>
+                    <span style={{ fontSize: 12, color: "var(--text-muted)", display: "block" }}>تاريخ المباراة</span>
                     <strong style={{ fontSize: 14 }}>{booking.date}</strong>
                   </div>
                   <div>
@@ -375,7 +375,7 @@ export default function MyBookingsPage() {
                   }}
                 >
                   <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-                    {/* شير مع أصحابك على واتساب */}
+                    {/* مشاركة تفاصيل المباراة مع أصحابك على واتساب */}
                     <button
                       onClick={() => handleShare(booking)}
                       className="btn btn-outline"
@@ -387,9 +387,9 @@ export default function MyBookingsPage() {
                         fontWeight: 700,
                         gap: 6,
                       }}
-                      title="مشاركة تفاصيل الماتش واللوكيشن مع أصحابك على الواتساب"
+                      title="مشاركة تفاصيل المباراة والموقع مع أصحابك على الواتساب"
                     >
-                      <Share2 size={20} /> شير تفاصيل الماتش
+                      <Share2 size={20} /> مشاركة تفاصيل المباراة
                     </button>
 
                     {/* رابط الخريطة المباشر إن وجد */}
@@ -401,7 +401,7 @@ export default function MyBookingsPage() {
                         className="btn btn-outline"
                         style={{ fontSize: 13, padding: "6px 14px", color: "var(--text-strong)" }}
                       >
-                        <Map size={20} /> الاتجاهات
+                         الاتجاهات
                       </a>
                     )}
 
