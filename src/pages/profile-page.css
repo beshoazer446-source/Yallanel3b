@@ -1,35 +1,35 @@
 .yn-profile-page {
-  --yn-bg-page: #f6f7f4;
-  --yn-bg-card: #ffffff;
-  --yn-bg-subtle: #f3f5f2;
-  --yn-bg-readonly: #f4f6f4;
-  --yn-border: #e4e8e1;
-  --yn-border-input: #d5dcd4;
-  --yn-border-secondary: #dce2da;
-  --yn-text-primary: #112218;
-  --yn-text-heading: #0d2417;
-  --yn-text-label: #1b2e23;
-  --yn-text-checklist: #24382c;
-  --yn-text-muted: #5b6860;
-  --yn-text-subtitle: #5f6c64;
-  --yn-text-body: #55635a;
-  --yn-text-readonly: #627067;
-  --yn-shadow-card: 0 8px 24px rgba(13, 36, 23, 0.05);
-  --yn-focus-ring: rgba(13, 59, 38, 0.12);
-  --yn-accent-green: #0d3b26;
-  --yn-accent-green-hover: #145236;
-  --yn-accent-gold: #f5b727;
-  --yn-accent-gold-hover: #e5a817;
-  --yn-badge-user-bg: #e7f3ec;
-  --yn-badge-user-text: #0d3b26;
-  --yn-badge-admin-bg: #fff3d1;
-  --yn-badge-admin-text: #7a5200;
-  --yn-alert-success-bg: #e6f4ec;
-  --yn-alert-success-text: #0f5132;
-  --yn-alert-success-border: #badbcc;
-  --yn-alert-error-bg: #fdecea;
-  --yn-alert-error-text: #842029;
-  --yn-alert-error-border: #f5c2c7;
+  --yn-bg-page: var(--bg);
+  --yn-bg-card: var(--surface);
+  --yn-bg-subtle: var(--bg-dashboard);
+  --yn-bg-readonly: var(--bg-dashboard);
+  --yn-border: var(--border);
+  --yn-border-input: var(--border);
+  --yn-border-secondary: var(--border);
+  --yn-text-primary: var(--text);
+  --yn-text-heading: var(--text-strong);
+  --yn-text-label: var(--text-strong);
+  --yn-text-checklist: var(--text);
+  --yn-text-muted: var(--text-muted);
+  --yn-text-subtitle: var(--text-muted);
+  --yn-text-body: var(--text-muted);
+  --yn-text-readonly: var(--text-muted);
+  --yn-shadow-card: var(--card-shadow);
+  --yn-focus-ring: color-mix(in srgb, var(--focus-ring) 25%, transparent);
+  --yn-accent-green: var(--green);
+  --yn-accent-green-hover: var(--green-dark);
+  --yn-accent-gold: var(--yellow);
+  --yn-accent-gold-hover: var(--yellow);
+  --yn-badge-user-bg: color-mix(in srgb, var(--status-confirmed) 14%, transparent);
+  --yn-badge-user-text: var(--status-confirmed);
+  --yn-badge-admin-bg: color-mix(in srgb, var(--status-pending) 16%, transparent);
+  --yn-badge-admin-text: var(--status-pending);
+  --yn-alert-success-bg: color-mix(in srgb, var(--status-confirmed) 12%, transparent);
+  --yn-alert-success-text: var(--status-confirmed);
+  --yn-alert-success-border: color-mix(in srgb, var(--status-confirmed) 35%, transparent);
+  --yn-alert-error-bg: color-mix(in srgb, var(--status-cancelled) 12%, transparent);
+  --yn-alert-error-text: var(--status-cancelled);
+  --yn-alert-error-border: color-mix(in srgb, var(--status-cancelled) 35%, transparent);
 
   min-height: calc(100vh - 180px);
   background-color: var(--yn-bg-page);
@@ -38,7 +38,6 @@
   font-family: inherit;
   transition: background-color 0.2s ease, color 0.2s ease;
 }
-
 :root[data-theme="dark"] .yn-profile-page {
   --yn-bg-page: #0c1410;
   --yn-bg-card: #132019;

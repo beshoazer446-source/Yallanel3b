@@ -32,12 +32,14 @@ export default function Navbar() {
 
   const role = profile?.role;
   const displayName = profile?.name ?? user?.email ?? "";
-  const homePath = role === "owner"
-    ? "/owner/dashboard"
-    : role === "admin"
-      ? "/admin/dashboard"
-      : "/";
-  const homeLabel = role === "owner" || role === "admin" ? "لوحة التحكم" : "الرئيسية";
+  const homePath =
+    role === "owner"
+      ? "/owner/dashboard"
+      : role === "super_admin"
+        ? "/admin/dashboard"
+        : "/";
+  const homeLabel =
+    role === "owner" || role === "super_admin" ? "لوحة التحكم" : "الرئيسية";
   const bookingsPath = role === "owner" ? "/owner/bookings" : "/my-bookings";
   const bookingsLabel = role === "owner" ? "حجوزات ملعبي" : "حجوزاتي";
   const isLoggedIn = !loading && Boolean(user);
@@ -83,7 +85,11 @@ export default function Navbar() {
   return (
     <header className="navbar">
       <div className="navbar-inner">
-        <Link to={isLoggedIn ? homePath : "/"} className="navbar-logo" onClick={closeMenus}>
+        <Link
+          to={isLoggedIn ? homePath : "/"}
+          className="navbar-logo"
+          onClick={closeMenus}
+        >
           <img src={logoImage} alt="" className="navbar-logo-img" />
           يلا نلعب
         </Link>
@@ -91,17 +97,31 @@ export default function Navbar() {
         <nav className="navbar-links" aria-label="التنقل الرئيسي">
           {isLoggedIn ? (
             <>
-              <NavLink to={homePath} end onClick={closeMenus}>{homeLabel}</NavLink>
-              <NavLink to="/venues" onClick={closeMenus}>استكشف الملاعب</NavLink>
+              <NavLink to={homePath} end onClick={closeMenus}>
+                {homeLabel}
+              </NavLink>
+              <NavLink to="/venues" onClick={closeMenus}>
+                استكشف الملاعب
+              </NavLink>
               {(role === "user" || role === "owner") && (
-                <NavLink to={bookingsPath} onClick={closeMenus}>{bookingsLabel}</NavLink>
+                <NavLink to={bookingsPath} onClick={closeMenus}>
+                  {bookingsLabel}
+                </NavLink>
               )}
-              {role === "admin" && <NavLink to="/admin/dashboard" onClick={closeMenus}>لوحة الأدمن</NavLink>}
+              {role === "super_admin" && (
+                <NavLink to="/admin/dashboard" onClick={closeMenus}>
+                  لوحة الأدمن
+                </NavLink>
+              )}
             </>
           ) : (
             <>
-              <NavLink to="/" end onClick={closeMenus}><Home size={17} /> الرئيسية</NavLink>
-              <NavLink to="/venues" onClick={closeMenus}>استكشف الملاعب</NavLink>
+              <NavLink to="/" end onClick={closeMenus}>
+                <Home size={17} /> الرئيسية
+              </NavLink>
+              <NavLink to="/venues" onClick={closeMenus}>
+                استكشف الملاعب
+              </NavLink>
             </>
           )}
         </nav>
@@ -111,7 +131,11 @@ export default function Navbar() {
             type="button"
             className="navbar-theme"
             onClick={toggleTheme}
-            aria-label={theme === "dark" ? "التبديل إلى الوضع الفاتح" : "التبديل إلى الوضع الداكن"}
+            aria-label={
+              theme === "dark"
+                ? "التبديل إلى الوضع الفاتح"
+                : "التبديل إلى الوضع الداكن"
+            }
             title={theme === "dark" ? "الوضع الفاتح" : "الوضع الداكن"}
           >
             {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
@@ -120,7 +144,10 @@ export default function Navbar() {
           {loading ? null : user ? (
             <>
               {role === "owner" && (
-                <Link to="/owner/venues/new" className="btn btn-primary navbar-add">
+                <Link
+                  to="/owner/venues/new"
+                  className="btn btn-primary navbar-add"
+                >
                   <Plus size={17} /> إضافة ملعب
                 </Link>
               )}
@@ -140,14 +167,24 @@ export default function Navbar() {
                   aria-haspopup="menu"
                   aria-expanded={menuOpen}
                 >
-                  <span className="navbar-avatar">{displayName.charAt(0).toUpperCase()}</span>
+                  <span className="navbar-avatar">
+                    {displayName.charAt(0).toUpperCase()}
+                  </span>
                   <span className="navbar-profile-name">{displayName}</span>
-                  <span className="navbar-caret" aria-hidden="true">▾</span>
+                  <span className="navbar-caret" aria-hidden="true">
+                    ▾
+                  </span>
                 </button>
                 {menuOpen && (
                   <div className="navbar-dropdown" role="menu">
-                    <Link to="/profile" role="menuitem" onClick={closeMenus}>الملف الشخصي</Link>
-                    <button type="button" role="menuitem" onClick={handleSignOut}>
+                    <Link to="/profile" role="menuitem" onClick={closeMenus}>
+                      الملف الشخصي
+                    </Link>
+                    <button
+                      type="button"
+                      role="menuitem"
+                      onClick={handleSignOut}
+                    >
                       تسجيل الخروج
                     </button>
                   </div>
@@ -156,8 +193,20 @@ export default function Navbar() {
             </>
           ) : (
             <>
-              <Link to="/login" className="btn btn-outline" onClick={closeMenus}><LogIn size={17} /> تسجيل الدخول</Link>
-              <Link to="/register" className="btn btn-primary" onClick={closeMenus}><UserPlus size={17} /> إنشاء حساب</Link>
+              <Link
+                to="/login"
+                className="btn btn-outline"
+                onClick={closeMenus}
+              >
+                <LogIn size={17} /> تسجيل الدخول
+              </Link>
+              <Link
+                to="/register"
+                className="btn btn-primary"
+                onClick={closeMenus}
+              >
+                <UserPlus size={17} /> إنشاء حساب
+              </Link>
             </>
           )}
         </div>
@@ -188,7 +237,7 @@ export default function Navbar() {
                   <CalendarDays size={18} /> {bookingsLabel}
                 </NavLink>
               )}
-              {role === "admin" && (
+              {role === "super_admin" && (
                 <NavLink to="/admin/dashboard" onClick={closeMenus}>
                   <LayoutDashboard size={18} /> لوحة الأدمن
                 </NavLink>
@@ -210,10 +259,18 @@ export default function Navbar() {
             </>
           ) : (
             <>
-              <NavLink to="/" end onClick={closeMenus}><Home size={18} /> الرئيسية</NavLink>
-              <NavLink to="/venues" onClick={closeMenus}><MapPin size={18} /> الملاعب</NavLink>
-              <NavLink to="/login" onClick={closeMenus}><LogIn size={18} /> تسجيل الدخول</NavLink>
-              <NavLink to="/register" onClick={closeMenus}><UserPlus size={18} /> إنشاء حساب</NavLink>
+              <NavLink to="/" end onClick={closeMenus}>
+                <Home size={18} /> الرئيسية
+              </NavLink>
+              <NavLink to="/venues" onClick={closeMenus}>
+                <MapPin size={18} /> الملاعب
+              </NavLink>
+              <NavLink to="/login" onClick={closeMenus}>
+                <LogIn size={18} /> تسجيل الدخول
+              </NavLink>
+              <NavLink to="/register" onClick={closeMenus}>
+                <UserPlus size={18} /> إنشاء حساب
+              </NavLink>
             </>
           )}
           <button type="button" onClick={toggleTheme}>
@@ -225,7 +282,11 @@ export default function Navbar() {
 
       <nav className="mobile-action-dock" aria-label="اختصارات سريعة">
         {user ? (
-          <button type="button" onClick={handleSignOut} aria-label="تسجيل الخروج">
+          <button
+            type="button"
+            onClick={handleSignOut}
+            aria-label="تسجيل الخروج"
+          >
             <LogOut size={20} aria-hidden="true" />
             <span>خروج</span>
           </button>
@@ -240,11 +301,29 @@ export default function Navbar() {
           <span>ملاعب</span>
         </NavLink>
         <NavLink
-          to={role === "owner" ? "/owner/bookings" : role === "admin" ? "/admin/dashboard" : "/my-bookings"}
-          aria-label={role === "owner" ? "حجوزات ملعبي" : role === "admin" ? "لوحة الأدمن" : "حجوزاتي"}
+          to={
+            role === "owner"
+              ? "/owner/bookings"
+              : role === "super_admin"
+                ? "/admin/dashboard"
+                : "/my-bookings"
+          }
+          aria-label={
+            role === "owner"
+              ? "حجوزات ملعبي"
+              : role === "super_admin"
+                ? "لوحة الأدمن"
+                : "حجوزاتي"
+          }
         >
           <CalendarDays size={20} aria-hidden="true" />
-          <span>{role === "owner" ? "حجوزات" : role === "admin" ? "الإدارة" : "حجوزاتي"}</span>
+          <span>
+            {role === "owner"
+              ? "حجوزات"
+              : role === "super_admin"
+                ? "الإدارة"
+                : "حجوزاتي"}
+          </span>
         </NavLink>
         <NavLink to="/profile" aria-label="الملف الشخصي">
           <User size={20} aria-hidden="true" />
@@ -253,9 +332,17 @@ export default function Navbar() {
         <button
           type="button"
           onClick={toggleTheme}
-          aria-label={theme === "dark" ? "التبديل إلى الوضع الفاتح" : "التبديل إلى الوضع الداكن"}
+          aria-label={
+            theme === "dark"
+              ? "التبديل إلى الوضع الفاتح"
+              : "التبديل إلى الوضع الداكن"
+          }
         >
-          {theme === "dark" ? <Sun size={20} aria-hidden="true" /> : <Moon size={20} aria-hidden="true" />}
+          {theme === "dark" ? (
+            <Sun size={20} aria-hidden="true" />
+          ) : (
+            <Moon size={20} aria-hidden="true" />
+          )}
           <span>{theme === "dark" ? "فاتح" : "داكن"}</span>
         </button>
       </nav>

@@ -163,7 +163,7 @@
   padding: 14px 18px;
   margin-top: 16px;
   border-radius: 12px;
-  background: var(--cream);
+  background: color-mix(in srgb, var(--yellow) 16%, var(--surface));
   border: 1px solid var(--yellow);
   color: var(--text-strong);
   font-size: 13px;

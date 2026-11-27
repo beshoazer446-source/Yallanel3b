@@ -4,6 +4,11 @@ import MainLayout from "./components/MainLayout";
 import OwnerLayout from "./components/OwnerLayout";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Profile from "./pages/Profile";
+import AdminLayout from "./components/AdminLayout";
+
+const AdminUsersPage = lazy(() => import("./pages/admin/AdminUsersPage"));
+const AdminVenuesPage = lazy(() => import("./pages/admin/AdminVenuesPage"));
+const AdminBookingsPage = lazy(() => import("./pages/admin/AdminBookingsPage"));
 
 const HomePage = lazy(() => import("./pages/HomePage"));
 const Login = lazy(() => import("./pages/auth/Login"));
@@ -13,33 +18,22 @@ const OwnerRegistrationPage = lazy(
 );
 const ForgotPassword = lazy(() => import("./pages/auth/ForgotPassword"));
 const VenuesPage = lazy(() => import("./pages/venues/VenuesPage"));
-const VenueDetailsPage = lazy(
-  () => import("./pages/venues/VenueDetailsPage"),
-);
+const VenueDetailsPage = lazy(() => import("./pages/venues/VenueDetailsPage"));
 const MyBookingsPage = lazy(() => import("./pages/venues/MyBookingsPage"));
 const BookingPage = lazy(() => import("./pages/booking/BookingPage"));
 const BookingSuccessPage = lazy(
   () => import("./pages/booking/BookingSuccessPage"),
 );
-const OwnerDashboardPage = lazy(
-  () => import("./pages/owner/OwnerDashboardPage"),
-);
-const OwnerBookingsPage = lazy(
-  () => import("./pages/owner/OwnerBookingsPage"),
-);
-const OwnerCalendarPage = lazy(
-  () => import("./pages/owner/OwnerCalendarPage"),
-);
+const ProfilePage = lazy(() => import("./pages/ProfilePage"));
+const OwnerOverviewPage = lazy(() => import("./pages/owner/OwnerOverviewPage"));
+const OwnerBookingsPage = lazy(() => import("./pages/owner/OwnerBookingsPage"));
+const OwnerCalendarPage = lazy(() => import("./pages/owner/OwnerCalendarPage"));
 const OwnerCourtsPage = lazy(() => import("./pages/owner/OwnerCourtsPage"));
-const OwnerEarningsPage = lazy(
-  () => import("./pages/owner/OwnerEarningsPage"),
-);
+const OwnerEarningsPage = lazy(() => import("./pages/owner/OwnerEarningsPage"));
 const OwnerCustomersPage = lazy(
   () => import("./pages/owner/OwnerCustomersPage"),
 );
-const OwnerSettingsPage = lazy(
-  () => import("./pages/owner/OwnerSettingsPage"),
-);
+const OwnerSettingsPage = lazy(() => import("./pages/owner/OwnerSettingsPage"));
 const OwnerSupportPage = lazy(() => import("./pages/owner/OwnerSupportPage"));
 const OwnerCourtFormPage = lazy(
   () => import("./pages/owner/OwnerCourtFormPage"),
@@ -72,18 +66,19 @@ export default function App() {
             <Route path="/my-bookings" element={<MyBookingsPage />} />
           </Route>
 
-          <Route element={<ProtectedRoute roles={["admin"]} />}>
-            <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
-          </Route>
+
         </Route>
 
         {/* داشبورد الأونر: layout خاص بيه (sidebar) بره MainLayout */}
         <Route element={<ProtectedRoute roles={["owner"]} />}>
-          <Route path="/owner" element={<Navigate to="/owner/dashboard" replace />} />
+          <Route
+            path="/owner"
+            element={<Navigate to="/owner/dashboard" replace />}
+          />
 
           <Route element={<OwnerLayout />}>
-            <Route path="/owner/dashboard" element={<OwnerDashboardPage />} />
-            <Route path="/owner/bookings" element={<OwnerBookingsPage />} />
+            <Route path="/owner/dashboard" element={<OwnerOverviewPage />} />
+            <Route path="/owner/bookings/:id?" element={<OwnerBookingsPage />} />
             <Route path="/owner/calendar" element={<OwnerCalendarPage />} />
             <Route path="/owner/courts" element={<OwnerCourtsPage />} />
             <Route path="/owner/earnings" element={<OwnerEarningsPage />} />
@@ -96,6 +91,20 @@ export default function App() {
               path="/owner/courts/:id/edit"
               element={<OwnerCourtFormPage />}
             />
+          </Route>
+        </Route>
+                {/* داشبورد السوبر أدمن: layout خاص بيه (sidebar) بره MainLayout */}
+        <Route element={<ProtectedRoute roles={["super_admin"]} />}>
+          <Route
+            path="/admin"
+            element={<Navigate to="/admin/dashboard" replace />}
+          />
+
+          <Route element={<AdminLayout />}>
+            <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
+            <Route path="/admin/users" element={<AdminUsersPage />} />
+            <Route path="/admin/venues" element={<AdminVenuesPage />} />
+            <Route path="/admin/bookings" element={<AdminBookingsPage />} />
           </Route>
         </Route>
       </Routes>

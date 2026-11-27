@@ -1,17 +1,22 @@
 import { Banknote, Eye, EyeOff, ImageOff, MapPin, Pencil } from "lucide-react";
 import { Link } from "react-router-dom";
 import StatusBadge from "../dashboard/ui/StatusBadge";
-
+import VenueStatusNotice from "./VenueStatusNotice";
 // كارت ملعب واحد. featured = الملعب الوحيد فبيتعرض بشكل عريض.
 export default function CourtCard({
   court,
   featured = false,
   busy = false,
   onToggleActive,
+  onResubmit,
 }) {
   const image = court.images?.[0]?.image_url;
   const location = [court.area, court.city].filter(Boolean).join("، ");
   const price = Number(court.price_per_hour);
+  // الملعب شغال فعلاً لو معتمد وغير موقوف من الإدارة
+  const isLive =
+    court.approval_status === "approved" && !court.is_admin_suspended;
+  const canResubmit = court.approval_status === "rejected" && onResubmit;
 
   const className = [
     "dash-court-card",
@@ -40,7 +45,26 @@ export default function CourtCard({
       <div className="dash-court-body">
         <div className="dash-court-top">
           <h3 className="dash-court-name">{court.name}</h3>
-          <StatusBadge status={court.is_active ? "active" : "hidden"} />
+          {isLive ? (
+            <StatusBadge status={court.is_active ? "active" : "hidden"} />
+          ) : (
+            <span
+              style={{
+                fontSize: 13,
+                fontWeight: 600,
+                color:
+                  court.approval_status === "pending_review"
+                    ? "#b45309"
+                    : "#b91c1c",
+              }}
+            >
+              {court.approval_status === "pending_review"
+                ? "قيد المراجعة"
+                : court.approval_status === "rejected"
+                  ? "مرفوض"
+                  : "موقوف من الإدارة"}
+            </span>
+          )}
         </div>
 
         <ul className="dash-court-meta">
@@ -57,6 +81,7 @@ export default function CourtCard({
             </li>
           ) : null}
         </ul>
+        <VenueStatusNotice venue={court} />
 
         <div className="dash-court-actions">
           <Link
@@ -66,16 +91,28 @@ export default function CourtCard({
             <Pencil size={16} aria-hidden="true" />
             تعديل
           </Link>
-          <button
-            type="button"
-            style={{ color: court.is_active ? "red" : "green" }}
-            className="dash-btn dash-btn-ghost"
-            disabled={busy}
-            onClick={() => onToggleActive(court)}
-          >
-            <ToggleIcon size={16} aria-hidden="true" />
-            {toggleLabel}
-          </button>
+          {isLive && (
+            <button
+              type="button"
+              style={{ color: court.is_active ? "red" : "green" }}
+              className="dash-btn dash-btn-ghost"
+              disabled={busy}
+              onClick={() => onToggleActive(court)}
+            >
+              <ToggleIcon size={16} aria-hidden="true" />
+              {toggleLabel}
+            </button>
+          )}
+          {canResubmit && (
+            <button
+              type="button"
+              className="dash-btn dash-btn-primary"
+              disabled={busy}
+              onClick={() => onResubmit(court)}
+            >
+              إعادة إرسال للمراجعة
+            </button>
+          )}
         </div>
       </div>
     </article>

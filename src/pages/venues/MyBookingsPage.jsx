@@ -210,7 +210,6 @@ export default function MyBookingsPage() {
           {[
             { id: "all", label: `الكل (${bookings.length})` },
             { id: "confirmed", label: `المؤكدة (${bookings.filter((b) => b.status === "confirmed").length})` },
-            { id: "pending", label: `قيد التأكيد (${bookings.filter((b) => b.status === "pending").length})` },
             { id: "cancelled", label: `الملغية (${bookings.filter((b) => b.status === "cancelled" || b.status === "rejected").length})` },
           ].map((tab) => (
             <button
@@ -420,22 +419,6 @@ export default function MyBookingsPage() {
                   </div>
 
                   {/* زر إلغاء الحجز عبر المنصة للحجوزات المعلقة */}
-                  {booking.status === "pending" && (
-                    <button
-                      type="button"
-                      onClick={() => handleCancel(booking.id)}
-                      disabled={cancellingId === booking.id}
-                      className="btn btn-outline"
-                      style={{
-                        fontSize: 12,
-                        padding: "6px 14px",
-                        color: "var(--status-cancelled)",
-                        borderColor: "var(--status-cancelled)",
-                      }}
-                    >
-                      {cancellingId === booking.id ? "جاري الإلغاء..." : "إلغاء الحجز"}
-                    </button>
-                  )}
                 </div>
               </article>
             );

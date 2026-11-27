@@ -39,6 +39,13 @@ export default function Login() {
       });
 
       if (err) {
+        if (err.message.includes("Email not confirmed")) {
+          setLoading(false);
+          setError(
+            "لسه ما أكدتش إيميلك. سجّل من جديد بنفس الإيميل وهنبعتلك كود جديد.",
+          );
+          return;
+        }
         setError(
           err.message.includes("Invalid login credentials")
             ? "بيانات الدخول غير صحيحة. راجع البريد وكلمة المرور."

@@ -1,0 +1,207 @@
+/* صفحة حجوزات الأونر — مبنية على متغيرات وكلاسات index.css (.container / .card)
+   ودعم الوضع الداكن جاي تلقائي من المتغيرات */
+.ob {
+  padding-top: 32px;
+  padding-bottom: 56px;
+  color: var(--text);
+}
+
+.ob-header h1 { color: var(--text-strong); font-size: 1.6rem; }
+.ob-header p { margin-top: 6px; color: var(--text-muted); }
+
+.ob-error { margin-top: 16px; color: var(--status-cancelled); }
+.ob-empty { margin: 32px 0; text-align: center; color: var(--text-muted); }
+.ob-strong { font-weight: 700; color: var(--text-strong); }
+.ob-muted { color: var(--text-muted); }
+.ob-mono { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 0.9em; word-break: break-all; }
+
+/* الإحصائيات (كل كارت = .card) */
+.ob-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-top: 24px;
+}
+.ob-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 16px 18px;
+}
+.ob-stat__label { color: var(--text-muted); font-size: 0.9rem; }
+.ob-stat__value { font-size: 1.35rem; color: var(--text-strong); }
+.ob-stat__hint { color: var(--text-muted); font-size: 0.8rem; }
+
+/* الفلاتر (ألوان الحقول من القواعد العامة للـ input/select) */
+.ob-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+.ob-input {
+  height: 42px;
+  padding: 0 12px;
+  font-size: 15px;
+  border-radius: 10px;
+}
+.ob-input--search { flex: 1 1 220px; min-width: 200px; }
+.ob-date { display: flex; align-items: center; gap: 6px; color: var(--text-muted); font-size: 0.9rem; }
+.ob-reset {
+  height: 42px;
+  padding: 0 12px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-strong);
+  background: none;
+  border: none;
+  text-decoration: underline;
+}
+.ob-reset:focus-visible,
+.ob-close:focus-visible,
+.ob-card:focus-visible,
+.ob-table tbody tr:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+/* الجدول (الحاوية = .card) */
+.ob-tablewrap {
+  margin-top: 16px;
+  overflow-x: auto;
+}
+.ob-table { width: 100%; border-collapse: collapse; text-align: right; }
+.ob-table th {
+  padding: 12px 16px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  background: var(--bg-dashboard);
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+.ob-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+.ob-table tbody tr { cursor: pointer; transition: background 0.12s; }
+.ob-table tbody tr:last-child td { border-bottom: none; }
+.ob-table tbody tr:hover,
+.ob-table tbody tr.is-active { background: var(--bg-dashboard); }
+
+/* الحالات */
+.ob-badge {
+  display: inline-block;
+  padding: 3px 12px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  border-radius: 999px;
+}
+.ob-badge--upcoming {
+  color: var(--status-confirmed);
+  background: color-mix(in srgb, var(--status-confirmed) 14%, var(--surface));
+}
+.ob-badge--completed {
+  color: var(--text-muted);
+  background: var(--bg-dashboard);
+  border: 1px solid var(--border);
+}
+.ob-badge--cancelled {
+  color: var(--status-cancelled);
+  background: color-mix(in srgb, var(--status-cancelled) 14%, var(--surface));
+}
+
+/* كروت الموبايل (كل كارت = .card) */
+.ob-cards { display: none; list-style: none; margin-top: 16px; gap: 10px; }
+.ob-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  padding: 14px 16px;
+  font-size: 15px;
+  text-align: right;
+  color: inherit;
+}
+.ob-card__top { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.ob-card__money { display: flex; justify-content: space-between; gap: 8px; font-size: 0.9rem; color: var(--text-muted); }
+
+/* الـ Drawer */
+.ob-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(4, 17, 13, 0.5);
+  animation: ob-fade 0.15s ease-out;
+}
+.ob-drawer {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  inset-inline-end: 0;
+  width: min(440px, 100%);
+  overflow-y: auto;
+  color: var(--text);
+  background: var(--surface-raised);
+  border-inline-start: 1px solid var(--border);
+  box-shadow: var(--card-shadow);
+  animation: ob-slide 0.2s ease-out;
+}
+.ob-drawer__head {
+  position: sticky;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  background: var(--surface-raised);
+  border-bottom: 1px solid var(--border);
+}
+.ob-drawer__head h2 { font-size: 1.1rem; color: var(--text-strong); }
+.ob-close {
+  width: 36px;
+  height: 36px;
+  font-size: 1rem;
+  color: var(--text-muted);
+  background: none;
+  border: none;
+  border-radius: 8px;
+}
+.ob-close:hover { background: var(--bg-dashboard); color: var(--text-strong); }
+.ob-drawer__body { padding: 20px; }
+.ob-drawer__status { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.ob-drawer__body h3 {
+  margin: 22px 0 6px;
+  font-size: 0.95rem;
+  color: var(--text-strong);
+}
+.ob-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+.ob-row dt { color: var(--text-muted); flex-shrink: 0; }
+.ob-row dd { margin: 0; text-align: left; font-weight: 600; }
+
+@keyframes ob-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes ob-slide { from { transform: translateX(-100%); } to { transform: translateX(0); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .ob-overlay, .ob-drawer { animation: none; }
+}
+
+@media (max-width: 900px) {
+  .ob-stats { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 720px) {
+  .ob { padding-top: 20px; }
+  .ob-tablewrap { display: none; }
+  .ob-cards { display: grid; }
+  .ob-date { flex: 1 1 140px; }
+  .ob-date .ob-input { flex: 1; min-width: 0; }
+}
