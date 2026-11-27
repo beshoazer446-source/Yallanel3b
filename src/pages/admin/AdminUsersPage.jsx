@@ -118,7 +118,7 @@ export default function AdminUsersPage() {
                     <button
                       type="button"
                       className="btn btn-outline"
-                      style={btnSm}
+                      style={{ ...btnSm, color: u.is_active ? "var(--status-cancelled)" : "var(--status-success)", borderColor: u.is_active ? "var(--status-cancelled)" : "var(--status-success)" }}
                       onClick={() => toggle(u)}
                     >
                       {u.is_active ? "إيقاف" : "تفعيل"}

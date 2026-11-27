@@ -1,6 +1,7 @@
 import {
   ClipboardList,
   LayoutDashboard,
+  LifeBuoy,
   LogOut,
   MapPinned,
   Users,
@@ -26,6 +27,7 @@ export const adminNavSections = [
       { label: "الملاعب", icon: MapPinned, to: "/admin/venues" },
       { label: "طلبات السحب", icon: Wallet, to: "/admin/withdrawals" },
       { label: "الحجوزات", icon: ClipboardList, to: "/admin/bookings" },
+      { label: "الدعم", icon: LifeBuoy, to: "/admin/support" },
       { label: "المعاملات", icon: Wallet, to: "/admin/transactions" },
     ],
   },
@@ -33,4 +35,9 @@ export const adminNavSections = [
     title: "الحساب",
     items: [{ label: "تسجيل الخروج", icon: LogOut, action: "logout" }],
   },
+];
+
+// عناوين الصفحات اللي مالهاش عنصر في الـ sidebar (بتظهر في الهيدر)
+export const adminExtraPageTitles = [
+  { path: "/admin/support/:ticketId", title: "تفاصيل التذكرة" },
 ];
