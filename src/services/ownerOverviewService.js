@@ -17,9 +17,12 @@ async function fetchBookings(venueIds, fromKey) {
   for (let from = 0; ; from += PAGE_SIZE) {
     const { data, error } = await supabase
       .from("bookings")
-      .select("id, user_id, venue_id, date, start_time, end_time, price, status")
+      .select(
+        "id, user_id, venue_id, date, start_time, end_time, price, status",
+      )
       .in("venue_id", venueIds)
       .gte("date", fromKey)
+      .or("status.eq.confirmed,payout_status.not.is.null")
       .order("date")
       .order("start_time")
       .order("id")
