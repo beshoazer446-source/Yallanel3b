@@ -14,6 +14,7 @@ import {
   User,
   UserPlus,
   X,
+  LifeBuoy,
 } from "lucide-react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import logoImage from "../../Logo/Glossy Gold Soccer Ball Emblem.png";
@@ -106,6 +107,11 @@ export default function Navbar() {
               {(role === "user" || role === "owner") && (
                 <NavLink to={bookingsPath} onClick={closeMenus}>
                   {bookingsLabel}
+                </NavLink>
+              )}
+              {role === "user" && (
+                <NavLink to="/support" onClick={closeMenus}>
+                  الدعم
                 </NavLink>
               )}
               {role === "super_admin" && (
@@ -235,6 +241,11 @@ export default function Navbar() {
               {(role === "user" || role === "owner") && (
                 <NavLink to={bookingsPath} onClick={closeMenus}>
                   <CalendarDays size={18} /> {bookingsLabel}
+                </NavLink>
+              )}
+              {role === "user" && (
+                <NavLink to="/support" onClick={closeMenus}>
+                  <LifeBuoy size={18} /> الدعم
                 </NavLink>
               )}
               {role === "super_admin" && (

@@ -1,6 +1,7 @@
 import { Goal, SquareChevronRight, X } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { getInitials, isItemActive } from "./dashboardUtils";
+import logoImage from "../../../Logo/Glossy Gold Soccer Ball Emblem.png";
 
 // Sidebar عام: بياخد الأقسام من config، فنفس الكومبوننت يخدم الأونر والسوبر أدمن.
 // مفيش فيه state خاص بيه، كل حاجة جاية من DashboardLayout.
@@ -13,7 +14,7 @@ export default function Sidebar({
   user,
   onLogout,
   brandName = "Yallanel3b",
-  logo,
+  logo = logoImage,
 }) {
   const { pathname } = useLocation();
 
@@ -34,9 +35,12 @@ export default function Sidebar({
     <aside className={className} aria-label="القائمة الجانبية">
       <div className="dash-sidebar-top">
         <div className="dash-brand">
-          {/* مكان اللوجو: لو اتبعت logo يتحط بدل الأيقونة المؤقتة */}
           <span className="dash-logo">
-            {logo || <Goal size={22} aria-hidden="true" />}
+            {logo ? (
+              <img src={logo} alt="" />
+            ) : (
+              <Goal size={22} aria-hidden="true" />
+            )}
           </span>
           <span className="dash-brand-name">{brandName}</span>
         </div>

@@ -1,0 +1,468 @@
+/* ستايل نظام الدعم (المكونات العامة في dashboard-ui.css) */
+
+.support-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  width: fit-content;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-strong);
+}
+
+.support-back:hover {
+  text-decoration: underline;
+}
+
+.support-page {
+  display: grid;
+  gap: 20px;
+}
+
+/* ---------- الفلاتر ---------- */
+
+.support-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.support-filters .dash-input {
+  width: auto;
+  min-width: 160px;
+}
+
+.support-search {
+  position: relative;
+  flex: 1 1 240px;
+}
+
+.support-search .dash-input {
+  width: 100%;
+  padding-inline-start: 38px;
+}
+
+.support-search svg {
+  position: absolute;
+  top: 50%;
+  inset-inline-start: 12px;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.support-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+/* ---------- قايمة التذاكر ---------- */
+
+.support-list {
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface);
+  box-shadow: var(--card-shadow);
+  list-style: none;
+}
+
+.support-list li + li {
+  border-top: 1px solid var(--border);
+}
+
+.support-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 18px;
+  transition: background 0.15s;
+}
+
+.support-row:hover {
+  background: var(--bg-dashboard);
+}
+
+.support-row:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: -2px;
+}
+
+.support-row-main {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.support-row-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.support-row-title strong {
+  overflow: hidden;
+  color: var(--text-strong);
+  font-size: 15px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.support-row:not(.is-unread) .support-row-title strong {
+  font-weight: 600;
+}
+
+.support-unread {
+  flex-shrink: 0;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: var(--yellow);
+  color: var(--green-dark);
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 22px;
+  text-align: center;
+}
+
+.support-row-meta {
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.support-row-meta span + span::before {
+  content: "·";
+  margin-inline: 8px;
+}
+
+.support-row-side {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+/* ---------- صفحة التذكرة ---------- */
+
+.support-ticket-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.support-ticket-head h2 {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text-strong);
+}
+
+.support-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.support-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  align-items: start;
+  gap: 20px;
+}
+
+.support-aside {
+  display: grid;
+  gap: 20px;
+}
+
+.support-details {
+  display: grid;
+  gap: 12px;
+}
+
+.support-details div {
+  display: grid;
+  gap: 2px;
+}
+
+.support-details dt {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.support-details dd {
+  color: var(--text-strong);
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+/* ---------- الشات ---------- */
+
+.support-chat {
+  display: flex;
+  flex-direction: column;
+  height: min(70dvh, 640px);
+  min-height: 420px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface);
+  box-shadow: var(--card-shadow);
+}
+
+.support-chat-list {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 12px;
+  padding: 18px;
+  overflow-y: auto;
+}
+
+.support-chat-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.support-chat-skeleton .is-end {
+  align-self: flex-end;
+}
+
+.support-chat-empty {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  margin: auto;
+  color: var(--text-muted);
+}
+
+.support-day {
+  align-self: center;
+  padding: 2px 12px;
+  border-radius: 999px;
+  background: var(--bg-dashboard);
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.support-msg {
+  display: grid;
+  gap: 4px;
+  max-width: min(560px, 85%);
+}
+
+/* في الـ RTL: رسايلي على اليمين ورسايل التاني على الشمال */
+.support-msg.is-mine {
+  align-self: flex-start;
+}
+
+.support-msg.is-theirs {
+  align-self: flex-end;
+}
+
+.support-msg-name {
+  padding-inline: 4px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.support-bubble {
+  padding: 10px 14px;
+  border-radius: 16px;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+  line-height: 1.7;
+}
+
+.support-msg.is-mine .support-bubble {
+  border-start-start-radius: 4px;
+  background: var(--yellow);
+  color: var(--green-dark);
+}
+
+.support-msg.is-theirs .support-bubble {
+  border-start-end-radius: 4px;
+  border: 1px solid var(--border);
+  background: var(--bg-dashboard);
+  color: var(--text);
+}
+
+.support-msg-time {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding-inline: 4px;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.support-msg-time .is-read {
+  color: var(--status-confirmed);
+}
+
+.support-composer {
+  display: grid;
+  gap: 6px;
+  padding: 12px 14px;
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.support-composer-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.support-composer-row textarea {
+  flex: 1;
+  min-height: 44px;
+  max-height: 140px;
+}
+
+.support-send-icon {
+  transform: scaleX(-1);
+}
+
+.support-closed {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 6px 0;
+  color: var(--text-muted);
+  font-weight: 700;
+}
+
+@media (max-width: 1023.98px) {
+  .support-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* على الموبايل التفاصيل والتحكم فوق الشات */
+  .support-aside {
+    order: -1;
+  }
+}
+
+@media (max-width: 600px) {
+  .support-row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+  }
+
+  .support-row-side {
+    justify-content: flex-start;
+  }
+
+  .support-chat {
+    height: 75dvh;
+  }
+
+  .support-msg {
+    max-width: 92%;
+  }
+}
+
+.support-flush {
+  margin-bottom: 0;
+}
+
+/* ---------- صفحات الأونر واللاعب ---------- */
+
+.support-site {
+  max-width: 900px;
+  padding-block: 32px 48px;
+}
+
+.support-site-title {
+  margin-bottom: 20px;
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--green);
+}
+
+.support-form {
+  max-width: 760px;
+}
+
+.support-form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.support-tabs {
+  display: flex;
+  width: fit-content;
+  max-width: 100%;
+  gap: 4px;
+  padding: 4px;
+  overflow-x: auto;
+  border-radius: 12px;
+  background: var(--bg-dashboard);
+}
+
+.support-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border: none;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 14px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.support-tab.is-active {
+  background: var(--surface);
+  color: var(--text-strong);
+  box-shadow: var(--card-shadow);
+}
+
+.support-tab:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.support-tab-count {
+  min-width: 22px;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: var(--border);
+  color: var(--text-strong);
+  font-size: 12px;
+  text-align: center;
+}
+
+.support-meta {
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.support-meta span + span::before {
+  content: "·";
+  margin-inline: 8px;
+}

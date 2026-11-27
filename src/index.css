@@ -245,8 +245,8 @@ button {
 
 .btn-outline {
   background: transparent;
-  color: var(--white);
-  border: 1px solid var(--white);
+  color: var(--text);
+  border: 1px solid var(--text);
 }
 
 .card {

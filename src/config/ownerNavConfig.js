@@ -93,4 +93,6 @@ export const ownerNavSections = [
 export const ownerExtraPageTitles = [
   { path: "/owner/courts/new", title: "إضافة ملعب" },
   { path: "/owner/courts/:id/edit", title: "تعديل الملعب" },
+  { path: "/owner/support/new", title: "تذكرة جديدة" },
+  { path: "/owner/support/:ticketId", title: "تفاصيل التذكرة" },
 ];
