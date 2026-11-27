@@ -9,10 +9,7 @@ export default function ActionNeeded({ pendingList, pendingCount, hiddenVenues, 
   const extra = pendingCount - pendingList.length;
 
   return (
-    <Panel
-      title="تحتاج إجراء"
-      description={pendingCount > 0 ? `${pendingCount} حجز قيد المراجعة` : undefined}
-    >
+    <Panel title="تنبيهات" description={undefined}>
       {hiddenVenues.length > 0 ? (
         <div className="dash-alert is-warning overview-alert" role="status">
           <TriangleAlert size={18} aria-hidden="true" />
@@ -30,7 +27,10 @@ export default function ActionNeeded({ pendingList, pendingCount, hiddenVenues, 
       {pendingList.length > 0 ? (
         <ul className="overview-list">
           {pendingList.map((booking) => {
-            const sub = [formatBookingDate(booking.date, today), showVenue ? booking.venue?.name : ""]
+            const sub = [
+              formatBookingDate(booking.date, today),
+              showVenue ? booking.venue?.name : "",
+            ]
               .filter(Boolean)
               .join(" · ");
             return (
@@ -42,7 +42,10 @@ export default function ActionNeeded({ pendingList, pendingCount, hiddenVenues, 
                   <strong>{booking.player?.name || "لاعب"}</strong>
                   <span>{sub}</span>
                 </div>
-                <Link to="/owner/bookings" className="dash-btn dash-btn-secondary">
+                <Link
+                  to="/owner/bookings"
+                  className="dash-btn dash-btn-secondary"
+                >
                   مراجعة
                 </Link>
               </li>

@@ -42,6 +42,12 @@ function bookingMinutes(booking) {
 function sumGross(list) {
   return list.reduce((total, booking) => total + (Number(booking.price) || 0), 0);
 }
+const netOf = (booking) =>
+  (Number(booking.price) || 0) - (Number(booking.commission_amount) || 0);
+
+function sumNet(list) {
+  return list.reduce((total, booking) => total + netOf(booking), 0);
+}
 
 // ---------- تنسيق ----------
 
@@ -73,11 +79,12 @@ export function getGreeting(date) {
 
 // ---------- سلاسل الرسوم ----------
 
-function buildRevenueSeries(confirmed, today, days, factor) {
+function buildRevenueSeries(confirmed, today, days) {
   const byDate = new Map();
   for (const booking of confirmed) {
-    const entry = byDate.get(booking.date) ?? { gross: 0, count: 0 };
+    const entry = byDate.get(booking.date) ?? { gross: 0, net: 0, count: 0 };
     entry.gross += Number(booking.price) || 0;
+    entry.net += netOf(booking);
     entry.count += 1;
     byDate.set(booking.date, entry);
   }
@@ -85,14 +92,14 @@ function buildRevenueSeries(confirmed, today, days, factor) {
   return Array.from({ length: days }, (_, index) => {
     const date = addDays(today, index - (days - 1));
     const key = toDateKey(date);
-    const entry = byDate.get(key) ?? { gross: 0, count: 0 };
+    const entry = byDate.get(key) ?? { gross: 0, net: 0 , count: 0 };
     const shortDate = `${date.getDate()}/${date.getMonth() + 1}`;
     return {
       date: key,
       label: days <= 7 ? WEEKDAYS[date.getDay()] : shortDate,
       fullLabel: `${WEEKDAYS[date.getDay()]} ${shortDate}`,
       gross: entry.gross,
-      net: entry.gross * factor,
+      net: entry.net,
       count: entry.count,
     };
   });
@@ -145,7 +152,7 @@ export function computeOverview({
 }) {
   const todayKey = toDateKey(today);
   const yesterdayKey = toDateKey(addDays(today, -1));
-  const factor = 1 - commissionPercent / 100;
+ 
 
   const selectedVenues =
     venueId === "all" ? venues : venues.filter((v) => String(v.id) === String(venueId));
@@ -174,8 +181,12 @@ export function computeOverview({
   const prevGross = sumGross(
     confirmed.filter((b) => b.date >= prevStartKey && b.date <= prevEndKey),
   );
-  const monthNet = monthGross * factor;
-  const prevNet = prevGross * factor;
+ const monthNet = sumNet(
+   confirmed.filter((b) => b.date >= monthStartKey && b.date <= todayKey),
+ );
+  const prevNet = sumNet(
+    confirmed.filter((b) => b.date >= prevStartKey && b.date <= prevEndKey),
+  );
   const netChangePercent =
     prevNet > 0 ? Math.round(((monthNet - prevNet) / prevNet) * 100) : null;
 
@@ -212,8 +223,8 @@ export function computeOverview({
     availableMinutes > 0 ? Math.min(100, Math.round((bookedMinutes / availableMinutes) * 100)) : null;
 
   // سلاسل الرسوم
-  const revenue7 = buildRevenueSeries(confirmed, today, 7, factor);
-  const revenue30 = buildRevenueSeries(confirmed, today, 30, factor);
+  const revenue7 = buildRevenueSeries(confirmed, today, 7);
+  const revenue30 = buildRevenueSeries(confirmed, today, 30);
 
   const start30Key = toDateKey(addDays(today, -29));
   const confirmedLast30 = confirmed.filter((b) => b.date >= start30Key && b.date <= todayKey);
@@ -265,6 +276,7 @@ export function computeOverview({
     upcomingList: upcomingAll.slice(0, 8),
     venueCards,
     hiddenVenues: venues.filter((v) => !v.is_active),
+    upcomingCount: upcomingAll.length,
   };
 }
 

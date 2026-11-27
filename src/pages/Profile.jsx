@@ -13,6 +13,30 @@ function getInitials(name, email) {
   return source.slice(0, 2).toUpperCase();
 }
 
+function normalizeRole(rawRole, profileObj, userObj) {
+  const candidates = [
+    rawRole,
+    profileObj?.role,
+    profileObj?.account_type,
+    profileObj?.user_role,
+    userObj?.user_metadata?.role,
+    userObj?.user_metadata?.account_type,
+    userObj?.app_metadata?.role,
+  ]
+    .filter((v) => typeof v === "string" && v.trim())
+    .map((v) => v.trim().toLowerCase());
+
+  if (
+    candidates.some((r) =>
+      ["owner", "venue_owner", "court_owner", "admin", "super_admin"].includes(r),
+    )
+  ) {
+    return "owner";
+  }
+
+  return candidates[0] || "user";
+}
+
 export default function Profile() {
   const auth = useAuth();
   const user = auth?.user ?? null;
@@ -72,8 +96,13 @@ export default function Profile() {
           "",
       );
       setPhone(sourceData.phone || user.user_metadata?.phone || "");
-      const rawRole = sourceData.role || user.user_metadata?.role || "user";
-      setRole(rawRole === "super_admin" ? "super_admin" : rawRole);
+
+      const resolvedRole = normalizeRole(
+        sourceData.role ?? sourceData.account_type,
+        profile,
+        user,
+      );
+      setRole(resolvedRole);
       setLoadingProfile(false);
     }
 
@@ -128,7 +157,7 @@ export default function Profile() {
   }
 
   const isLoading = authLoading || loadingProfile;
-  const isAdmin = role === "super_admin";
+  const isOwner = role === "owner";
   const email = user?.email || "";
 
   return (
@@ -137,7 +166,7 @@ export default function Profile() {
         <header className="yn-profile-header-card">
           <div className="yn-profile-identity">
             <div
-              className={`yn-profile-avatar ${isAdmin ? "is-admin" : "is-user"}`}
+              className={`yn-profile-avatar ${isOwner ? "is-admin" : "is-user"}`}
               aria-hidden="true"
             >
               {getInitials(fullName, email)}
@@ -146,10 +175,8 @@ export default function Profile() {
             <div className="yn-profile-meta">
               <div className="yn-profile-title-row">
                 <h1>حسابي</h1>
-                <span
-                  className={`yn-role-badge ${isAdmin ? "is-admin" : "is-user"}`}
-                >
-                  {isAdmin ? "مدير ملعب" : "المستخدم"}
+                <span className={`yn-role-badge ${isOwner ? "is-admin" : "is-user"}`}>
+                  {isOwner ? "مالك ملعب" : "المستخدم"}
                 </span>
               </div>
               <p className="yn-profile-email" dir="ltr">
@@ -159,15 +186,12 @@ export default function Profile() {
           </div>
 
           <div className="yn-role-shortcuts">
-            {isAdmin ? (
+            {isOwner ? (
               <>
                 <Link to="/venues" className="yn-shortcut-btn primary">
                   استعراض الملاعب
                 </Link>
-                <Link
-                  to="/owner/bookings"
-                  className="yn-shortcut-btn secondary"
-                >
+                <Link to="/owner/bookings" className="yn-shortcut-btn secondary">
                   إدارة الحجوزات
                 </Link>
               </>
@@ -251,14 +275,13 @@ export default function Profile() {
           </form>
 
           <aside className="yn-role-info-card">
-            {isAdmin ? (
+            {isOwner ? (
               <>
-                <span className="yn-aside-tag admin-tag">حساب مدير ملعب</span>
+                <span className="yn-aside-tag admin-tag">حساب مالك ملعب</span>
                 <h3>إدارة الملاعب والحجوزات</h3>
                 <p>
-                  بصفتك مدير ملعب في منصة يلا نلعب، يمكنك متابعة الملاعب
-                  المسجلة، مراجعة حجوزات اللاعبين، وتحديث بيانات التواصل الخاصة
-                  بك.
+                  بصفتك مالك ملعب في منصة يلا نلعب، يمكنك متابعة الملاعب المسجلة،
+                  مراجعة حجوزات اللاعبين، وتحديث بيانات التواصل الخاصة بك.
                 </p>
                 <ul className="yn-role-checklist">
                   <li>متابعة طلبات الحجز وحالات التأكيد</li>

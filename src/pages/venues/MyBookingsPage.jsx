@@ -210,7 +210,6 @@ export default function MyBookingsPage() {
           {[
             { id: "all", label: `الكل (${bookings.length})` },
             { id: "confirmed", label: `المؤكدة (${bookings.filter((b) => b.status === "confirmed").length})` },
-            { id: "pending", label: `قيد التأكيد (${bookings.filter((b) => b.status === "pending").length})` },
             { id: "cancelled", label: `الملغية (${bookings.filter((b) => b.status === "cancelled" || b.status === "rejected").length})` },
           ].map((tab) => (
             <button
@@ -335,7 +334,7 @@ export default function MyBookingsPage() {
                   }}
                 >
                   <div>
-                    <span style={{ fontSize: 12, color: "var(--text-muted)", display: "block" }}>تاريخ الماتش</span>
+                    <span style={{ fontSize: 12, color: "var(--text-muted)", display: "block" }}>تاريخ المباراة</span>
                     <strong style={{ fontSize: 14 }}>{booking.date}</strong>
                   </div>
                   <div>
@@ -376,7 +375,7 @@ export default function MyBookingsPage() {
                   }}
                 >
                   <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-                    {/* شير مع أصحابك على واتساب */}
+                    {/* مشاركة تفاصيل المباراة مع أصحابك على واتساب */}
                     <button
                       onClick={() => handleShare(booking)}
                       className="btn btn-outline"
@@ -388,9 +387,9 @@ export default function MyBookingsPage() {
                         fontWeight: 700,
                         gap: 6,
                       }}
-                      title="مشاركة تفاصيل الماتش واللوكيشن مع أصحابك على الواتساب"
+                      title="مشاركة تفاصيل المباراة والموقع مع أصحابك على الواتساب"
                     >
-                      <Share2 size={20} /> شير تفاصيل الماتش
+                      <Share2 size={20} /> مشاركة تفاصيل المباراة
                     </button>
 
                     {/* رابط الخريطة المباشر إن وجد */}
@@ -402,7 +401,7 @@ export default function MyBookingsPage() {
                         className="btn btn-outline"
                         style={{ fontSize: 13, padding: "6px 14px", color: "var(--text-strong)" }}
                       >
-                        <Map size={20} /> الاتجاهات
+                         الاتجاهات
                       </a>
                     )}
 
@@ -420,22 +419,6 @@ export default function MyBookingsPage() {
                   </div>
 
                   {/* زر إلغاء الحجز عبر المنصة للحجوزات المعلقة */}
-                  {booking.status === "pending" && (
-                    <button
-                      type="button"
-                      onClick={() => handleCancel(booking.id)}
-                      disabled={cancellingId === booking.id}
-                      className="btn btn-outline"
-                      style={{
-                        fontSize: 12,
-                        padding: "6px 14px",
-                        color: "var(--status-cancelled)",
-                        borderColor: "var(--status-cancelled)",
-                      }}
-                    >
-                      {cancellingId === booking.id ? "جاري الإلغاء..." : "إلغاء الحجز"}
-                    </button>
-                  )}
                 </div>
               </article>
             );

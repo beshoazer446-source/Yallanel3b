@@ -8,6 +8,9 @@ import AdminLayout from "./components/AdminLayout";
 import SupportRoleGate from "./components/SupportRoleGate";
 
 const AdminUsersPage = lazy(() => import("./pages/admin/AdminUsersPage"));
+const AdminWithdrawalsPage = lazy(
+  () => import("./pages/admin/AdminWithdrawalsPage"),
+);
 const AdminVenuesPage = lazy(() => import("./pages/admin/AdminVenuesPage"));
 const AdminBookingsPage = lazy(() => import("./pages/admin/AdminBookingsPage"));
 const AdminSupportListPage = lazy(
@@ -16,6 +19,8 @@ const AdminSupportListPage = lazy(
 const AdminSupportTicketPage = lazy(
   () => import("./pages/admin/AdminSupportTicketPage"),
 );
+const AdminTransactionsPage = lazy(
+  () => import("./pages/admin/AdminTransactionsPage"),);
 
 const HomePage = lazy(() => import("./pages/HomePage"));
 const Login = lazy(() => import("./pages/auth/Login"));
@@ -107,7 +112,10 @@ export default function App() {
 
           <Route element={<OwnerLayout />}>
             <Route path="/owner/dashboard" element={<OwnerOverviewPage />} />
-            <Route path="/owner/bookings/:id?" element={<OwnerBookingsPage />} />
+            <Route
+              path="/owner/bookings/:id?"
+              element={<OwnerBookingsPage />}
+            />
             <Route path="/owner/calendar" element={<OwnerCalendarPage />} />
             <Route path="/owner/courts" element={<OwnerCourtsPage />} />
             <Route path="/owner/earnings" element={<OwnerEarningsPage />} />
@@ -133,7 +141,7 @@ export default function App() {
             />
           </Route>
         </Route>
-                {/* داشبورد السوبر أدمن: layout خاص بيه (sidebar) بره MainLayout */}
+        {/* داشبورد السوبر أدمن: layout خاص بيه (sidebar) بره MainLayout */}
         <Route element={<ProtectedRoute roles={["super_admin"]} />}>
           <Route
             path="/admin"
@@ -141,6 +149,10 @@ export default function App() {
           />
 
           <Route element={<AdminLayout />}>
+            <Route
+              path="/admin/withdrawals"
+              element={<AdminWithdrawalsPage />}
+            />
             <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
             <Route path="/admin/users" element={<AdminUsersPage />} />
             <Route path="/admin/venues" element={<AdminVenuesPage />} />
@@ -150,6 +162,7 @@ export default function App() {
               path="/admin/support/:ticketId"
               element={<AdminSupportTicketPage />}
             />
+            <Route path="/admin/transactions" element={<AdminTransactionsPage />} />
           </Route>
         </Route>
       </Routes>
