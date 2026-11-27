@@ -108,6 +108,7 @@ export const cancelBookingAsAdmin = (id, reason) =>
     p_reason: reason,
     p_request_refund: false,
   });
+
 export async function getAdminVenueDetails(venueId) {
   const [venueRes, imagesRes, hoursRes, methodsRes] = await Promise.all([
     supabase.from("venues").select("*").eq("id", venueId).single(),
@@ -147,6 +148,51 @@ export async function getAdminVenueDetails(venueId) {
     methods: methodsRes.data ?? [],
   };
 }
+
+// ===== طلبات السحب =====
+export async function getAdminWithdrawals() {
+  const { data, error } = await supabase
+    .from("withdrawal_requests")
+    .select("*")
+    .order("id", { ascending: false })
+    .limit(300);
+  if (error) throw error;
+  const requests = data ?? [];
+
+  const walletIds = [...new Set(requests.map((r) => r.wallet_id))];
+  let wallets = new Map();
+  let owners = new Map();
+  if (walletIds.length) {
+    const { data: walletRows, error: walletError } = await supabase
+      .from("wallets")
+      .select("id, owner_id")
+      .in("id", walletIds);
+    if (walletError) throw walletError;
+    wallets = byId(walletRows);
+
+    const ownerIds = [...new Set((walletRows ?? []).map((w) => w.owner_id))];
+    if (ownerIds.length) {
+      const { data: profiles, error: profileError } = await supabase
+        .from("profiles")
+        .select("id, name, phone")
+        .in("id", ownerIds);
+      if (profileError) throw profileError;
+      owners = byId(profiles);
+    }
+  }
+
+  return requests.map((request) => {
+    const wallet = wallets.get(String(request.wallet_id));
+    return {
+      ...request,
+      owner: wallet ? owners.get(String(wallet.owner_id)) ?? null : null,
+    };
+  });
+}
+
+export const processWithdrawal = (id, approve) =>
+  rpc("process_withdrawal", { p_request_id: id, p_approve: approve });
+
 // ===== المعاملات المالية لكل ملعب =====
 export async function getAdminTransactions() {
   const [bookingsRes, venuesRes, walletsRes, walletTxRes, withdrawalsRes] =

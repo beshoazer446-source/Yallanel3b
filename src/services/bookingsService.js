@@ -11,7 +11,11 @@ export async function getTakenSlots(venueId, date) {
   });
 
   if (error) throw error;
-  return data ?? [];
+    const bookings = (data ?? []).filter(
+      (booking) =>
+        booking.status !== "pending" ||
+        (booking.expires_at && new Date(booking.expires_at) > new Date()),
+    );
 }
 
 export async function createBooking({ venueId, date, startTime, endTime, userId, proofFile }) {
@@ -83,6 +87,7 @@ export async function getUserBookings(userId) {
     .from("bookings")
     .select("*")
     .eq("user_id", userId)
+    .neq("status", "pending")
     .order("date", { ascending: false })
     .order("start_time", { ascending: false });
 
@@ -126,7 +131,11 @@ export async function getOwnerBookings(ownerId) {
         "payment_method, payment_ref, created_at, " +
         "cancelled_at, cancellation_reason, refund_status, refund_amount",
     )
-    .in("venue_id", venues.map((venue) => venue.id))
+    .in(
+      "venue_id",
+      venues.map((venue) => venue.id),
+    )
+    .or("status.eq.confirmed,payout_status.not.is.null")
     .in("status", ["confirmed", "cancelled"]) // نخفي pending / rejected القديمة
     .order("date", { ascending: false })
     .order("start_time", { ascending: false });

@@ -200,7 +200,9 @@ export default function OwnerCalendarPage() {
 
       <div className="calendar-wrapper">
         {loading ? (
-          <p className="calendar-loading" role="status">جاري تحميل جدول الحجوزات...</p>
+          <p className="calendar-loading" role="status">
+            جاري تحميل جدول الحجوزات...
+          </p>
         ) : (
           <FullCalendar
             ref={calendarRef}
@@ -250,23 +252,36 @@ export default function OwnerCalendarPage() {
             aria-modal="true"
             aria-labelledby="calendar-booking-title"
           >
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <h2 id="calendar-booking-title" style={{ fontSize: 18, color: "var(--text-strong)" }}>
-                {selectedBooking.venue?.name || `الملعب ${selectedBooking.venue_id}`}
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <h2
+                id="calendar-booking-title"
+                style={{ fontSize: 18, color: "var(--text-strong)" }}
+              >
+                {selectedBooking.venue?.name ||
+                  `الملعب ${selectedBooking.venue_id}`}
               </h2>
               <strong
                 style={{
                   color:
-                    STATUS_CONFIG[selectedBooking.status]?.color || "var(--text)",
+                    STATUS_CONFIG[selectedBooking.status]?.color ||
+                    "var(--text)",
                 }}
               >
-                {STATUS_CONFIG[selectedBooking.status]?.label || selectedBooking.status}
+                {STATUS_CONFIG[selectedBooking.status]?.label ||
+                  selectedBooking.status}
               </strong>
             </div>
 
             <p>
               <strong>التاريخ والوقت:</strong> {selectedBooking.date} ·{" "}
-              {selectedBooking.start_time?.slice(0, 5)} - {selectedBooking.end_time?.slice(0, 5)}
+              {selectedBooking.start_time?.slice(0, 5)} -{" "}
+              {selectedBooking.end_time?.slice(0, 5)}
             </p>
 
             {selectedBooking.price != null && (
@@ -274,13 +289,13 @@ export default function OwnerCalendarPage() {
                 <strong>الإجمالي:</strong> {selectedBooking.price} جنيه
               </p>
             )}
-
-            {selectedBooking.status === "confirmed" && selectedBooking.price != null && (
-              <p style={{ fontSize: 13, color: "var(--text-muted)" }}>
-                عمولة المنصة ({PLATFORM_COMMISSION_PERCENT}%):{" "}
-                {((Number(selectedBooking.price) * PLATFORM_COMMISSION_PERCENT) / 100).toFixed(2)} جنيه
-              </p>
-            )}
+            {selectedBooking.status === "confirmed" &&
+              selectedBooking.commission_amount != null && (
+                <p style={{ fontSize: 13, color: "var(--text-muted)" }}>
+                  عمولة المنصة:{" "}
+                  {Number(selectedBooking.commission_amount).toFixed(2)} جنيه
+                </p>
+              )}
 
             {selectedBooking.payment_proof_url && (
               <div>
@@ -293,12 +308,18 @@ export default function OwnerCalendarPage() {
                     href={proofUrl}
                     target="_blank"
                     rel="noreferrer"
-                    style={{ color: "var(--status-confirmed)", fontWeight: 700, textDecoration: "underline" }}
+                    style={{
+                      color: "var(--status-confirmed)",
+                      fontWeight: 700,
+                      textDecoration: "underline",
+                    }}
                   >
                     عرض إثبات الدفع
                   </a>
                 ) : (
-                  <span style={{ fontSize: 14, color: "var(--status-cancelled)" }}>
+                  <span
+                    style={{ fontSize: 14, color: "var(--status-cancelled)" }}
+                  >
                     تعذر فتح إثبات الدفع.
                   </span>
                 )}
@@ -312,7 +333,9 @@ export default function OwnerCalendarPage() {
                     type="button"
                     className="btn btn-primary"
                     disabled={updating}
-                    onClick={() => handleStatusChange(selectedBooking.id, "confirmed")}
+                    onClick={() =>
+                      handleStatusChange(selectedBooking.id, "confirmed")
+                    }
                   >
                     تأكيد الحجز
                   </button>
@@ -324,7 +347,9 @@ export default function OwnerCalendarPage() {
                       borderColor: "var(--status-cancelled)",
                     }}
                     disabled={updating}
-                    onClick={() => handleStatusChange(selectedBooking.id, "rejected")}
+                    onClick={() =>
+                      handleStatusChange(selectedBooking.id, "rejected")
+                    }
                   >
                     رفض
                   </button>

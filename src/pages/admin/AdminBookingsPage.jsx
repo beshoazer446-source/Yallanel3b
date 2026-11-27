@@ -15,7 +15,7 @@ import {
 } from "./adminShared";
 
 const statusLabels = {
-  pending: "قيد الانتظار",
+  pending: "لم يكتمل الدفع",
   confirmed: "مؤكد",
   rejected: "مرفوض",
   cancelled: "ملغي",

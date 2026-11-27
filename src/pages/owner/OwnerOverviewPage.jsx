@@ -163,7 +163,9 @@ export default function OwnerOverviewPage() {
             تحديث
           </button>
           {updatedAt ? (
-            <span className="overview-updated">آخر تحديث {formatClock(updatedAt)}</span>
+            <span className="overview-updated">
+              آخر تحديث {formatClock(updatedAt)}
+            </span>
           ) : null}
         </div>
       </div>
@@ -172,7 +174,11 @@ export default function OwnerOverviewPage() {
         <div className="dash-alert is-danger" role="alert">
           <CircleAlert size={18} aria-hidden="true" />
           <span>{error}</span>
-          <button type="button" className="dash-btn dash-btn-secondary" onClick={refresh}>
+          <button
+            type="button"
+            className="dash-btn dash-btn-secondary"
+            onClick={refresh}
+          >
             إعادة المحاولة
           </button>
         </div>
@@ -188,10 +194,14 @@ export default function OwnerOverviewPage() {
             <>
               <div className="dash-stat-grid">
                 <StatCard
-                  icon={CalendarCheck}
-                  label="حجوزات النهارده"
-                  value={stats.todayCount}
-                  hint={`أمس: ${stats.yesterdayCount}`}
+                  icon={Clock3}
+                  label="حجوزات قادمة"
+                  value={stats.upcomingCount}
+                  hint={
+                    stats.upcomingCount > 0
+                      ? "من بكرة وبعدها"
+                      : "مفيش حجوزات قادمة"
+                  }
                 />
                 <StatCard
                   icon={Banknote}
@@ -209,12 +219,18 @@ export default function OwnerOverviewPage() {
                   tone={stats.pendingCount > 0 ? "warning" : "default"}
                   label="حجوزات قيد المراجعة"
                   value={stats.pendingCount}
-                  hint={stats.pendingCount > 0 ? "محتاجة ردك" : "مفيش طلبات معلقة"}
+                  hint={
+                    stats.pendingCount > 0 ? "محتاجة ردك" : "مفيش طلبات معلقة"
+                  }
                 />
                 <StatCard
                   icon={Gauge}
                   label="نسبة الإشغال"
-                  value={stats.occupancyPercent === null ? "—" : `${stats.occupancyPercent}%`}
+                  value={
+                    stats.occupancyPercent === null
+                      ? "—"
+                      : `${stats.occupancyPercent}%`
+                  }
                   progress={stats.occupancyPercent ?? undefined}
                   hint={
                     stats.occupancyPercent === null
@@ -246,7 +262,10 @@ export default function OwnerOverviewPage() {
               </div>
 
               {multipleVenues ? (
-                <CourtsSnapshot cards={stats.venueCards} topVenue={stats.topVenue} />
+                <CourtsSnapshot
+                  cards={stats.venueCards}
+                  topVenue={stats.topVenue}
+                />
               ) : null}
             </>
           ) : null}
