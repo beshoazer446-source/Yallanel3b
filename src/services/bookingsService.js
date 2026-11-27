@@ -126,7 +126,11 @@ export async function getOwnerBookings(ownerId) {
         "payment_method, payment_ref, created_at, " +
         "cancelled_at, cancellation_reason, refund_status, refund_amount",
     )
-    .in("venue_id", venues.map((venue) => venue.id))
+    .in(
+      "venue_id",
+      venues.map((venue) => venue.id),
+    )
+    .or("status.eq.confirmed,payout_status.not.is.null")
     .in("status", ["confirmed", "cancelled"]) // نخفي pending / rejected القديمة
     .order("date", { ascending: false })
     .order("start_time", { ascending: false });
